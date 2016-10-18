@@ -1,29 +1,53 @@
 package com.example.miha.sudocu;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.example.miha.sudocu.IView.IGridView;
 import com.example.miha.sudocu.presenter.PresenterGrid;
-public class MainActivity extends Activity implements IGridView{
+public class MainActivity extends Activity implements IGridView,View.OnFocusChangeListener,TextWatcher{
     private PresenterGrid presenterGrid;
     private GridView gvMain;
     private ArrayAdapter<String> adapter;
+    private EditText lastEditText;
+    TableLayout table;
+    public Context getContext(){
+        return this;
+    }
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(v instanceof  EditText && v.isEnabled() && hasFocus){
+            lastEditText = (EditText)v;
+        }
+    }
 
-
+    public EditText getLastEditText(){
+        return lastEditText;
+    }
 
     public void showGrid(String[][] grid){
+        table = (TableLayout)findViewById(R.id.tableLayout1);
         for(int i=0;i<grid.length;i++){
-            String temp = "";
+            TableRow row = new TableRow(this);
             for(int j=0;j<grid.length;j++){
-                temp += " "+ grid[i][j];
+                EditText text = new EditText(this);
+                text.setId(i * grid.length + j);
+                text.setText(grid[i][j]);
+                text.setEnabled(grid[i][j].isEmpty());
+                text.setOnFocusChangeListener(this);
+                text.addTextChangedListener(this);
+                row.addView(text);
             }
-            Log.d("array",temp);
+            table.addView(row);
         }
-        // а вот как выводить двумерный массив я хз
     }
 
 
@@ -34,4 +58,17 @@ public class MainActivity extends Activity implements IGridView{
         setContentView(R.layout.activity_main);
         presenterGrid = new PresenterGrid(this);
     }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        presenterGrid.answer();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 }
