@@ -8,10 +8,13 @@ import android.widget.Toast;
 import com.example.miha.sudocu.IView.IGridView;
 import com.example.miha.sudocu.data.Grid;
 
+import java.io.Serializable;
+
 /**
  * Created by miha on 17.10.2016.
  */
-public class PresenterGrid {
+public class PresenterGrid implements Serializable
+{
     private IGridView View;
     private Grid model ;
     private String[][] grid;
@@ -29,6 +32,7 @@ public class PresenterGrid {
         int j = id%grid.length;
         if(model.getAnsver(i,j,g)){
             editText.setEnabled(false);
+            View.addArrayID(id);
             Toast.makeText(View.getContext(), "success", Toast.LENGTH_SHORT).show();
             if(model.getUndefined()==0){
                 Toast.makeText(View.getContext(), "game over", Toast.LENGTH_SHORT).show();

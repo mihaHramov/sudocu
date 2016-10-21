@@ -11,4 +11,5 @@ public interface IGridView {
     public void showGrid(String[][] ar);
     public EditText getLastEditText();
     public Context getContext();
+    public void addArrayID(int i);
 }
