@@ -14,6 +14,7 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.IView.IGridView;
+import com.example.miha.sudocu.data.Grid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 import com.google.gson.Gson;
 
@@ -23,10 +24,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends Activity implements IGridView,View.OnFocusChangeListener,TextWatcher{
+    private final String KEY_DATA = "dataKey";
     private PresenterGrid presenterGrid;
     private GridView gvMain;
     private ArrayAdapter<String> adapter;
     private EditText lastEditText;
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if((Grid)savedInstanceState.getSerializable(KEY_DATA)==null){
+            Toast.makeText(MainActivity.this, "no", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(MainActivity.this, "yes", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private ArrayList<Integer> arrayId;
     TableLayout table;
     public void addArrayID(int i){
@@ -36,6 +49,7 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
     public Context getContext(){
         return this;
     }
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(v instanceof  EditText && v.isEnabled() && hasFocus){
@@ -74,14 +88,12 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
-
-    }
+    public void afterTextChanged(Editable s) {}
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        outState.putSerializable(KEY_DATA,presenterGrid.getGrid());
     }
 
     @Override

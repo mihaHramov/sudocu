@@ -42,4 +42,7 @@ public class PresenterGrid implements Serializable
             Toast.makeText(View.getContext(),"ne ok",Toast.LENGTH_SHORT).show();
         }
     }
+    public Grid getGrid(){
+        return model;
+    }
 }
