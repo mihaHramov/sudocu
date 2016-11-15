@@ -1,7 +1,6 @@
 package com.example.miha.sudocu.presenter;
 
-import android.app.Activity;
-import android.content.Context;
+import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,14 +14,29 @@ import java.io.Serializable;
  */
 public class PresenterGrid implements Serializable
 {
+    private final String EXTRA_MODEL="modelGrid";
     private IGridView View;
     private Grid model ;
     private String[][] grid;
-    public PresenterGrid(IGridView context) {
-        View = context;
-        model = new Grid();
+    public void init(Bundle onSaved){
+        if(onSaved!=null){
+            model = (Grid)onSaved.getSerializable(EXTRA_MODEL);
+        }
+        if(model==null ){
+            model = new Grid();
+            model.init();
+        }
+
         grid = model.getGrid();
         View.showGrid(grid);
+    }
+    public PresenterGrid(IGridView context) {
+        View = context;
+    }
+
+
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(EXTRA_MODEL,model);
     }
     public void answer(){
         EditText editText  = View.getLastEditText();
@@ -37,7 +51,6 @@ public class PresenterGrid implements Serializable
             if(model.getUndefined()==0){
                 Toast.makeText(View.getContext(), "game over", Toast.LENGTH_SHORT).show();
             }
-
         }else{
             Toast.makeText(View.getContext(),"ne ok",Toast.LENGTH_SHORT).show();
         }

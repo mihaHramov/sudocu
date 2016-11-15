@@ -7,11 +7,9 @@ import android.widget.Toast;
 import com.example.miha.sudocu.MainActivity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Random;
 
-/**
- * Created by miha on 17.10.2016.
- */
 public class Grid implements Serializable {
     Random random = new Random();
     private int undefined = 2;
@@ -31,16 +29,12 @@ public class Grid implements Serializable {
         return false;
     }
 
+    private void initQuery(){
+
+    }
     public String[][] getGrid() {
-        String[][] s = new String[razmer][razmer];
-        for (int i = 0; i < razmer; i++) {
-            for (int j = 0; j < razmer; j++) {
-                s[i][j] = pole[i][j];
-            }
-        }
-        s[1][1] = "";//пока не придумал как будит растановка пустых ячеек
-        s[2][2] = "";
-        return s;
+        initQuery();
+        return pole;
     }
 
     //Обмен двух строк в пределах одного района (swap_rows_small)
@@ -82,8 +76,10 @@ public class Grid implements Serializable {
     }
 
     private void swap_colums_area() {
-        int rajonOne = 3; //рандомно выбрали район
-        int rajonTwo = 1;        //рандомно выбрали второй
+        int rajonOne = random.nextInt(3) + 1; //рандомно выбрали район
+        int rajonTwo = random.nextInt(3) + 1;        //рандомно выбрали второй
+        show(rajonOne);
+        show(rajonTwo);
         int rajonOneRight = rajonOne * 3;//3*3=9
         int rajonOneLeft = rajonOneRight - 3;//9-3=6
 
@@ -108,9 +104,9 @@ public class Grid implements Serializable {
         int stingOne = random.nextInt(3) + leftBottom;
         //взять рандомно столбец
         int stringTwo = random.nextInt(3) + leftBottom;
-        Log.d("_miha", rajon + "");
-        Log.d("_miha", stingOne + "");
-        Log.d("_miha", stringTwo + "");
+        show(rajon);
+        show(stingOne);
+        show(stringTwo);
         for (int i = 0; i < razmer; i++) {
             String temp = pole[i][stingOne];
             pole[i][stingOne] = pole[i][stringTwo];
@@ -129,7 +125,8 @@ public class Grid implements Serializable {
         }
     }
 
-    public Grid() {
+
+    public void init(){
         //главное сделать сначала первую часть (верхние 3 строки)
         int sdvig = 0;
         for (int i = 0; i < razmer / 3; i++) {
@@ -157,10 +154,21 @@ public class Grid implements Serializable {
                 }
             }
         }
-        // transperentMatrix();
-       // swap_rows_small();//готовро
-        //      swap_rows_area();//готово
-        // swap_colums_small();//готово
-//        swap_colums_area();
+        Random j = new Random();
+        int temp = j.nextInt(10) + 10;
+        for (int i = 0; i < temp; i++) {
+            int iter = j.nextInt(temp)+i;
+            do{
+                transperentMatrix();//готово
+                swap_rows_small();//готовро
+                swap_rows_area();//готово
+                swap_colums_small();//готово
+                swap_colums_area();
+                iter--;
+            }
+            while(iter>0);
+        }
     }
+
+
 }

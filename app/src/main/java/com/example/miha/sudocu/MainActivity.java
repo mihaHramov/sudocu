@@ -24,21 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends Activity implements IGridView,View.OnFocusChangeListener,TextWatcher{
-    private final String KEY_DATA = "dataKey";
     private PresenterGrid presenterGrid;
-    private GridView gvMain;
     private ArrayAdapter<String> adapter;
     private EditText lastEditText;
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if((Grid)savedInstanceState.getSerializable(KEY_DATA)==null){
-            Toast.makeText(MainActivity.this, "no", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(MainActivity.this, "yes", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private ArrayList<Integer> arrayId;
     TableLayout table;
@@ -85,6 +73,7 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         presenterGrid = new PresenterGrid(this);
+        presenterGrid.init(savedInstanceState);
     }
 
     @Override
@@ -93,7 +82,7 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(KEY_DATA,presenterGrid.getGrid());
+        presenterGrid.onSaveInstanceState(outState);
     }
 
     @Override
