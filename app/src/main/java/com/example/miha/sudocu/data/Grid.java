@@ -1,39 +1,41 @@
 package com.example.miha.sudocu.data;
-
-
 import android.util.Log;
-import android.widget.Toast;
-
-import com.example.miha.sudocu.MainActivity;
-
 import java.io.Serializable;
-import java.util.Arrays;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Random;
 
 public class Grid implements Serializable {
     Random random = new Random();
-    private int undefined = 2;
+    private int undefined = 36;
     private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
     private int razmer = grid.length;
     private String[][] pole = new String[razmer][razmer];
-
+    Map<Integer, String> map = new Hashtable<>();
     public int getUndefined() {
         return undefined;
     }
 
-    public Boolean getAnsver(int i, int j, String s) {
-        if (pole[i][j].equals(s)) {
+    public Boolean getAnswer(int i, String s) {
+        if (map.get(i).equals(s)) {
             undefined--;
             return true;
         }
         return false;
     }
 
-    private void initQuery(){
-
+    private void initAnswer(){
+         do{
+            int temp = random.nextInt(razmer*razmer);
+            map.put(temp, pole[temp / razmer][temp % razmer]);
+            pole[temp/razmer][temp%razmer] = "";
+        }while(map.size()<undefined);
     }
     public String[][] getGrid() {
-        initQuery();
+        initAnswer();
         return pole;
     }
 

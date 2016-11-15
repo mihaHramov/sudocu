@@ -42,9 +42,7 @@ public class PresenterGrid implements Serializable
         EditText editText  = View.getLastEditText();
         String g  =   View.getLastEditText().getText().toString();
         int id = editText.getId();
-        int i = id/grid.length;
-        int j = id%grid.length;
-        if(model.getAnsver(i,j,g)){
+        if(model.getAnswer(id,g)){
             editText.setEnabled(false);
             View.addArrayID(id);
             Toast.makeText(View.getContext(), "success", Toast.LENGTH_SHORT).show();
