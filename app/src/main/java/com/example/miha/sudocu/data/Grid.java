@@ -21,6 +21,9 @@ public class Grid implements Serializable {
 
     public Boolean getAnswer(int i, String s) {
         if (map.get(i).equals(s)) {
+            int str = i/razmer;
+            int col = i%razmer;
+            pole[str][col] = s;
             undefined--;
             return true;
         }
