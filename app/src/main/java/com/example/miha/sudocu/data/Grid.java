@@ -1,14 +1,19 @@
 package com.example.miha.sudocu.data;
 
+
 import android.util.Log;
+import android.widget.Toast;
+
+import com.example.miha.sudocu.MainActivity;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created by miha on 17.10.2016.
  */
 public class Grid implements Serializable {
+    Random random = new Random();
     private int undefined = 2;
     private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
     private int razmer = grid.length;
@@ -40,8 +45,11 @@ public class Grid implements Serializable {
 
     //Обмен двух строк в пределах одного района (swap_rows_small)
     private void swap_rows_small() {
-        int stingOne = 0;
-        int stringTwo = 1;
+        int rajon = random.nextInt(3) * 3;//2*3=6
+        int stingOne = random.nextInt(3) + rajon;//1+0
+        int stringTwo = random.nextInt(3) + rajon;//2+0
+        show(stingOne);
+        show(stringTwo);
         for (int j = 0; j < razmer; j++) {
             String temp = pole[stingOne][j];
             pole[stingOne][j] = pole[stringTwo][j];
@@ -49,10 +57,16 @@ public class Grid implements Serializable {
         }
     }
 
+    private void show(int i) {
+        Log.d("_miha", i + "");
+    }
+
     private void swap_rows_area() {
-        int rajonOne = 1; //рандомно выбрали район
-        int rajonTwo = 3;        //рандомно выбрали второй
+        int rajonOne = random.nextInt(3) + 1; //рандомно выбрали район
+        int rajonTwo = random.nextInt(3) + 1; //рандомно выбрали второй
         //поменяли местами
+        show(rajonOne);
+        show(rajonTwo);
         int rajonOneBottom = rajonOne * 3;//1*3 = 3
         int rajonOneTop = rajonOneBottom - 3;// 3 - 3 =0
         // нужно вычислить шаг
@@ -71,29 +85,32 @@ public class Grid implements Serializable {
         int rajonOne = 3; //рандомно выбрали район
         int rajonTwo = 1;        //рандомно выбрали второй
         int rajonOneRight = rajonOne * 3;//3*3=9
-        int rajonOneLeft = rajonOneRight-3;//9-3=6
+        int rajonOneLeft = rajonOneRight - 3;//9-3=6
 
-        int rajonTwoRight = rajonTwo*3;//3*1=3
+        int rajonTwoRight = rajonTwo * 3;//3*1=3
         int rajonTwoLeft = rajonTwoRight - 3;//3-3=0
         int shag = rajonTwoLeft - rajonOneLeft;//0-6=-6
 
-        for(int i =0;i<razmer;i++){
-            for(int j =rajonOneLeft;j<rajonOneRight;j++ ){
+        for (int i = 0; i < razmer; i++) {
+            for (int j = rajonOneLeft; j < rajonOneRight; j++) {
                 String temp = pole[i][j];
-                pole[i][j] = pole[i][j+shag];
-                pole[i][j+shag]= temp;
+                pole[i][j] = pole[i][j + shag];
+                pole[i][j + shag] = temp;
             }
         }
 
     }
 
+    //объмен столбцов в
     private void swap_colums_small() {
-        //взять рандомно район
-        // взять в нем рандомно столбцы
-        int stingOne = 0;
-        int stringTwo = 1;
-
-
+        int rajon = random.nextInt(3);//получил район
+        int leftBottom = rajon * 3;//leftBottom 0*3 = 0
+        int stingOne = random.nextInt(3) + leftBottom;
+        //взять рандомно столбец
+        int stringTwo = random.nextInt(3) + leftBottom;
+        Log.d("_miha", rajon + "");
+        Log.d("_miha", stingOne + "");
+        Log.d("_miha", stringTwo + "");
         for (int i = 0; i < razmer; i++) {
             String temp = pole[i][stingOne];
             pole[i][stingOne] = pole[i][stringTwo];
@@ -141,11 +158,9 @@ public class Grid implements Serializable {
             }
         }
         // transperentMatrix();
-        // swap_rows_small();
-        //   swap_colums_small();
-        // swap_rows_area();
-        //swap_rows_area();
-
-        swap_colums_area();
+       // swap_rows_small();//готовро
+        //      swap_rows_area();//готово
+        // swap_colums_small();//готово
+//        swap_colums_area();
     }
 }
