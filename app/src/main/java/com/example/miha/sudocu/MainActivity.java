@@ -1,6 +1,5 @@
 package com.example.miha.sudocu;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,24 +7,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import com.example.miha.sudocu.IView.IGridView;
+import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 
-import java.util.ArrayList;
-
 public class MainActivity extends Activity implements IGridView,View.OnFocusChangeListener,TextWatcher{
-    private PresenterGrid presenterGrid;
+    private IPresenterGrid presenterGrid;
     private EditText lastEditText;
-
-    private ArrayList<Integer> arrayId;
     TableLayout table;
-    public void addArrayID(int i){
-
-    }
-    public Context getContext(){
-        return this;
-    }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -35,8 +26,9 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
         }
     }
 
-    public EditText getLastEditText(){
-        return lastEditText;
+    @Override
+    public int getIdAnswer() {
+        return lastEditText.getId();
     }
 
     public void showGrid(String[][] grid){
@@ -56,6 +48,10 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
     }
 
 
+    @Override
+    public void failure() {
+        Toast.makeText(this,"ne ok",Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +71,25 @@ public class MainActivity extends Activity implements IGridView,View.OnFocusChan
     }
 
     @Override
+    public void success() {
+        lastEditText.setEnabled(false);
+        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        presenterGrid.answer();
+        presenterGrid.answer(lastEditText.getText().toString());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    //    presenterGrid.unSubscription();
+    }
+
+    @Override
+    public void gameOver() {
+        Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
     }
 
     @Override
