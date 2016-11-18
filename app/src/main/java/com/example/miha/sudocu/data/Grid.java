@@ -9,12 +9,16 @@ import java.util.Random;
 
 public class Grid implements Serializable {
     Random random = new Random();
-    private   int undefined = 5;
+    private int undefined ;
     private final int dlinaBloka = 3;
     private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
     private int razmer = grid.length;
     private String[][] pole = new String[razmer][razmer];
     Map<Integer, String> map = new Hashtable<>();
+
+    public void setUndefined(Integer i) {
+        undefined = i;
+    }
 
     public int getUndefined() {
         return undefined;
@@ -33,11 +37,12 @@ public class Grid implements Serializable {
 
     private void initAnswer() {
         do {
-            int temp =  random.nextInt((razmer-1) * (razmer-1));
+            int temp = random.nextInt((razmer - 1) * (razmer - 1));
             map.put(temp, pole[temp / razmer][temp % razmer]);
             pole[temp / razmer][temp % razmer] = "";
         } while (map.size() < undefined);
     }
+
 
     public String[][] getGrid() {
         return pole;

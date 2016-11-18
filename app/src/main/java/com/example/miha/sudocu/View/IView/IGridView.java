@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.IView;
+package com.example.miha.sudocu.View.IView;
 
 
 /**
