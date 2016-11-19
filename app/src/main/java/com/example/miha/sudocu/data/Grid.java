@@ -10,14 +10,22 @@ import java.util.Random;
 public class Grid implements Serializable {
     Random random = new Random();
     private int undefined ;
+
+    public int getComplexity() {
+        return complexity;
+    }
+
+    private int complexity;
     private final int dlinaBloka = 3;
     private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
     private int razmer = grid.length;
     private String[][] pole = new String[razmer][razmer];
     Map<Integer, String> map = new Hashtable<>();
 
-    public void setUndefined(Integer i) {
-        undefined = i;
+
+    public void setComplexity(int complex) {
+        complexity = complex;
+        undefined = complex;
     }
 
     public int getUndefined() {

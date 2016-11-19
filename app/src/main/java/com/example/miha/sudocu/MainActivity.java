@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     private IPresenterGrid presenterGrid;
     private EditText lastEditText;
     TableLayout table;
+    Bundle saved;
     private Toolbar toolbar;
     private  TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -35,6 +37,19 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
         @Override
         public void afterTextChanged(Editable s) {}
     };
+
+
+    @Override
+    public void clearGrid() {
+        table.removeAllViews();
+        Toast.makeText(MainActivity.this, "clear", Toast.LENGTH_SHORT).show();
+    }
+
+    private void initViews(){
+        table = (TableLayout) findViewById(R.id.tableLayout1);
+    }
+
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (v instanceof EditText && v.isEnabled()) {
@@ -53,7 +68,7 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     }
 
     public void showGrid(String[][] grid) {
-        table = (TableLayout) findViewById(R.id.tableLayout1);
+
         for (int i = 0; i < grid.length; i++) {
             TableRow row = new TableRow(this);
             for (int j = 0; j < grid.length; j++) {
@@ -77,12 +92,20 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        saved = savedInstanceState;
+        Log.d("logActivity","onCreate" );
         setContentView(R.layout.activity_main);
         presenterGrid = new PresenterGrid(this);
-        presenterGrid.init(savedInstanceState);
+        initViews();
         toolbarInit();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("logActivity", "onResume");
+        presenterGrid.init(saved);
+    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

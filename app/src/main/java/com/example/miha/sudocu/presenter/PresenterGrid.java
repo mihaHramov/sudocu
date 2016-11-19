@@ -3,7 +3,9 @@ package com.example.miha.sudocu.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.miha.sudocu.MainActivity;
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.data.Grid;
 import com.example.miha.sudocu.data.SettingComplexity;
@@ -17,18 +19,24 @@ public class PresenterGrid implements IPresenterGrid {
     private SettingComplexity modelOfSettings;
     private String[][] grid;
 
+    private void initModel() {
+        model = new Grid();
+        model.setComplexity(modelOfSettings.load());
+        model.init();
+    }
+
     public void init(Bundle onSaved) {
+        modelOfSettings = new SettingComplexity((Context) View);
         if (onSaved != null) {
             model = (Grid) onSaved.getSerializable(EXTRA_MODEL);
+            if (model.getComplexity() != modelOfSettings.load()) {//если настройки были изменены
+                initModel();
+            }
         }
-
         if (model == null) {
-            model = new Grid();
-            modelOfSettings = new SettingComplexity((Context)View);
-            model.setUndefined(modelOfSettings.load());
-            model.init();
+            initModel();
         }
-
+        View.clearGrid();
         grid = model.getGrid();
         View.showGrid(grid);
     }
