@@ -2,17 +2,21 @@ package com.example.miha.sudocu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.View.IView.IGridView;
@@ -21,27 +25,12 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 
 
-public class MainActivity extends Activity implements IGridView, View.OnFocusChangeListener {
+public class MainActivity extends Activity implements IGridView, View.OnClickListener {
     private IPresenterGrid presenterGrid;
-    private EditText lastEditText;
+    private TextView lastEditText;
     TableLayout table;
     Bundle saved;
     private Toolbar toolbar;
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            presenterGrid.answer(lastEditText.getText().toString());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
-
 
     @Override
     public void clearGrid() {
@@ -49,21 +38,19 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     }
 
     private void initViews() {
+        findViewById(R.id.button1).setOnClickListener(this);
+        findViewById(R.id.button2).setOnClickListener(this);
+        findViewById(R.id.button3).setOnClickListener(this);
+        findViewById(R.id.button4).setOnClickListener(this);
+        findViewById(R.id.button5).setOnClickListener(this);
+        findViewById(R.id.button6).setOnClickListener(this);
+        findViewById(R.id.button7).setOnClickListener(this);
+        findViewById(R.id.button8).setOnClickListener(this);
+        findViewById(R.id.button9).setOnClickListener(this);
+
         table = (TableLayout) findViewById(R.id.tableLayout1);
     }
 
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        if (v instanceof EditText && v.isEnabled()) {
-            if (hasFocus) {
-                lastEditText = (EditText) v;
-                lastEditText.addTextChangedListener(textWatcher);
-            } else {
-                lastEditText.removeTextChangedListener(textWatcher);
-            }
-        }
-    }
 
     @Override
     public int getIdAnswer() {
@@ -74,13 +61,13 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
         for (int i = 0; i < grid.length; i++) {
             TableRow row = new TableRow(this);
             for (int j = 0; j < grid.length; j++) {
-                EditText text = new EditText(this);
+                TextView text = new TextView(this);
+                text.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
                 text.setId(i * grid.length + j);
                 text.setText(grid[i][j]);
-                text.setFilters(new InputFilter[]{new  InputFilter.LengthFilter(1)});
-                text.setInputType(InputType.TYPE_CLASS_NUMBER);
-                text.setEnabled(grid[i][j].isEmpty());
-                text.setOnFocusChangeListener(this);
+                if (grid[i][j].isEmpty()) {
+                    text.setOnClickListener(this);
+                }
                 row.addView(text);
             }
             table.addView(row);
@@ -89,7 +76,9 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
 
 
     @Override
-    public void failure() {
+    public void failure()
+    {
+        lastEditText.setBackgroundColor(Color.RED);
         Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
     }
 
@@ -117,7 +106,7 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
 
     @Override
     public void success() {
-        lastEditText.setEnabled(false);
+        lastEditText.setBackgroundColor(Color.GREEN);
         Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
     }
 
@@ -144,5 +133,17 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     @Override
     public void gameOver() {
         Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v instanceof Button) {
+            String answer = ((Button) v).getText().toString();
+            lastEditText.setText(answer);
+            presenterGrid.answer(answer);
+            return;
+        }
+        lastEditText = (TextView) v;
+        lastEditText.setBackgroundColor(getResources().getColor(R.color.colorAccent));
     }
 }
