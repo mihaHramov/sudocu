@@ -2,10 +2,7 @@ package com.example.miha.sudocu.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.example.miha.sudocu.MainActivity;
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.data.Grid;
 import com.example.miha.sudocu.data.SettingComplexity;
@@ -14,7 +11,7 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 public class PresenterGrid implements IPresenterGrid {
     private final String EXTRA_MODEL = "modelGrid";
-    private IGridView View;
+    private IGridView view;
     private Grid model;
     private SettingComplexity modelOfSettings;
     private String[][] grid;
@@ -26,7 +23,7 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     public void init(Bundle onSaved) {
-        modelOfSettings = new SettingComplexity((Context) View);
+        modelOfSettings = new SettingComplexity((Context) view);
         if (onSaved != null) {
             model = (Grid) onSaved.getSerializable(EXTRA_MODEL);
             if (model.getComplexity() != modelOfSettings.load()) {//если настройки были изменены
@@ -36,13 +33,13 @@ public class PresenterGrid implements IPresenterGrid {
         if (model == null) {
             initModel();
         }
-        View.clearGrid();
+        view.clearGrid();
         grid = model.getGrid();
-        View.showGrid(grid);
+        view.showGrid(grid);
     }
 
     public PresenterGrid(IGridView context) {
-        View = context;
+        view = context;
     }
 
 
@@ -52,19 +49,19 @@ public class PresenterGrid implements IPresenterGrid {
 
     @Override
     public void unSubscription() {
-        View = null;
+        view = null;
     }
 
-    public void answer(String s) {
-        if (s.trim().isEmpty()) return;
-        int id = View.getIdAnswer();
-        if (model.getAnswer(id, s)) {
-            View.success();
+    public void answer(String answer) {
+        if (answer.trim().isEmpty()) return;
+        int id = view.getIdAnswer();
+        if (model.getAnswer(id, answer)) {
+            view.success();
             if (model.getUndefined() == 0) {
-                View.gameOver();
+                view.gameOver();
             }
         } else {
-            View.failure();
+            view.failure();
         }
     }
 

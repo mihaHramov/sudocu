@@ -56,8 +56,8 @@ public class Grid implements Serializable {
         return pole;
     }
 
-    //Обмен двух строк в пределах одного района (swap_rows_small)
-    private void swap_rows_small() {
+    //Обмен двух строк в пределах одного района (swapRowsSmall)
+    private void swapRowsSmall() {
         int rajon = random.nextInt(dlinaBloka) * dlinaBloka;
         int stingOne = random.nextInt(dlinaBloka) + rajon;//1+0
         int stringTwo = random.nextInt(dlinaBloka) + rajon;//2+0
@@ -74,7 +74,7 @@ public class Grid implements Serializable {
         Log.d("_miha", i + "");
     }
 
-    private void swap_rows_area() {
+    private void swapRowsArea() {
         int rajonOne = random.nextInt(dlinaBloka) + 1; //рандомно выбрали район
         int rajonTwo = random.nextInt(dlinaBloka) + 1; //рандомно выбрали второй
         //поменяли местами
@@ -94,7 +94,7 @@ public class Grid implements Serializable {
         }
     }
 
-    private void swap_colums_area() {
+    private void swapColumsArea() {
         int rajonOne = random.nextInt(dlinaBloka) + 1; //рандомно выбрали район
         int rajonTwo = random.nextInt(dlinaBloka) + 1;        //рандомно выбрали второй
         show(rajonOne);
@@ -117,7 +117,7 @@ public class Grid implements Serializable {
     }
 
     //объмен столбцов в
-    private void swap_colums_small() {
+    private void swapColumsSmall() {
         int rajon = random.nextInt(dlinaBloka);//получил район
         int leftBottom = rajon * dlinaBloka;//leftBottom 0*3 = 0
         int stingOne = random.nextInt(dlinaBloka) + leftBottom;
@@ -179,10 +179,10 @@ public class Grid implements Serializable {
             int iter = j.nextInt(temp) + i;
             do {
                 transperentMatrix();//готово
-                swap_rows_small();//готовро
-                swap_rows_area();//готово
-                swap_colums_small();//готово
-                swap_colums_area();
+                swapRowsSmall();//готовро
+                swapRowsArea();//готово
+                swapColumsSmall();//готово
+                swapColumsArea();
                 iter--;
             }
             while (iter > 0);

@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -19,33 +20,35 @@ import com.example.miha.sudocu.View.Settings;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 
+
 public class MainActivity extends Activity implements IGridView, View.OnFocusChangeListener {
     private IPresenterGrid presenterGrid;
     private EditText lastEditText;
     TableLayout table;
     Bundle saved;
     private Toolbar toolbar;
-    private  TextWatcher textWatcher = new TextWatcher() {
+    private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenterGrid.answer(lastEditText.getText().toString());
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
         @Override
-        public void afterTextChanged(Editable s) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            presenterGrid.answer(lastEditText.getText().toString());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
     };
 
 
     @Override
     public void clearGrid() {
         table.removeAllViews();
-        Toast.makeText(MainActivity.this, "clear", Toast.LENGTH_SHORT).show();
     }
 
-    private void initViews(){
+    private void initViews() {
         table = (TableLayout) findViewById(R.id.tableLayout1);
     }
 
@@ -53,10 +56,10 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (v instanceof EditText && v.isEnabled()) {
-            if(hasFocus){
+            if (hasFocus) {
                 lastEditText = (EditText) v;
                 lastEditText.addTextChangedListener(textWatcher);
-            }else{
+            } else {
                 lastEditText.removeTextChangedListener(textWatcher);
             }
         }
@@ -68,13 +71,14 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     }
 
     public void showGrid(String[][] grid) {
-
         for (int i = 0; i < grid.length; i++) {
             TableRow row = new TableRow(this);
             for (int j = 0; j < grid.length; j++) {
                 EditText text = new EditText(this);
                 text.setId(i * grid.length + j);
                 text.setText(grid[i][j]);
+                text.setFilters(new InputFilter[]{new  InputFilter.LengthFilter(1)});
+                text.setInputType(InputType.TYPE_CLASS_NUMBER);
                 text.setEnabled(grid[i][j].isEmpty());
                 text.setOnFocusChangeListener(this);
                 row.addView(text);
@@ -93,7 +97,6 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         saved = savedInstanceState;
-        Log.d("logActivity","onCreate" );
         setContentView(R.layout.activity_main);
         presenterGrid = new PresenterGrid(this);
         initViews();
@@ -103,7 +106,6 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("logActivity", "onResume");
         presenterGrid.init(saved);
     }
 
@@ -118,7 +120,6 @@ public class MainActivity extends Activity implements IGridView, View.OnFocusCha
         lastEditText.setEnabled(false);
         Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
     }
-
 
 
     @Override
