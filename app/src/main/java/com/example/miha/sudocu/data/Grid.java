@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class Grid implements Serializable {
     Random random = new Random();
-    private int undefined ;
+    private int undefined;
 
     public int getComplexity() {
         return complexity;

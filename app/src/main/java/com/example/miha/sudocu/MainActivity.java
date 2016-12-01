@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +62,8 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
                 text.setText(grid[i][j]);
                 if (grid[i][j].isEmpty()) {
                     text.setOnClickListener(this);
+                    //  text.setBackground(getResources().getDrawable(R.drawable.back));
+                    // text.setTextAppearance(this,R.style.bigBorder);
                 }
                 row.addView(text);
             }
@@ -70,8 +73,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
 
     @Override
-    public void failure()
-    {
+    public void failure() {
         lastEditText.setBackgroundColor(Color.RED);
         Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
     }
@@ -137,7 +139,11 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
             presenterGrid.answer(answer);
             return;
         }
+        if(lastEditText!=null){
+            lastEditText.setBackgroundDrawable(null);
+        }
         lastEditText = (TextView) v;
-        lastEditText.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        lastEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
+       // lastEditText.setBackgroundColor(getResources().getColor(R.color.colorAccent));
     }
 }
