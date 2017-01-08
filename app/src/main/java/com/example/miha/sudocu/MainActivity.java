@@ -33,6 +33,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     }
 
     private void initViews() {
+
         findViewById(R.id.button1).setOnClickListener(this);
         findViewById(R.id.button2).setOnClickListener(this);
         findViewById(R.id.button3).setOnClickListener(this);
