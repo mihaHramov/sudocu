@@ -2,7 +2,12 @@ package com.example.miha.sudocu.data;
 
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
@@ -10,17 +15,35 @@ import java.util.Random;
 public class Grid implements Serializable {
     Random random = new Random();
     private int undefined;
-
-    public int getComplexity() {
-        return complexity;
-    }
-
+    private long id = 0;
     private int complexity;
     private final int dlinaBloka = 3;
     private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
     private int razmer = grid.length;
     private String[][] pole = new String[razmer][razmer];
-    Map<Integer, String> map = new Hashtable<>();
+    private Map<Integer, String> answers = new Hashtable<>();
+
+    public static final String KEY ="Grid";
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getComplexity() {
+        return complexity;
+    }
+
+    public void setAnswers(Map<Integer, String> answers) {
+        this.answers = answers;
+    }
+
+
+    public void setPole(String[][] pole) {
+        this.pole = pole;
+    }
 
 
     public void setComplexity(int complex) {
@@ -28,12 +51,72 @@ public class Grid implements Serializable {
         undefined = complex;
     }
 
+    public static Grid getGridByJSON(String json) {
+        Grid grid = new Grid();
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            JSONObject answ = jsonObject.getJSONObject("answers");
+            JSONArray arrNames = answ.names();
+            Map<Integer, String> answerMap = new Hashtable<>();
+            int razmer = (int) Math.sqrt(jsonObject.getJSONArray("grid").length());
+            String[][] p = new String[razmer][razmer];
+
+            for (int i = 0; i < arrNames.length(); i++)
+                answerMap.put(arrNames.getInt(i), answ.getString(arrNames.getString(i)));
+
+            for (int i = 0; i < razmer; i++)
+                for (int j = 0; j < razmer; j++)
+                    p[i][j] = jsonObject.getJSONArray("grid").getString(i * razmer + j);
+
+            grid.setAnswers(answerMap);
+            grid.setUndefined(jsonObject.getInt("undefined"));
+            grid.setPole(p);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return grid;
+    }
+
+    @Override
+    public String toString() {
+
+        JSONObject an = new JSONObject();
+        JSONObject gridAnswer = new JSONObject();
+        JSONArray pupilsArray = new JSONArray();
+
+        for (int i = 0; i < razmer; i++) {
+            for (int j = 0; j < razmer; j++)
+                pupilsArray.put(pole[i][j]);
+        }
+
+        try {
+
+            for (Map.Entry<Integer, String> entry : answers.entrySet()) {
+                Integer key = entry.getKey();
+                String val = entry.getValue();
+                Log.d("mihaAnswer", key + ":" + val);
+                gridAnswer.put(key + "", val);
+            }
+            an.put("undefined", getUndefined());
+            an.put("answers", gridAnswer);
+            an.put("grid", pupilsArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return an.toString();
+    }
+
+    public void setUndefined(int undefined) {
+        this.undefined = undefined;
+    }
+
     public int getUndefined() {
         return undefined;
     }
 
     public Boolean getAnswer(int i, String s) {
-        if (map.get(i).equals(s)) {
+        if (answers.get(i).equals(s)) {
             int str = i / razmer;
             int col = i % razmer;
             pole[str][col] = s;
@@ -46,9 +129,10 @@ public class Grid implements Serializable {
     private void initAnswer() {
         do {
             int temp = random.nextInt((razmer - 1) * (razmer - 1));
-            map.put(temp, pole[temp / razmer][temp % razmer]);
+            if (answers.get(temp) != null) continue;
+            answers.put(temp, pole[temp / razmer][temp % razmer]);
             pole[temp / razmer][temp % razmer] = "";
-        } while (map.size() < undefined);
+        } while (answers.size() < undefined);
     }
 
 
@@ -61,8 +145,6 @@ public class Grid implements Serializable {
         int rajon = random.nextInt(dlinaBloka) * dlinaBloka;
         int stingOne = random.nextInt(dlinaBloka) + rajon;//1+0
         int stringTwo = random.nextInt(dlinaBloka) + rajon;//2+0
-        show(stingOne);
-        show(stringTwo);
         for (int j = 0; j < razmer; j++) {
             String temp = pole[stingOne][j];
             pole[stingOne][j] = pole[stringTwo][j];
@@ -70,16 +152,10 @@ public class Grid implements Serializable {
         }
     }
 
-    private void show(int i) {
-        Log.d("_miha", i + "");
-    }
-
     private void swapRowsArea() {
         int rajonOne = random.nextInt(dlinaBloka) + 1; //рандомно выбрали район
         int rajonTwo = random.nextInt(dlinaBloka) + 1; //рандомно выбрали второй
-        //поменяли местами
-        show(rajonOne);
-        show(rajonTwo);
+
         int rajonOneBottom = rajonOne * dlinaBloka;
         int rajonOneTop = rajonOneBottom - dlinaBloka;
         // нужно вычислить шаг
@@ -97,8 +173,6 @@ public class Grid implements Serializable {
     private void swapColumsArea() {
         int rajonOne = random.nextInt(dlinaBloka) + 1; //рандомно выбрали район
         int rajonTwo = random.nextInt(dlinaBloka) + 1;        //рандомно выбрали второй
-        show(rajonOne);
-        show(rajonTwo);
         int rajonOneRight = rajonOne * dlinaBloka;
         int rajonOneLeft = rajonOneRight - dlinaBloka;//9-3=6
 
@@ -123,9 +197,6 @@ public class Grid implements Serializable {
         int stingOne = random.nextInt(dlinaBloka) + leftBottom;
         //взять рандомно столбец
         int stringTwo = random.nextInt(dlinaBloka) + leftBottom;
-        show(rajon);
-        show(stingOne);
-        show(stringTwo);
         for (int i = 0; i < razmer; i++) {
             String temp = pole[i][stingOne];
             pole[i][stingOne] = pole[i][stringTwo];

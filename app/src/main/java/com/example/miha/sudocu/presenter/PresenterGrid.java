@@ -10,7 +10,7 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 
 public class PresenterGrid implements IPresenterGrid {
-    private final String EXTRA_MODEL = "modelGrid";
+    public static final String EXTRA_MODEL = "modelGrid";
     private IGridView view;
     private Grid model;
     private SettingComplexity modelOfSettings;
@@ -26,9 +26,9 @@ public class PresenterGrid implements IPresenterGrid {
         modelOfSettings = new SettingComplexity((Context) view);
         if (onSaved != null) {
             model = (Grid) onSaved.getSerializable(EXTRA_MODEL);
-            if (model.getComplexity() != modelOfSettings.load()) {//если настройки были изменены
-                initModel();
-            }
+            //if (model.getComplexity() != modelOfSettings.load()) {//если настройки были изменены
+           // initModel();
+            // }
         }
         if (model == null) {
             initModel();
