@@ -7,24 +7,23 @@ import android.view.View;
 
 import com.example.miha.sudocu.MainActivity;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.data.Grid;
-import com.example.miha.sudocu.data.RepositoryImplBD;
 
-public class MenuActivity extends AppCompatActivity implements View.OnClickListener{
+public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Intent i ;
-        switch (v.getId()){
+        Intent i;
+        switch (v.getId()) {
             case R.id.restore:
-                i  = new Intent(this, ListOfGameSavesActivity.class);
+                i = new Intent(this, ListOfGameSavesActivity.class);
                 startActivity(i);
                 break;
             case R.id.newGame:
-                i = new Intent(this,MainActivity.class);
+                i = new Intent(this, MainActivity.class);
                 startActivity(i);
                 break;
-            case R.id.setting:break;
+            case R.id.setting:
+                break;
         }
     }
 
@@ -35,14 +34,5 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.restore).setOnClickListener(this);
         findViewById(R.id.newGame).setOnClickListener(this);
         findViewById(R.id.setting).setOnClickListener(this);
-
-       /* Grid model  = new Grid();
-        model.setComplexity(10);
-        model.init();
-
-        RepositoryImplBD bd = new RepositoryImplBD(getApplicationContext());
-        //bd.loadGame(model); //saveGame(model);
-        bd.getListGames();
-        */
     }
 }
