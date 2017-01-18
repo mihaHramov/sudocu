@@ -10,6 +10,4 @@ public interface IRepository {
     void saveGame(Grid g);
 
     ArrayList<Grid> getListGames();
-
-    Grid loadGame(Grid grid);
 }

@@ -28,11 +28,15 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     @Override
     public void saveGame(Grid grid) {
         cv.put("grid", grid.toString());
-        cv.put("name", "vasa");
-        //  Log.d("mihaHramov",
-        db.insert(tableName, null, cv);//+"");
-        // Log.d("mihaSave",grid.toString());
-        // Grid.getGridByJSON(grid.toString());
+        cv.put("name", grid.getName());
+
+        if (grid.getId() == 0) {
+            db.insert(tableName, null, cv);
+            return;
+        }
+
+        long i = db.update(tableName, cv, "id= ?", new String[]{Long.toString(grid.getId())});
+        Log.d("mihaHramovRP", grid.toString());
     }
 
 
@@ -43,19 +47,18 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
         if (c.moveToFirst()) {
             int nameColId = c.getColumnIndex("name");
             int gridColId = c.getColumnIndex("grid");
+            int idColId = c.getColumnIndex("id");
             do {
-                Log.d("mihaHramov", c.getString(gridColId));
-                arrGrid.add(Grid.getGridByJSON(c.getString(gridColId)));
+                Grid g = Grid.getGridByJSON(c.getString(gridColId));
+                g.setName(c.getString(nameColId));
+                g.setId(c.getInt(idColId));
+                arrGrid.add(g);
             } while (c.moveToNext());
         }
 
         return arrGrid;
     }
 
-    @Override
-    public Grid loadGame(Grid json) {
-        return Grid.getGridByJSON("");
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
