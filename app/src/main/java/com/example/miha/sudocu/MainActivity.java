@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.DrawableRes;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,18 +16,14 @@ import android.widget.Toast;
 
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.View.Settings;
-import com.example.miha.sudocu.data.Grid;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
-
-import java.io.Serializable;
 
 
 public class MainActivity extends Activity implements IGridView, View.OnClickListener {
     private IPresenterGrid presenterGrid;
     private TextView lastEditText;
     TableLayout table;
-    Bundle saved;
     private Toolbar toolbar;
 
     @Override
@@ -38,7 +32,6 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     }
 
     private void initViews() {
-
         findViewById(R.id.button1).setOnClickListener(this);
         findViewById(R.id.button2).setOnClickListener(this);
         findViewById(R.id.button3).setOnClickListener(this);
@@ -48,7 +41,6 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         findViewById(R.id.button7).setOnClickListener(this);
         findViewById(R.id.button8).setOnClickListener(this);
         findViewById(R.id.button9).setOnClickListener(this);
-
         table = (TableLayout) findViewById(R.id.tableLayout1);
     }
 
@@ -87,30 +79,18 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Grid modelSerializable = (Grid)getIntent().getSerializableExtra(Grid.KEY);
-        if(modelSerializable!=null){
-            if(savedInstanceState == null){
-                savedInstanceState = new Bundle();
-            }
-            savedInstanceState.putSerializable(PresenterGrid.EXTRA_MODEL,modelSerializable);
-        }
-        saved = savedInstanceState;
         setContentView(R.layout.activity_main);
-        presenterGrid = new PresenterGrid(this);
+
         initViews();
         toolbarInit();
 
-
+        presenterGrid = new PresenterGrid(this);
+        presenterGrid.init(savedInstanceState, this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenterGrid.init(saved);
-    }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(Bundle outState) {//срабатывает только во время поворота устройства
         super.onSaveInstanceState(outState);
         presenterGrid.onSaveInstanceState(outState);
     }
