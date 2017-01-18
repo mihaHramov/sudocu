@@ -21,6 +21,7 @@ public class AdapterGrid extends BaseAdapter {
     Context ctx;
     LayoutInflater lInflater;
 
+
     @Override
     public int getCount() {
         return arrayGrid.size();
@@ -41,8 +42,9 @@ public class AdapterGrid extends BaseAdapter {
         if (view == null) {
             view = lInflater.inflate(R.layout.item, parent, false);
         }
-        ((TextView) view.findViewById(R.id.gridListItemText)).setText("name");
-        //    Grid grid  = (Grid) getItem(position);
+        Grid grid  = (Grid) getItem(position);
+        ((TextView) view.findViewById(R.id.gridListItemText)).setText(grid.getName());
+
         return view;
     }
 
