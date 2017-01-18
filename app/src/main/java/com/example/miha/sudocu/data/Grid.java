@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
@@ -16,6 +16,7 @@ public class Grid implements Serializable {
     Random random = new Random();
     private int undefined;
     private long id = 0;
+    private String name = "";
     private int complexity;
     private final int dlinaBloka = 3;
     private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
@@ -23,7 +24,16 @@ public class Grid implements Serializable {
     private String[][] pole = new String[razmer][razmer];
     private Map<Integer, String> answers = new Hashtable<>();
 
-    public static final String KEY ="Grid";
+    public static final String KEY = "Grid";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }
@@ -117,6 +127,7 @@ public class Grid implements Serializable {
 
     public Boolean getAnswer(int i, String s) {
         if (answers.get(i).equals(s)) {
+            answers.put(i,"");
             int str = i / razmer;
             int col = i % razmer;
             pole[str][col] = s;
@@ -259,5 +270,10 @@ public class Grid implements Serializable {
             while (iter > 0);
         }
         initAnswer();
+
+        long date = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");
+        String dateString = sdf.format(date);
+        name = dateString;
     }
 }
