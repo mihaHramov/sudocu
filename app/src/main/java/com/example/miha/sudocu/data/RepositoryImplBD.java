@@ -35,7 +35,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
             return;
         }
 
-        long i = db.update(tableName, cv, "id= ?", new String[]{Long.toString(grid.getId())});
+        db.update(tableName, cv, "id= ?", new String[]{Long.toString(grid.getId())});
         Log.d("mihaHramovRP", grid.toString());
     }
 

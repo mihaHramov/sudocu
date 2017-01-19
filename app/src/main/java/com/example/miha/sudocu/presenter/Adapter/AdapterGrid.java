@@ -42,12 +42,22 @@ public class AdapterGrid extends BaseAdapter {
         if (view == null) {
             view = lInflater.inflate(R.layout.item, parent, false);
         }
-        Grid grid  = (Grid) getItem(position);
-        ((TextView) view.findViewById(R.id.gridListItemText)).setText(grid.getName());
+        Grid grid = (Grid) getItem(position);
+        ((TextView) view.findViewById(R.id.gridListItemText)).setText(grid.getName() + " - не найденно(" + grid.getUndefined() + ")");
 
         return view;
     }
 
+
+    public void setData(ArrayList<Grid> products) {
+        arrayGrid = products;
+    }
+
+    public AdapterGrid(Context ctx) {
+        this.ctx = ctx;
+        this.lInflater = (LayoutInflater) ctx
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);;
+    }
 
     public AdapterGrid(Context context, ArrayList<Grid> products) {
         ctx = context;

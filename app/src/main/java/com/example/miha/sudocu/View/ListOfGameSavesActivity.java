@@ -16,15 +16,26 @@ import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
 public class ListOfGameSavesActivity extends Activity {
     AdapterGrid adapter ;
     RepositoryImplBD repository;
-
+    ListView listView;
     @Override
     protected void onResume() {
         super.onResume();
-        adapter = new AdapterGrid(getApplicationContext(),repository.getListGames());
-        ListView lv = (ListView)findViewById(R.id.listViewGrid);
-        lv.setAdapter(adapter);
+        adapter.setData(repository.getListGames());
+        adapter.notifyDataSetChanged();
+    }
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_of_game_saves);
+        repository = new RepositoryImplBD(getApplicationContext());
+        adapter = new AdapterGrid(getApplicationContext());
+
+        listView = (ListView)findViewById(R.id.listViewGrid);
+
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -32,13 +43,5 @@ public class ListOfGameSavesActivity extends Activity {
                 startActivity(i);
             }
         });
-    //    adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_of_game_saves);
-        repository = new RepositoryImplBD(getApplicationContext());
     }
 }

@@ -56,7 +56,6 @@ public class PresenterGrid implements IPresenterGrid {
 
     @Override
     public void unSubscription() {
-        repository.saveGame(model);
         view = null;
     }//отписался
 
@@ -65,6 +64,7 @@ public class PresenterGrid implements IPresenterGrid {
         int id = view.getIdAnswer();
         if (model.getAnswer(id, answer)) {
             view.success();
+            repository.saveGame(model);
             if (model.getUndefined() == 0) {
                 view.gameOver();
             }
