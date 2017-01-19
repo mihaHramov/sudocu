@@ -1,11 +1,13 @@
 package com.example.miha.sudocu.presenter.IPresenter;
 
-import com.example.miha.sudocu.data.Grid;
+import android.app.Activity;
+import android.os.Bundle;
+
 
 /**
  * Created by miha on 16.11.2016.
  */
 public interface IPresenterGrid extends IPresenter {
-    public Grid getGrid();
-    public void answer(String s);
+    void init(Bundle onSaved, Activity activity);
+    void answer(String answer);
 }

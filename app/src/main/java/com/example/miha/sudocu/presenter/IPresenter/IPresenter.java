@@ -8,7 +8,5 @@ import android.os.Bundle;
 public interface IPresenter {
     void onSaveInstanceState(Bundle outState);
 
-    void init(Bundle onSaved);
-
     void unSubscription();
 }
