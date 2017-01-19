@@ -52,7 +52,9 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 Grid g = Grid.getGridByJSON(c.getString(gridColId));
                 g.setName(c.getString(nameColId));
                 g.setId(c.getInt(idColId));
-                arrGrid.add(g);
+                if (g.getUndefined() > 0){
+                    arrGrid.add(g);
+                }
             } while (c.moveToNext());
         }
 

@@ -2,7 +2,6 @@ package com.example.miha.sudocu.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.data.Grid;
@@ -10,7 +9,6 @@ import com.example.miha.sudocu.data.IRepository;
 import com.example.miha.sudocu.data.RepositoryImplBD;
 import com.example.miha.sudocu.data.SettingComplexity;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
-
 
 
 public class PresenterGrid implements IPresenterGrid {
@@ -64,12 +62,12 @@ public class PresenterGrid implements IPresenterGrid {
         int id = view.getIdAnswer();
         if (model.getAnswer(id, answer)) {
             view.success();
-            repository.saveGame(model);
             if (model.getUndefined() == 0) {
                 view.gameOver();
             }
-        } else {
-            view.failure();
+            repository.saveGame(model);
+            return;
         }
+        view.failure();
     }
 }
