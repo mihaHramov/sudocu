@@ -15,6 +15,7 @@ import java.util.Random;
 public class Grid implements Serializable {
     Random random = new Random();
     private int undefined;
+    private  long gameTime = 0;
     private long id = 0;
     private String name = "";
     private int complexity;
@@ -25,6 +26,14 @@ public class Grid implements Serializable {
     private Map<Integer, String> answers = new Hashtable<>();
 
     public static final String KEY = "Grid";
+
+    public long getGameTime() {
+        return gameTime;
+    }
+
+    public void setGameTime(long gameTime) {
+        this.gameTime = gameTime;
+    }
 
     public String getName() {
         return name;
@@ -81,6 +90,7 @@ public class Grid implements Serializable {
             grid.setAnswers(answerMap);
             grid.setUndefined(jsonObject.getInt("undefined"));
             grid.setPole(p);
+            grid.setGameTime(jsonObject.getLong("gameTime"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,6 +119,7 @@ public class Grid implements Serializable {
                 gridAnswer.put(key + "", val);
             }
             an.put("undefined", getUndefined());
+            an.put("gameTime",getGameTime());
             an.put("answers", gridAnswer);
             an.put("grid", pupilsArray);
         } catch (JSONException e) {
