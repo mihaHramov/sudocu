@@ -3,6 +3,7 @@ package com.example.miha.sudocu.View;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -19,6 +20,7 @@ public class ListOfGameSavesActivity extends Activity {
     ListView listView;
     @Override
     protected void onResume() {
+        Log.d("mihaHramovRP", "onResumeList");
         super.onResume();
         adapter.setData(repository.getListGames());
         adapter.notifyDataSetChanged();

@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -41,6 +43,9 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         findViewById(R.id.button8).setOnClickListener(this);
         findViewById(R.id.button9).setOnClickListener(this);
         table = (TableLayout) findViewById(R.id.tableLayout1);
+       // Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
+       // hronometer.setBase(SystemClock.elapsedRealtime());
+       // chronometer.start();
     }
 
 
@@ -76,6 +81,13 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        presenterGrid.unSubscription();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -103,7 +115,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
     @Override
     protected void onDestroy() {
-        presenterGrid.unSubscription();
+       // presenterGrid.unSubscription();
         super.onDestroy();
     }
 
@@ -119,6 +131,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
             }
         });
     }
+
 
     @Override
     public void gameOver() {
