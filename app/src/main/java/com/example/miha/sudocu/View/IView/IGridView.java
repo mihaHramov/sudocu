@@ -11,4 +11,6 @@ public interface IGridView {
      void success();
      void gameOver();
      void failure();
+     void setGameTime(long time);
+     long getGameTime();
 }

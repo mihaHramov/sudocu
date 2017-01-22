@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,20 @@ import com.example.miha.sudocu.presenter.PresenterGrid;
 public class MainActivity extends Activity implements IGridView, View.OnClickListener {
     private IPresenterGrid presenterGrid;
     private TextView lastEditText;
+    private Chronometer chronometer;
+
+    @Override
+    public void setGameTime(long time) {
+        chronometer.setBase(time);
+        chronometer.start();
+    }
+
+    @Override
+    public long getGameTime() {
+        chronometer.stop();
+        return chronometer.getBase();
+    }
+
     TableLayout table;
     private Toolbar toolbar;
 
@@ -43,9 +58,8 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         findViewById(R.id.button8).setOnClickListener(this);
         findViewById(R.id.button9).setOnClickListener(this);
         table = (TableLayout) findViewById(R.id.tableLayout1);
-       // Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
-       // hronometer.setBase(SystemClock.elapsedRealtime());
-       // chronometer.start();
+        chronometer = (Chronometer) findViewById(R.id.chronometer);
+
     }
 
 
@@ -80,12 +94,6 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        presenterGrid.unSubscription();
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,12 +120,12 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
     }
 
-
     @Override
-    protected void onDestroy() {
-       // presenterGrid.unSubscription();
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        presenterGrid.unSubscription();
     }
+
 
     private void toolbarInit() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
