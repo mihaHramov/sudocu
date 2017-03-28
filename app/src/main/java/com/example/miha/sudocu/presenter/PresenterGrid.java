@@ -3,7 +3,6 @@ package com.example.miha.sudocu.presenter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.data.Grid;
@@ -22,9 +21,12 @@ public class PresenterGrid implements IPresenterGrid {
     private String[][] grid;
 
     private void initModel() {
-        model = new Grid();
-        model.setComplexity(modelOfSettings.load());
-        model.init();
+        model = new Grid().setComplexity(27).setUndefined(27).init();
+    }
+
+    @Override
+    public void loadGameTime() {
+        view.setGameTime(SystemClock.elapsedRealtime() - model.getGameTime());
     }
 
     public void init(Bundle onSaved, Activity activity) {
@@ -43,8 +45,7 @@ public class PresenterGrid implements IPresenterGrid {
         view.clearGrid();
         grid = model.getGrid();
         view.showGrid(grid);
-        view.setGameTime(SystemClock.elapsedRealtime() - model.getGameTime());
-
+        loadGameTime();
     }
 
     public PresenterGrid(IGridView view) {
@@ -57,10 +58,16 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     @Override
-    public void unSubscription() {
+    public void savedPresenter() {
         model.setGameTime(SystemClock.elapsedRealtime()-view.getGameTime());
         repository.saveGame(model);
+    }
+
+    @Override
+    public void unSubscription() {
         view = null;
+        modelOfSettings = null;
+        model = null;
     }//отписался
 
     public void answer(String answer) {

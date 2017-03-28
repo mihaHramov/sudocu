@@ -9,5 +9,10 @@ import android.os.Bundle;
  */
 public interface IPresenterGrid extends IPresenter {
     void init(Bundle onSaved, Activity activity);
+
     void answer(String answer);
+
+    void savedPresenter();
+
+    void loadGameTime();
 }
