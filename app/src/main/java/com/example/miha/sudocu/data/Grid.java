@@ -65,9 +65,9 @@ public class Grid implements Serializable {
     }
 
 
-    public void setComplexity(int complex) {
+    public Grid setComplexity(int complex) {
         complexity = complex;
-        undefined = complex;
+        return this;
     }
 
     public static Grid getGridByJSON(String json) {
@@ -128,8 +128,9 @@ public class Grid implements Serializable {
         return an.toString();
     }
 
-    public void setUndefined(int undefined) {
+    public Grid setUndefined(int undefined) {
         this.undefined = undefined;
+        return this;
     }
 
     public int getUndefined() {
@@ -238,7 +239,7 @@ public class Grid implements Serializable {
     }
 
 
-    public void init() {
+    public Grid init() {
         //главное сделать сначала первую часть (верхние 3 строки)
         int sdvig = 0;
         for (int i = 0; i < razmer / dlinaBloka; i++) {
@@ -286,5 +287,6 @@ public class Grid implements Serializable {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");
         String dateString = sdf.format(date);
         name = dateString;
+        return this;
     }
 }
