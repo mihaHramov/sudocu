@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -26,60 +25,53 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     private IPresenterGrid presenterGrid;
     private TextView lastEditText;
     private Chronometer chronometer;
-
-    @Override
-    public void setGameTime(long time) {
-        chronometer.setBase(time);
-        chronometer.start();
-    }
-
-    @Override
-    public long getGameTime() {
-        chronometer.stop();
-        return chronometer.getBase();
-    }
-
+    private int countOfRowsAndCols;
+    private boolean lastAnswer = true;
     TableLayout table;
     private Toolbar toolbar;
 
-    @Override
-    public void clearGrid() {
-        table.removeAllViews();
-    }
 
     private void initViews() {
-        findViewById(R.id.button1).setOnClickListener(this);
-        findViewById(R.id.button2).setOnClickListener(this);
-        findViewById(R.id.button3).setOnClickListener(this);
-        findViewById(R.id.button4).setOnClickListener(this);
-        findViewById(R.id.button5).setOnClickListener(this);
-        findViewById(R.id.button6).setOnClickListener(this);
-        findViewById(R.id.button7).setOnClickListener(this);
-        findViewById(R.id.button8).setOnClickListener(this);
-        findViewById(R.id.button9).setOnClickListener(this);
+        int arrIntId[] = new int[]{R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9};
+        for (int i = 0; i < arrIntId.length; i++)
+            findViewById(arrIntId[i]).setOnClickListener(this);
         table = (TableLayout) findViewById(R.id.tableLayout1);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
 
     }
 
-
-    @Override
-    public int getIdAnswer() {
-        return lastEditText.getId();
+    private void DrawBorderForElements(TextView textView) {
+        int i, j, id;
+        id = textView.getId();
+        i = id / countOfRowsAndCols;
+        j = id % countOfRowsAndCols;
+        if(!lastAnswer){
+            return;
+        }
+        if (i % 3 == 0 && i > 0) {
+            textView.setBackgroundResource(R.drawable.border_top);
+        } else if (j % 3 == 0 && j > 0) {
+            textView.setBackgroundResource(R.drawable.border_right);
+        } else if ((j % 3 == 0 && j > 0) && (i % 3 == 0 && i > 0)) {
+            textView.setBackgroundResource(R.drawable.border_right_top);
+        } else {
+            textView.setBackgroundColor(Color.WHITE);
+        }
     }
 
     public void showGrid(String[][] grid) {
-        for (int i = 0; i < grid.length; i++) {
+        countOfRowsAndCols = grid.length;
+        for (int i = 0; i < countOfRowsAndCols; i++) {
             TableRow row = new TableRow(this);
-            for (int j = 0; j < grid.length; j++) {
-                TextView text = new TextView(this);
+            for (int j = 0; j < countOfRowsAndCols; j++) {
+                TextView text = (TextView) getLayoutInflater().inflate(R.layout.text_view, null);
                 text.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
-                text.setId(i * grid.length + j);
+                text.setId(i * countOfRowsAndCols + j);
                 text.setText(grid[i][j]);
+                DrawBorderForElements(text);
+
                 if (grid[i][j].isEmpty()) {
                     text.setOnClickListener(this);
-                    //  text.setBackground(getResources().getDrawable(R.drawable.back));
-                    // text.setTextAppearance(this,R.style.bigBorder);
                 }
                 row.addView(text);
             }
@@ -89,17 +81,9 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
 
     @Override
-    public void failure() {
-        lastEditText.setBackgroundColor(Color.RED);
-        Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initViews();
         toolbarInit();
 
@@ -109,21 +93,23 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {//срабатывает только во время поворота устройства
-        super.onSaveInstanceState(outState);
-        presenterGrid.onSaveInstanceState(outState);
+    protected void onDestroy() {
+        super.onDestroy();
+        presenterGrid.unSubscription();
+        presenterGrid = null;
     }
 
+
     @Override
-    public void success() {
-        lastEditText.setBackgroundColor(Color.GREEN);
-        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+    protected void onResume() {
+        super.onResume();
+        presenterGrid.loadGameTime();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        presenterGrid.unSubscription();
+        presenterGrid.savedPresenter();
     }
 
 
@@ -142,23 +128,75 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
 
     @Override
-    public void gameOver() {
-        Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
+    protected void onSaveInstanceState(Bundle outState) {//срабатывает только во время поворота устройства
+        super.onSaveInstanceState(outState);
+        presenterGrid.onSaveInstanceState(outState);
     }
 
     @Override
     public void onClick(View v) {
         if (v instanceof Button) {
             String answer = ((Button) v).getText().toString();
+            if (lastEditText == null) return;
             lastEditText.setText(answer);
             presenterGrid.answer(answer);
             return;
         }
-        if (lastEditText != null) {
-            lastEditText.setBackgroundDrawable(null);
+
+
+        if (v instanceof TextView) {
+            if (lastEditText != null) {
+                Toast.makeText(this, "second", Toast.LENGTH_LONG).show();
+                DrawBorderForElements(lastEditText);
+            }
+            lastEditText = (TextView) v;
+            lastEditText.setBackgroundResource(R.drawable.back);
+            return;
         }
-        lastEditText = (TextView) v;
-        lastEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
-        // lastEditText.setBackgroundColor(getResources().getColor(R.color.colorAccent));
     }
+
+    @Override
+    public void setGameTime(long time) {
+        chronometer.setBase(time);
+        chronometer.start();
+    }
+
+    @Override
+    public long getGameTime() {
+        chronometer.stop();
+        return chronometer.getBase();
+    }
+
+    @Override
+    public void clearGrid() {
+        table.removeAllViews();
+    }
+
+
+    @Override
+    public int getIdAnswer() {
+        return lastEditText.getId();
+    }
+
+    @Override
+    public void failure() {
+        lastEditText.setBackgroundColor(Color.RED);
+        lastAnswer = false;
+    }
+
+    @Override
+    public void success() {
+        lastAnswer = true;
+        lastEditText.setOnClickListener(null);
+        DrawBorderForElements(lastEditText);
+        lastEditText = null;
+        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void gameOver() {
+        Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
+    }
+
 }
