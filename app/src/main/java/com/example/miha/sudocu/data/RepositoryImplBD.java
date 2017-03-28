@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
 
 import java.util.ArrayList;
 
@@ -29,14 +29,12 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     public void saveGame(Grid grid) {
         cv.put("grid", grid.toString());
         cv.put("name", grid.getName());
-
         if (grid.getId() == 0) {
             db.insert(tableName, null, cv);
             return;
-        }
 
+        }
         db.update(tableName, cv, "id= ?", new String[]{Long.toString(grid.getId())});
-        Log.d("mihaHramovRP", grid.toString());
     }
 
 
@@ -52,12 +50,9 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 Grid g = Grid.getGridByJSON(c.getString(gridColId));
                 g.setName(c.getString(nameColId));
                 g.setId(c.getInt(idColId));
-                if (g.getUndefined() > 0){
-                    arrGrid.add(g);
-                }
+                arrGrid.add(g);
             } while (c.moveToNext());
         }
-
         return arrGrid;
     }
 
