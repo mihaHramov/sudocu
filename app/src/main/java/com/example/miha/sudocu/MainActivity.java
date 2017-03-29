@@ -17,12 +17,14 @@ import android.widget.Toast;
 
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.View.Settings;
+import com.example.miha.sudocu.data.AudioPlayer;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 
 
 public class MainActivity extends Activity implements IGridView, View.OnClickListener {
     private IPresenterGrid presenterGrid;
+    private AudioPlayer mPlayer;
     private TextView lastEditText;
     private Chronometer chronometer;
     private int countOfRowsAndCols;
@@ -89,14 +91,17 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
         presenterGrid = new PresenterGrid(this);
         presenterGrid.init(savedInstanceState, this);
+         mPlayer = new AudioPlayer(this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPlayer.stop();
         presenterGrid.unSubscription();
         presenterGrid = null;
+
     }
 
 
@@ -180,12 +185,14 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
     @Override
     public void failure() {
+        mPlayer.play(R.raw.applause);
         lastEditText.setBackgroundColor(Color.RED);
         lastAnswer = false;
     }
 
     @Override
     public void success() {
+        mPlayer.play(R.raw.success);
         lastAnswer = true;
         lastEditText.setOnClickListener(null);
         DrawBorderForElements(lastEditText);
@@ -196,6 +203,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
     @Override
     public void gameOver() {
+        mPlayer.play(R.raw.applause);
         Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
     }
 
