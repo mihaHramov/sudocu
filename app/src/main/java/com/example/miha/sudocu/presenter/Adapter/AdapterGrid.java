@@ -56,7 +56,7 @@ public class AdapterGrid extends BaseAdapter {
     public AdapterGrid(Context ctx) {
         this.ctx = ctx;
         this.lInflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);;
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public AdapterGrid(Context context, ArrayList<Grid> products) {

@@ -6,5 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="vasa"
+    android:textColor="@android:color/black"
+    android:textSize="18dp"
+    android:padding="10dp"
     android:id="@+id/gridListItemText"/>
 </LinearLayout>
