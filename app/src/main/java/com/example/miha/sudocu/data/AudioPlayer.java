@@ -5,9 +5,7 @@ import android.media.MediaPlayer;
 
 import com.example.miha.sudocu.R;
 
-/**
- * Created by miha on 01.12.2016.
- */
+
 public class AudioPlayer {
     private MediaPlayer mPlayer;
     private Context mContext;
