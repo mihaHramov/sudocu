@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.example.miha.sudocu.View.IView.IGridView;
+import com.example.miha.sudocu.View.MenuActivity;
 import com.example.miha.sudocu.data.Grid;
 import com.example.miha.sudocu.data.IRepository;
 import com.example.miha.sudocu.data.RepositoryImplBD;
-import com.example.miha.sudocu.data.SettingComplexity;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 
@@ -17,11 +17,11 @@ public class PresenterGrid implements IPresenterGrid {
     private IRepository repository;
     private IGridView view;
     private Grid model;
-    private SettingComplexity modelOfSettings;
-    private String[][] grid;
+    private Activity activity;
 
     private void initModel() {
-        model = new Grid().setComplexity(27).setUndefined(27).init();
+        int complex = activity.getIntent().getIntExtra(MenuActivity.SETTINGS, 1);
+        model = new Grid().setComplexity(complex).setUndefined(complex).init();
     }
 
     @Override
@@ -30,8 +30,8 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     public void init(Bundle onSaved, Activity activity) {
-        modelOfSettings = new SettingComplexity(activity);
         repository = new RepositoryImplBD(activity);
+        this.activity = activity;
         if (onSaved != null) {//если объект не пуст
             model = (Grid) onSaved.getSerializable(EXTRA_MODEL);
         } else {//если объет пуст(только пришли на активити)
@@ -42,9 +42,7 @@ public class PresenterGrid implements IPresenterGrid {
             initModel();
         }
 
-        view.clearGrid();
-        grid = model.getGrid();
-        view.showGrid(grid);
+        view.clearGrid().showGrid(model.getGrid());
         loadGameTime();
     }
 
@@ -59,14 +57,13 @@ public class PresenterGrid implements IPresenterGrid {
 
     @Override
     public void savedPresenter() {
-        model.setGameTime(SystemClock.elapsedRealtime()-view.getGameTime());
+        model.setGameTime(SystemClock.elapsedRealtime() - view.getGameTime());
         repository.saveGame(model);
     }
 
     @Override
     public void unSubscription() {
         view = null;
-        modelOfSettings = null;
         model = null;
     }//отписался
 
@@ -76,6 +73,7 @@ public class PresenterGrid implements IPresenterGrid {
         if (model.getAnswer(id, answer)) {
             view.success();
             if (model.getUndefined() == 0) {
+                model.setGameTime(view.getGameTime());
                 view.gameOver();
             }
             return;

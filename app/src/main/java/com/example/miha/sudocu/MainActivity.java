@@ -1,11 +1,9 @@
 package com.example.miha.sudocu;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.View.IView.IGridView;
-import com.example.miha.sudocu.View.Settings;
 import com.example.miha.sudocu.data.AudioPlayer;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
@@ -61,7 +58,8 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         }
     }
 
-    public void showGrid(String[][] grid) {
+    @Override
+    public IGridView showGrid(String[][] grid) {
         countOfRowsAndCols = grid.length;
         for (int i = 0; i < countOfRowsAndCols; i++) {
             TableRow row = new TableRow(this);
@@ -79,6 +77,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
             }
             table.addView(row);
         }
+        return this;
     }
 
 
@@ -124,8 +123,10 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(getApplicationContext(), Settings.class);
-                startActivity(intent);
+                int id  = item.getItemId();
+                if(id == R.id.navigateButtonBack){
+                    finish();
+                }
                 return false;
             }
         });
@@ -151,7 +152,6 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
         if (v instanceof TextView) {
             if (lastEditText != null) {
-                Toast.makeText(this, "second", Toast.LENGTH_LONG).show();
                 DrawBorderForElements(lastEditText);
             }
             lastEditText = (TextView) v;
@@ -173,8 +173,9 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     }
 
     @Override
-    public void clearGrid() {
+    public IGridView clearGrid() {
         table.removeAllViews();
+        return this;
     }
 
 
@@ -205,6 +206,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     public void gameOver() {
         mPlayer.play(R.raw.applause);
         Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
+
     }
 
 }

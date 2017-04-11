@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">sudocu</string>
+    <string name="itemBack">назад</string>
     <string name="item1">Настройки</string>
     <string name="enterNumber">Введите количество пробелов</string>
     <string name="save_text">Сохранить</string>
+    <string name="new_game">Сохраниь и начать новую игру</string>
+    <string name="complexity_grid">Сложность</string>
+    <string name="level_hard">Сложно</string>
+    <string name="level_medium">Нормально</string>
+    <string name="level_easy">Легко</string>
 </resources>
