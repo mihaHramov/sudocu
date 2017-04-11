@@ -25,8 +25,6 @@ public class ListOfGameSavesActivity extends Activity {
         setContentView(R.layout.activity_list_of_game_saves);
         repository = new RepositoryImplBD(getApplicationContext());
         adapter = new AdapterGrid(getApplicationContext());
-        adapter.setData(repository.getListGames());
-        adapter.notifyDataSetChanged();
 
 
         listView = (ListView) findViewById(R.id.listViewGrid);
@@ -40,5 +38,12 @@ public class ListOfGameSavesActivity extends Activity {
                 startActivity(i);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.setData(repository.getListGames());
+        adapter.notifyDataSetChanged();
     }
 }
