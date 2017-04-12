@@ -44,9 +44,6 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         id = textView.getId();
         i = id / countOfRowsAndCols;
         j = id % countOfRowsAndCols;
-        if(!lastAnswer){
-            return;
-        }
         if (i % 3 == 0 && i > 0) {
             textView.setBackgroundResource(R.drawable.border_top);
         } else if (j % 3 == 0 && j > 0) {
@@ -90,7 +87,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
         presenterGrid = new PresenterGrid(this);
         presenterGrid.init(savedInstanceState, this);
-         mPlayer = new AudioPlayer(this);
+        mPlayer = new AudioPlayer(this);
     }
 
 
@@ -123,8 +120,8 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                int id  = item.getItemId();
-                if(id == R.id.navigateButtonBack){
+                int id = item.getItemId();
+                if (id == R.id.navigateButtonBack) {
                     finish();
                 }
                 return false;
@@ -152,7 +149,11 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
         if (v instanceof TextView) {
             if (lastEditText != null) {
-                DrawBorderForElements(lastEditText);
+                Toast.makeText(this, "" + lastEditText.getId(), Toast.LENGTH_SHORT).show();
+                if(lastAnswer){
+                    DrawBorderForElements(lastEditText);
+                }
+                lastAnswer = true;
             }
             lastEditText = (TextView) v;
             lastEditText.setBackgroundResource(R.drawable.back);
