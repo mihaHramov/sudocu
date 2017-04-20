@@ -25,6 +25,9 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             int level;
             if (progress < 20) {
                 level = R.string.level_easy;
+                if(level<1) {
+                    level = 1;
+                }
             } else if (progress < 45) {
                 level = R.string.level_medium;
             } else {
