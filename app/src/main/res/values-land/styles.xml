@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="bigNumber">
-        <item name="android:paddingBottom">1dp</item>
-        <item name="android:paddingTop">1dp</item>
-        <item name="android:textSize">11dp</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
     </style>
     <style name="bigBorder">
         <item name="android:textStyle">bold</item>
