@@ -4,5 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:minHeight="?android:attr/actionBarSize"
-    android:background="?attr/colorPrimary"
-    />
+    android:background="?attr/colorPrimary">
+    <Chronometer
+        android:textColor="@android:color/white"
+        android:id="@+id/chronometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</android.support.v7.widget.Toolbar>
