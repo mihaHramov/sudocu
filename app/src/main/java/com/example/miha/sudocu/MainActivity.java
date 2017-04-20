@@ -18,61 +18,67 @@ import com.example.miha.sudocu.data.AudioPlayer;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class MainActivity extends Activity implements IGridView, View.OnClickListener {
     private IPresenterGrid presenterGrid;
     private AudioPlayer mPlayer;
     private TextView lastEditText;
+    private boolean lastAnswer = true;
     private Chronometer chronometer;
     private int countOfRowsAndCols;
-    private boolean lastAnswer = true;
-    TableLayout table;
+    private Timer timer;
+    private Map<Integer, TableLayout> tableLayouts = new Hashtable<>();
     private Toolbar toolbar;
+    private int arrIntIdGrid[] = new int[]{R.id.top_left, R.id.top_center, R.id.top_right, R.id.middle_left, R.id.middle_center, R.id.middle_right, R.id.bottom_left, R.id.bottom_center, R.id.bottom_right};
 
 
     private void initViews() {
+        for (int i = 0; i < arrIntIdGrid.length; i++) {
+            tableLayouts.put(arrIntIdGrid[i], (TableLayout) findViewById(arrIntIdGrid[i]));
+        }
+
         int arrIntId[] = new int[]{R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9};
         for (int i = 0; i < arrIntId.length; i++)
             findViewById(arrIntId[i]).setOnClickListener(this);
-        table = (TableLayout) findViewById(R.id.tableLayout1);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
 
     }
 
-    private void DrawBorderForElements(TextView textView) {
-        int i, j, id;
-        id = textView.getId();
-        i = id / countOfRowsAndCols;
-        j = id % countOfRowsAndCols;
-        if (i % 3 == 0 && i > 0) {
-            textView.setBackgroundResource(R.drawable.border_top);
-        } else if (j % 3 == 0 && j > 0) {
-            textView.setBackgroundResource(R.drawable.border_right);
-        } else if ((j % 3 == 0 && j > 0) && (i % 3 == 0 && i > 0)) {
-            textView.setBackgroundResource(R.drawable.border_right_top);
-        } else {
-            textView.setBackgroundColor(Color.WHITE);
-        }
-    }
 
     @Override
     public IGridView showGrid(String[][] grid) {
         countOfRowsAndCols = grid.length;
         for (int i = 0; i < countOfRowsAndCols; i++) {
-            TableRow row = new TableRow(this);
             for (int j = 0; j < countOfRowsAndCols; j++) {
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.text_view, null);
-                text.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
                 text.setId(i * countOfRowsAndCols + j);
                 text.setText(grid[i][j]);
-                DrawBorderForElements(text);
-
                 if (grid[i][j].isEmpty()) {
                     text.setOnClickListener(this);
                 }
-                row.addView(text);
+                int resI = (i / 3) * 3;
+                int resJ = j / 3;
+                TableLayout tab = tableLayouts.get(arrIntIdGrid[resI + resJ]);//выбрал необходимый квадрат
+                int rowsCol = tab.getChildCount();
+                if (tab.getChildCount() > 0) {
+                    if (((TableRow) tab.getChildAt(rowsCol - 1)).getChildCount() > 2) {
+                        TableRow row = new TableRow(this);
+                        row.addView(text);
+                        tab.addView(row);
+                    } else {
+                        ((TableRow) tab.getChildAt(rowsCol - 1)).addView(text);
+                    }
+                } else {
+                    TableRow row = new TableRow(this);
+                    row.addView(text);
+                    tab.addView(row);
+                }
             }
-            table.addView(row);
         }
         return this;
     }
@@ -117,6 +123,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     private void toolbarInit() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main);
+       // toolbar.setTitle("mmm");
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -146,16 +153,15 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
             return;
         }
 
-
         if (v instanceof TextView) {
             if (lastEditText != null) {
-                Toast.makeText(this, "" + lastEditText.getId(), Toast.LENGTH_SHORT).show();
-                if(lastAnswer){
-                    DrawBorderForElements(lastEditText);
+                if (lastAnswer) {
+                    lastEditText.setBackgroundColor(Color.WHITE);
                 }
                 lastAnswer = true;
             }
             lastEditText = (TextView) v;
+            lastEditText.setText("");
             lastEditText.setBackgroundResource(R.drawable.back);
             return;
         }
@@ -175,7 +181,9 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
     @Override
     public IGridView clearGrid() {
-        table.removeAllViews();
+        for (TableLayout tabl : tableLayouts.values()) {
+            tabl.removeAllViews();
+        }
         return this;
     }
 
@@ -195,11 +203,10 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     @Override
     public void success() {
         mPlayer.play(R.raw.success);
-        lastAnswer = true;
         lastEditText.setOnClickListener(null);
-        DrawBorderForElements(lastEditText);
+        lastEditText.setBackgroundColor(Color.WHITE);
         lastEditText = null;
-        Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+        lastAnswer = true;
     }
 
 
@@ -207,7 +214,14 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     public void gameOver() {
         mPlayer.play(R.raw.applause);
         Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
+        timer = new Timer();
+        // Выполняем действие с задержкой 3 секунды:
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 3000);
 
     }
-
 }
