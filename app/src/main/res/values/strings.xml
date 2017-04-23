@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">sudocu</string>
+    <string name="reload_game">сгенерировать новую игру</string>
+    <string name="app_name">Судоку</string>
     <string name="new_game_menu">Новая Игра</string>
     <string name="load_game_menu">Загрузить игру</string>
     <string name="itemBack">назад</string>

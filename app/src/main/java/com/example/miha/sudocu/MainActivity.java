@@ -123,14 +123,19 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     private void toolbarInit() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main);
-       // toolbar.setTitle("mmm");
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.navigateButtonBack) {
-                    finish();
+                switch (id){
+                    case R.id.navigateButtonBack:
+                        finish();
+                        break;
+                    case R.id.reloadGame:
+                        presenterGrid.reloadGame();
+                        break;
                 }
+
                 return false;
             }
         });

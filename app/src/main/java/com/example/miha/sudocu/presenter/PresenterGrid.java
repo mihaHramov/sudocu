@@ -19,6 +19,14 @@ public class PresenterGrid implements IPresenterGrid {
     private Grid model;
     private Activity activity;
 
+    @Override
+    public void reloadGame() {
+        int complex = model.getComplexity();
+        model = new Grid().setComplexity(complex).setUndefined(complex).init();
+        view.clearGrid().showGrid(model.getGrid());
+        loadGameTime();
+    }
+
     private void initModel() {
         int complex = activity.getIntent().getIntExtra(MenuActivity.SETTINGS, 1);
         model = new Grid().setComplexity(complex).setUndefined(complex).init();
