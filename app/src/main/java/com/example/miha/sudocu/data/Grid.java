@@ -91,6 +91,7 @@ public class Grid implements Serializable {
             grid.setUndefined(jsonObject.getInt("undefined"));
             grid.setPole(p);
             grid.setGameTime(jsonObject.getLong("gameTime"));
+            grid.setComplexity(jsonObject.getInt("complexity"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,6 +123,7 @@ public class Grid implements Serializable {
             an.put("gameTime",getGameTime());
             an.put("answers", gridAnswer);
             an.put("grid", pupilsArray);
+            an.put("complexity",getComplexity());
         } catch (JSONException e) {
             e.printStackTrace();
         }
