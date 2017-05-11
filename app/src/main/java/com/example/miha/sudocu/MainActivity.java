@@ -1,6 +1,7 @@
 package com.example.miha.sudocu;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,9 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.View.IView.IGridView;
-import com.example.miha.sudocu.data.AudioPlayer;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
+import com.example.miha.sudocu.presenter.Service.MyMediaPlayerService;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -26,7 +27,6 @@ import java.util.TimerTask;
 
 public class MainActivity extends Activity implements IGridView, View.OnClickListener {
     private IPresenterGrid presenterGrid;
-    private AudioPlayer mPlayer;
     private TextView lastEditText;
     private boolean lastAnswer = true;
     private Chronometer chronometer;
@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
     private Map<Integer, TableLayout> tableLayouts = new Hashtable<>();
     private Toolbar toolbar;
     private int arrIntIdGrid[] = new int[]{R.id.top_left, R.id.top_center, R.id.top_right, R.id.middle_left, R.id.middle_center, R.id.middle_right, R.id.bottom_left, R.id.bottom_center, R.id.bottom_right};
-
+    public static String myMediaPlayer = "myMediaPlayer";
 
     private void initViews() {
         for (int i = 0; i < arrIntIdGrid.length; i++) {
@@ -93,14 +93,13 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
         presenterGrid = new PresenterGrid(this);
         presenterGrid.init(savedInstanceState, this);
-        mPlayer = new AudioPlayer(this);
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPlayer.stop();
+        stopService(new Intent(this, MyMediaPlayerService.class));
         presenterGrid.unSubscription();
         presenterGrid = null;
 
@@ -127,7 +126,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
-                switch (id){
+                switch (id) {
                     case R.id.navigateButtonBack:
                         finish();
                         break;
@@ -200,14 +199,14 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
     @Override
     public void failure() {
-        mPlayer.play(R.raw.applause);
+        playInBackground(R.raw.applause);
         lastEditText.setBackgroundColor(Color.RED);
         lastAnswer = false;
     }
 
     @Override
     public void success() {
-        mPlayer.play(R.raw.success);
+        playInBackground(R.raw.success);
         lastEditText.setOnClickListener(null);
         lastEditText.setBackgroundColor(Color.WHITE);
         lastEditText = null;
@@ -217,7 +216,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
 
     @Override
     public void gameOver() {
-        mPlayer.play(R.raw.applause);
+        playInBackground(R.raw.applause);
         Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
         timer = new Timer();
         // Выполняем действие с задержкой 3 секунды:
@@ -228,5 +227,8 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
             }
         }, 3000);
 
+    }
+    public void playInBackground(int res){
+        startService(new Intent(this, MyMediaPlayerService.class).putExtra(myMediaPlayer,res));
     }
 }
