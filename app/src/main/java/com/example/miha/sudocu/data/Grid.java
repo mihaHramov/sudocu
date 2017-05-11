@@ -1,11 +1,5 @@
 package com.example.miha.sudocu.data;
 
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
@@ -13,9 +7,9 @@ import java.util.Map;
 import java.util.Random;
 
 public class Grid implements Serializable {
-    Random random = new Random();
+    private Random random = new Random();
     private int undefined;
-    private  long gameTime = 0;
+    private long gameTime = 0;
     private long id = 0;
     private String name = "";
     private int complexity;
@@ -55,8 +49,8 @@ public class Grid implements Serializable {
         return complexity;
     }
 
-    public void setAnswers(Map<Integer, String> answers) {
-        this.answers = answers;
+    public void setAnswers(Map<Integer, String> answersMap) {
+        answers = answersMap;
     }
 
 
@@ -70,64 +64,13 @@ public class Grid implements Serializable {
         return this;
     }
 
-    public static Grid getGridByJSON(String json) {
-        Grid grid = new Grid();
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-            JSONObject answ = jsonObject.getJSONObject("answers");
-            JSONArray arrNames = answ.names();
-            Map<Integer, String> answerMap = new Hashtable<>();
-            int razmer = (int) Math.sqrt(jsonObject.getJSONArray("grid").length());
-            String[][] p = new String[razmer][razmer];
-
-            for (int i = 0; i < arrNames.length(); i++)
-                answerMap.put(arrNames.getInt(i), answ.getString(arrNames.getString(i)));
-
-            for (int i = 0; i < razmer; i++)
-                for (int j = 0; j < razmer; j++)
-                    p[i][j] = jsonObject.getJSONArray("grid").getString(i * razmer + j);
-
-            grid.setAnswers(answerMap);
-            grid.setUndefined(jsonObject.getInt("undefined"));
-            grid.setPole(p);
-            grid.setGameTime(jsonObject.getLong("gameTime"));
-            grid.setComplexity(jsonObject.getInt("complexity"));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return grid;
+    public String[][] getPole() {
+        return pole;
     }
 
-    @Override
-    public String toString() {
 
-        JSONObject an = new JSONObject();
-        JSONObject gridAnswer = new JSONObject();
-        JSONArray pupilsArray = new JSONArray();
-
-        for (int i = 0; i < razmer; i++) {
-            for (int j = 0; j < razmer; j++)
-                pupilsArray.put(pole[i][j]);
-        }
-
-        try {
-
-            for (Map.Entry<Integer, String> entry : answers.entrySet()) {
-                Integer key = entry.getKey();
-                String val = entry.getValue();
-                Log.d("mihaAnswer", key + ":" + val);
-                gridAnswer.put(key + "", val);
-            }
-            an.put("undefined", getUndefined());
-            an.put("gameTime",getGameTime());
-            an.put("answers", gridAnswer);
-            an.put("grid", pupilsArray);
-            an.put("complexity",getComplexity());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return an.toString();
+    public Map<Integer, String> getAnswers() {
+        return answers;
     }
 
     public Grid setUndefined(int undefined) {
@@ -140,8 +83,10 @@ public class Grid implements Serializable {
     }
 
     public Boolean getAnswer(int i, String s) {
+
         if (answers.get(i).equals(s)) {
-            answers.put(i,"");
+
+            answers.put(i, "");
             int str = i / razmer;
             int col = i % razmer;
             pole[str][col] = s;
@@ -245,7 +190,7 @@ public class Grid implements Serializable {
         //главное сделать сначала первую часть (верхние 3 строки)
         int sdvig = 0;
         for (int i = 0; i < razmer / dlinaBloka; i++) {
-            int temp = 0 + sdvig, j = 0;
+            int temp = sdvig, j = 0;
             while (j < razmer) {
                 pole[i][j] = grid[temp];
                 j++;
@@ -259,7 +204,7 @@ public class Grid implements Serializable {
 
         sdvig = 1;
         for (int i = dlinaBloka; i < razmer; i++) {
-            int temp = 0 + sdvig, j = 0;
+            int temp =  sdvig, j = 0;
             while (j < razmer) {
                 pole[i][j] = pole[i - dlinaBloka][temp];//Arra[temp];
                 j++;
@@ -287,8 +232,7 @@ public class Grid implements Serializable {
 
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");
-        String dateString = sdf.format(date);
-        name = dateString;
+        name = sdf.format(date);
         return this;
     }
 }
