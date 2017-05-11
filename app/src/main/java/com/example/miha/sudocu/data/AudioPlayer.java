@@ -4,10 +4,17 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 
-
 public class AudioPlayer {
-    private MediaPlayer mPlayer;
+    private MediaPlayer mPlayer = null;
     private Context mContext;
+    private static AudioPlayer player = null;
+
+    public static AudioPlayer getInstance(Context context) {
+        if (player == null) {
+            player = new AudioPlayer(context);
+        }
+        return player;
+    }
 
     public void stop() {
         if (mPlayer != null) {
@@ -16,7 +23,7 @@ public class AudioPlayer {
         }
     }
 
-    public AudioPlayer(Context context) {
+    private AudioPlayer(Context context) {
         mContext = context;
     }
 
