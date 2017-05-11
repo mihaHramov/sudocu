@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".View.ListOfGameSavesActivity"/>
+        <service android:name=".presenter.Service.MyMediaPlayerService"/>
     </application>
 
 </manifest>
