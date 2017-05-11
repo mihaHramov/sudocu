@@ -72,7 +72,8 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     @Override
     public ArrayList<Grid> getListGames() {
         ArrayList<Grid> arrGrid = new ArrayList<>();
-        Cursor c = db.query(tableName, null, null, null, null, null, null);
+        String selection = undefined+" > ?";
+        Cursor c = db.query(tableName, null, selection,new String[]{"0"}, null, null, null);
         if (c.moveToFirst()) {
             int nameColId = c.getColumnIndex(name);
             int gridColId = c.getColumnIndex(grid);
