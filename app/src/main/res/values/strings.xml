@@ -4,6 +4,8 @@
     <string name="new_game_menu">Новая Игра</string>
     <string name="load_game_menu">Загрузить игру</string>
     <string name="itemBack">назад</string>
+    <string name="undefined">не найденно</string>
+    <string name="time">Время:</string>
     <string name="item1">Настройки</string>
     <string name="enterNumber">Введите количество пробелов</string>
     <string name="save_text">Сохранить</string>
