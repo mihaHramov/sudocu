@@ -1,20 +1,18 @@
 package com.example.miha.sudocu.presenter.Adapter;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.Grid;
 
 import java.util.ArrayList;
-
-/**
- * Created by miha on 16.01.17.
- */
 
 public class AdapterGrid extends BaseAdapter {
     ArrayList<Grid> arrayGrid = new ArrayList<>();
@@ -43,8 +41,11 @@ public class AdapterGrid extends BaseAdapter {
             view = lInflater.inflate(R.layout.item, parent, false);
         }
         Grid grid = (Grid) getItem(position);
-        ((TextView) view.findViewById(R.id.gridListItemText)).setText(grid.getName() + " - не найденно(" + grid.getUndefined() + ")");
-
+        ((TextView) view.findViewById(R.id.gridListItemName)).setText(grid.getName());
+        Chronometer ch = new Chronometer(ctx);
+        ch.setBase(SystemClock.elapsedRealtime() - grid.getGameTime());
+        ((TextView) view.findViewById(R.id.timeString)).setText(ctx.getString(R.string.time) + ch.getText().toString());
+        ((TextView) view.findViewById(R.id.gridListItemUndefined)).setText(ctx.getString(R.string.undefined) + "(" + Integer.toString(grid.getUndefined()) + ")");
         return view;
     }
 
