@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
 
+import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.View.IView.IGridView;
-import com.example.miha.sudocu.View.MenuActivity;
 import com.example.miha.sudocu.data.Grid;
 import com.example.miha.sudocu.data.IRepository;
 import com.example.miha.sudocu.data.RepositoryImplBD;
@@ -28,7 +28,7 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     private void initModel() {
-        int complex = activity.getIntent().getIntExtra(MenuActivity.SETTINGS, 1);
+        int complex = activity.getIntent().getIntExtra(AlertDialog.SETTINGS, 1);
         model = new Grid().setComplexity(complex).setUndefined(complex).init();
     }
 
