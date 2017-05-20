@@ -7,15 +7,16 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".View.MenuActivity">
+        android:theme="@style/MyTheme">
+        <activity android:name=".View.Activity.MainActivity"/>
+        <activity android:name=".View.Activity.OnlineRating"/>
+        <activity android:name=".View.Activity.MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.ListOfGameSavesActivity"/>
+        <activity android:name=".View.Activity.ListOfGameSavesActivity"/>
         <service android:name=".presenter.Service.MyMediaPlayerService"/>
     </application>
 
