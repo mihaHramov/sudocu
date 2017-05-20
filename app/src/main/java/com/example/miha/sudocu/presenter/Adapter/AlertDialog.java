@@ -1,6 +1,5 @@
 package com.example.miha.sudocu.presenter.Adapter;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +7,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.miha.sudocu.MainActivity;
+import com.example.miha.sudocu.View.Activity.MainActivity;
 import com.example.miha.sudocu.R;
 
 public class AlertDialog  {
