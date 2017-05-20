@@ -14,4 +14,10 @@
     <string name="level_hard">Сложно</string>
     <string name="level_medium">Нормально</string>
     <string name="level_easy">Легко</string>
+    <string name="rating">Рейтинг</string>
+    <string name="login">логин</string>
+    <string name="password">пароль</string>
+    <string name="auth">авторизация</string>
+    <string name="delete">удалить</string>
+    <string name="challenge">бросить вызов</string>
 </resources>

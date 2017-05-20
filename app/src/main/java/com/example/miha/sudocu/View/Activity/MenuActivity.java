@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View;
+package com.example.miha.sudocu.View.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +23,10 @@ public class MenuActivity extends Activity implements View.OnClickListener {
             case R.id.newGame:
                 dialog.showDialog();
                 break;
+            case R.id.rating:
+                i = new Intent(this,OnlineRating.class);
+                startActivity(i);
+                break;
         }
     }
 
@@ -33,5 +37,6 @@ public class MenuActivity extends Activity implements View.OnClickListener {
         dialog = new AlertDialog(this);
         findViewById(R.id.restore).setOnClickListener(this);
         findViewById(R.id.newGame).setOnClickListener(this);
+        findViewById(R.id.rating).setOnClickListener(this);
     }
 }
