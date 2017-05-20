@@ -1,4 +1,6 @@
-package com.example.miha.sudocu.data;
+package com.example.miha.sudocu.data.model;
+
+
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -7,19 +9,20 @@ import java.util.Map;
 import java.util.Random;
 
 public class Grid implements Serializable {
-    private Random random = new Random();
+
+    private transient Random random = new Random();
     private int undefined;
     private long gameTime = 0;
     private long id = 0;
     private String name = "";
     private int complexity;
-    private final int dlinaBloka = 3;
-    private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
-    private int razmer = grid.length;
+    private transient final int dlinaBloka = 3;
+    private transient String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
+    private transient int razmer = grid.length;
     private String[][] pole = new String[razmer][razmer];
     private Map<Integer, String> answers = new Hashtable<>();
 
-    public static final String KEY = "Grid";
+    public  static final String KEY = "Grid";
 
     public long getGameTime() {
         return gameTime;
@@ -86,7 +89,7 @@ public class Grid implements Serializable {
 
         if (answers.get(i).equals(s)) {
 
-            answers.put(i, "");
+            //answers.put(i, "");
             int str = i / razmer;
             int col = i % razmer;
             pole[str][col] = s;
