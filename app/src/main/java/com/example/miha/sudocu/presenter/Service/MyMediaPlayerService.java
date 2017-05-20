@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.example.miha.sudocu.MainActivity;
-import com.example.miha.sudocu.data.AudioPlayer;
+import com.example.miha.sudocu.View.Activity.MainActivity;
+import com.example.miha.sudocu.data.model.AudioPlayer;
 
 
 

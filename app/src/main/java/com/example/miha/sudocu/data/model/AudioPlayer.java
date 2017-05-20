@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.data;
+package com.example.miha.sudocu.data.model;
 
 import android.content.Context;
 import android.media.MediaPlayer;
