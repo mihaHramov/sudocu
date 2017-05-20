@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.data;
+package com.example.miha.sudocu.data.DP;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+import com.example.miha.sudocu.data.model.Grid;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,9 +73,19 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
 
     @Override
     public ArrayList<Grid> getListGames() {
-        ArrayList<Grid> arrGrid = new ArrayList<>();
         String selection = undefined+" > ?";
-        Cursor c = db.query(tableName, null, selection,new String[]{"0"}, null, null, null);
+        return   getAllWithWhere(selection,new String[]{"0"});
+    }
+
+    @Override
+    public ArrayList<Grid> getListCompleteGames() {
+        String selection = undefined+" < ?";
+        return   getAllWithWhere(selection,new String[]{"1"});
+    }
+
+    public ArrayList<Grid> getAllWithWhere(String selection,String[] args){
+        ArrayList<Grid> arrGrid = new ArrayList<>();
+        Cursor c = db.query(tableName, null, selection,args, null, null, null);
         if (c.moveToFirst()) {
             int nameColId = c.getColumnIndex(name);
             int gridColId = c.getColumnIndex(grid);
@@ -118,7 +130,6 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
         c.close();
         return arrGrid;
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
