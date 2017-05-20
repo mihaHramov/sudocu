@@ -10,7 +10,7 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.data.Grid;
+import com.example.miha.sudocu.data.model.Grid;
 
 import java.util.ArrayList;
 
