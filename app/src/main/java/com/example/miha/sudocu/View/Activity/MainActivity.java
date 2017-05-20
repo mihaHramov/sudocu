@@ -1,4 +1,4 @@
-package com.example.miha.sudocu;
+package com.example.miha.sudocu.View.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.View.IView.IGridView;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
@@ -228,7 +229,7 @@ public class MainActivity extends Activity implements IGridView, View.OnClickLis
         }, 3000);
 
     }
-    public void playInBackground(int res){
-        startService(new Intent(this, MyMediaPlayerService.class).putExtra(myMediaPlayer,res));
+    public void playInBackground(int res) {
+        startService(new Intent(this, MyMediaPlayerService.class).putExtra(myMediaPlayer, res));
     }
 }
