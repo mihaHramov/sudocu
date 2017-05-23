@@ -13,12 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
+import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 import com.example.miha.sudocu.presenter.PresenterListOfCompleteGameFragment;
 
 public class ListOfCompleteGameFragment extends Fragment {
     private ListView listView;
-    private IPresenterOfFragment presenter;
+    private IPresenterOfCompleteGame presenter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,18 +48,18 @@ public class ListOfCompleteGameFragment extends Fragment {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.list_of_complete_game,menu);
+        inflater.inflate(R.menu.list_of_complete_game, menu);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.challenge:
-               // info.position;
+                presenter.sendGame(info.position);
                 break;
             case R.id.delete:
-               // info.position;
+                presenter.deleteGame(info.position);
                 break;
         }
         return super.onContextItemSelected(item);
