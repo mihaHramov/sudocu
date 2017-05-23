@@ -2,6 +2,7 @@ package com.example.miha.sudocu.data.DP;
 
 
 import com.example.miha.sudocu.data.model.Challenge;
+import com.example.miha.sudocu.data.model.User;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,5 +18,9 @@ public interface ChallengeApi {
     @GET("getAllScore")
     Call<ArrayList<Challenge>> getAllScore();// метод к которому будим обращатся
     @GET("login")
-    Call<Object> login(@QueryMap Map<String,String> options);
+    Call<User> login(@QueryMap Map<String,String> options);
+
+
+    @GET("addChallenge")
+    Call<Object> addChallenge(@QueryMap Map<String,String> first );
 }
