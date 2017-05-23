@@ -70,6 +70,12 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
         db.update(tableName, cv, "id= ?", new String[]{Long.toString(g.getId())});
     }
 
+    @Override
+    public void deleteGame(Grid grid) {
+        String id = Long.toString(grid.getId());
+        db.delete(tableName,"id = ?",new String[]{id});
+    }
+
 
     @Override
     public ArrayList<Grid> getListGames() {
