@@ -7,20 +7,31 @@ import android.support.v4.app.FragmentActivity;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.View.fragment.RecordsListFragment;
 import com.example.miha.sudocu.View.fragment.RegistrationFragment;
+import com.example.miha.sudocu.data.DP.IRepositoryUser;
+import com.example.miha.sudocu.data.DP.RepositoryUser;
+import com.example.miha.sudocu.data.model.User;
 
-public class OnlineRating extends FragmentActivity implements RegistrationFragment.LoginCallback{
-private Fragment fragment;
+public class OnlineRating extends FragmentActivity implements RegistrationFragment.LoginCallback {
+    private Fragment fragment;
+    private IRepositoryUser user = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_rating);
-        fragment = new RegistrationFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).commit();
+        user = new RepositoryUser(this);
+        if (user.getUser() == null) {
+            fragment = new RegistrationFragment();
+        }else{
+            fragment = new RecordsListFragment();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
     @Override
-    public void onLogin() {
+    public void onLogin(User user) {
         fragment = new RecordsListFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        this.user.setUser(user);
     }
 }
