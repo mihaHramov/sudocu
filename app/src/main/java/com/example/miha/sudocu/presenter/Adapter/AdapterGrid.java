@@ -57,6 +57,7 @@ public class AdapterGrid extends BaseAdapter {
     }
     public void setData(ArrayList<Grid> products) {
         arrayGrid = products;
+        notifyDataSetChanged();
     }
 
     public AdapterGrid(Context ctx) {
