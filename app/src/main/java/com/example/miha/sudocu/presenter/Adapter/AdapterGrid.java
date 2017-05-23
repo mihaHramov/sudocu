@@ -15,9 +15,9 @@ import com.example.miha.sudocu.data.model.Grid;
 import java.util.ArrayList;
 
 public class AdapterGrid extends BaseAdapter {
-    ArrayList<Grid> arrayGrid = new ArrayList<>();
-    Context ctx;
-    LayoutInflater lInflater;
+    private ArrayList<Grid> arrayGrid = new ArrayList<>();
+    private Context ctx;
+    private LayoutInflater lInflater;
 
 
     @Override
@@ -44,12 +44,17 @@ public class AdapterGrid extends BaseAdapter {
         ((TextView) view.findViewById(R.id.gridListItemName)).setText(grid.getName());
         Chronometer ch = new Chronometer(ctx);
         ch.setBase(SystemClock.elapsedRealtime() - grid.getGameTime());
-        ((TextView) view.findViewById(R.id.timeString)).setText(ctx.getString(R.string.time) + ch.getText().toString());
+        String time = ctx.getString(R.string.time) + ch.getText().toString();
+        ((TextView) view.findViewById(R.id.timeString)).setText(time);
         ((TextView) view.findViewById(R.id.gridListItemUndefined)).setText(ctx.getString(R.string.undefined) + "(" + Integer.toString(grid.getUndefined()) + ")");
         return view;
     }
 
 
+    public void deleteItemById(int gridId){
+        arrayGrid.remove(gridId);
+        notifyDataSetChanged();
+    }
     public void setData(ArrayList<Grid> products) {
         arrayGrid = products;
     }
