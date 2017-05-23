@@ -15,11 +15,10 @@ import java.util.ArrayList;
 public class PresenterRecordsListFragment implements IPresenterOfFragment{
     private AdapterChallenge adapter;
     private ChallengeDP challengeDP = new ChallengeDpImpl();
-    private ChallengeDP.ChallengeDPCallbacks challengeDPCallbacks = new ChallengeDP.ChallengeDPCallbacks() {
+    private ChallengeDP.ChallengeDPGetAllScoreCallbacks challengeDPCallbacks = new ChallengeDP.ChallengeDPGetAllScoreCallbacks() {
         @Override
         public void onSuccess(ArrayList<Challenge> challenges) {
             adapter.setData(challenges);
-            adapter.notifyDataSetChanged();
         }
 
         @Override
