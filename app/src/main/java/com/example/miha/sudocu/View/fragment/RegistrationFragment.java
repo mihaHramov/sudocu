@@ -11,12 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.IView.IFragment;
+import com.example.miha.sudocu.View.IView.IFragmentRegistration;
+import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
 import com.example.miha.sudocu.presenter.PresenterRegistrationFragment;
 
 
-public class RegistrationFragment extends Fragment implements View.OnClickListener, IFragment {
+public class RegistrationFragment extends Fragment implements View.OnClickListener, IFragmentRegistration {
     private Button auth;
     private EditText login, password;
     private IPresenterRegistration presenter;
@@ -25,13 +26,14 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
 
     public interface LoginCallback {
-        void onLogin();
+        void onLogin(User user);
     }
 
     @Override
-    public void callbacks() {
-        mCallbacks.onLogin();
+    public void onLogin(User user) {
+        mCallbacks.onLogin(user);
     }
+
 
     @SuppressWarnings("deprecation")
     @Override
