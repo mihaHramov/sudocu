@@ -1,7 +1,6 @@
 package com.example.miha.sudocu.data.DP;
 
-
-import android.util.Log;
+import com.example.miha.sudocu.data.model.User;
 
 import java.util.Map;
 
@@ -14,18 +13,17 @@ public class Login implements ILogin {
 
     @Override
     public void login(Map loginParams, final OnLogin onLogin) {
-        RetroClient.getInstance().login(loginParams).enqueue(new Callback<Object>() {
+        RetroClient.getInstance().login(loginParams).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                if(response.isSuccessful()){
-                    onLogin.onLogin();
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    onLogin.onLogin(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 onLogin.onError();
-                Log.d("mihaError",t.getMessage());
             }
         });
     }
