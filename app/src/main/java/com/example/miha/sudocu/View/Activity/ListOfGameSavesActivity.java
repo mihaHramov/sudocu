@@ -49,8 +49,8 @@ public class ListOfGameSavesActivity extends FragmentActivity {
     }
     public void initTabLayout(){
         AdapterLocalGameList adapterLocalGameList = new AdapterLocalGameList(getSupportFragmentManager());
-        adapterLocalGameList.addFragment(new ListOfGameFragment(),"first");
-        adapterLocalGameList.addFragment(new ListOfCompleteGameFragment(),"second");
+        adapterLocalGameList.addFragment(new ListOfGameFragment(),getString(R.string.un_complete_game));
+        adapterLocalGameList.addFragment(new ListOfCompleteGameFragment(),getString(R.string.complete_game));
         ViewPager viewPager = (ViewPager)findViewById(R.id.viewPager);
         viewPager.setAdapter(adapterLocalGameList);
         ((TabLayout )findViewById(R.id.tableLayout)).setupWithViewPager(viewPager);

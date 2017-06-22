@@ -1,14 +1,18 @@
 package com.example.miha.sudocu.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
 
     @SerializedName("name")
+    @Expose
     private String mName;
     @SerializedName("password")
+    @Expose
     private String mPassword;
     @SerializedName("id")
+    @Expose
     private int id = 0;
 
     public String getName() {

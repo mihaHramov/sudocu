@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.presenter.Adapter.AdapterChallenge;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
 import com.example.miha.sudocu.presenter.PresenterRecordsListFragment;
 
@@ -28,6 +29,6 @@ public class RecordsListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PresenterRecordsListFragment(getActivity());
+        presenter = new PresenterRecordsListFragment(new AdapterChallenge(getActivity()));
     }
 }

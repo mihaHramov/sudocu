@@ -8,6 +8,7 @@ import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.data.DP.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryImplBD;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
+import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
@@ -17,7 +18,7 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 public class PresenterListOfCompleteGameFragment implements IPresenterOfCompleteGame {
     private RepositoryImplBD repository;
     private AdapterGrid adapter;
-    private ChallengeDP challengeDP = new ChallengeDpImpl();
+    private ChallengeDP challengeDP = new ChallengeDpImpl(RetroClient.getInstance());
     private Activity activity;
     private IRepositoryUser repositoryUser;
 

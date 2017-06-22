@@ -4,10 +4,12 @@ import android.util.Log;
 
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.Grid;
+import com.example.miha.sudocu.data.model.MyClass;
 import com.example.miha.sudocu.data.model.User;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -18,23 +20,30 @@ import retrofit2.Response;
 
 public class ChallengeDpImpl implements ChallengeDP {
 
+    private ChallengeApi instance;
+
+    public ChallengeDpImpl(ChallengeApi instance) {
+        this.instance = instance;
+    }
+
     @Override
     public void sendGame(User user, Grid grid, final ChallengeDPSendGameCallbacks callbacks) {
-        Gson gson = new Gson();
-        Map<String ,String> map = new Hashtable<>();
-        map.put("grid",gson.toJson(grid));
-        map.put("user",gson.toJson(user));
-        RetroClient.getInstance().addChallenge(map).enqueue(new Callback<Object>() {
+        MyClass myClass = new MyClass();
+        myClass.setLast("last");
+        myClass.setFirst("first");
+        instance.addChallenge(myClass).enqueue(new Callback<MyClass>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
+            public void onResponse(Call<MyClass> call, Response<MyClass> response) {
                 if (response.isSuccessful()) {
-                    Log.d("mihaHramov","success send game to server");
+                    Log.d("mihaHramov1", response.body().getLast());
+                } else {
+                    Log.d("mihaHramov", "error");
                 }
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-
+            public void onFailure(Call<MyClass> call, Throwable t) {
+                Log.d("mihaHramov", t.getMessage());
             }
         });
     }

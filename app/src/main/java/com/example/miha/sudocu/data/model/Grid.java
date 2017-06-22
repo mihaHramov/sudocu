@@ -2,24 +2,44 @@ package com.example.miha.sudocu.data.model;
 
 
 
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
+import javax.annotation.Generated;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+@Generated("org.jsonschema2pojo")
 public class Grid implements Serializable {
 
     private transient Random random = new Random();
+    @SerializedName("undefined")
+    @Expose
     private int undefined;
+    @SerializedName("gameTime")
+    @Expose
     private long gameTime = 0;
+    @SerializedName("id")
+    @Expose
     private long id = 0;
+    @SerializedName("name")
+    @Expose
     private String name = "";
+    @SerializedName("complexity")
+    @Expose
     private int complexity;
     private transient final int dlinaBloka = 3;
-    private transient String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
-    private transient int razmer = grid.length;
+    private  String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
+    private  int razmer = grid.length;
+    @SerializedName("pole")
+    @Expose
     private String[][] pole = new String[razmer][razmer];
+    @SerializedName("answers")
+    @Expose
     private Map<Integer, String> answers = new Hashtable<>();
 
     public  static final String KEY = "Grid";

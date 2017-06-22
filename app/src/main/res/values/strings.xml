@@ -1,5 +1,7 @@
 <resources>
     <string name="reload_game">сгенерировать новую игру</string>
+    <string name="complete_game">Завершенные игры</string>
+    <string name="un_complete_game">Не завершенные игры</string>
     <string name="app_name">Судоку</string>
     <string name="new_game_menu">Новая Игра</string>
     <string name="load_game_menu">Загрузить игру</string>
