@@ -18,6 +18,9 @@
         </activity>
         <activity android:name=".View.Activity.ListOfGameSavesActivity"/>
         <service android:name=".presenter.Service.MyMediaPlayerService"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d5bb48c3b3bcd77d59d9bc3efc5462682df98f18" />
     </application>
 
 </manifest>
