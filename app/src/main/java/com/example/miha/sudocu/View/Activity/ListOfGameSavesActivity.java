@@ -30,6 +30,7 @@ public class ListOfGameSavesActivity extends FragmentActivity {
     public void initToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.list_game);
+        toolbar.setTitle(R.string.games);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
