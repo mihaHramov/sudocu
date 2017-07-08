@@ -1,8 +1,11 @@
 package com.example.miha.sudocu.presenter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.DP.ChallengeDP;
 import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.data.DP.IRepositoryUser;
@@ -24,13 +27,14 @@ public class PresenterListOfCompleteGameFragment implements IPresenterOfComplete
 
     private ChallengeDP.ChallengeDPSendGameCallbacks sendGameCallbacks = new ChallengeDP.ChallengeDPSendGameCallbacks() {
         @Override
-        public void onSuccess(Object challenges) {
-
+        public void onSuccess() {
+            String toastMessage = activity.getString(R.string.send_game_to_challenge);
+            Toast.makeText(activity,toastMessage,Toast.LENGTH_LONG).show();
         }
 
         @Override
-        public void onError() {
-
+        public void onError(String message) {
+            Log.d("error",message);
         }
     };
 
@@ -56,7 +60,6 @@ public class PresenterListOfCompleteGameFragment implements IPresenterOfComplete
     @Override
     public void initListView(ListView listView) {
         listView.setAdapter(adapter);
-
     }
 
 

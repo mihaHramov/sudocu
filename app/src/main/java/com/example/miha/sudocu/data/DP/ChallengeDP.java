@@ -14,9 +14,9 @@ public interface ChallengeDP {
         void onError();
     }
     interface ChallengeDPSendGameCallbacks{
-        void onSuccess(Object response);
+        void onSuccess();
 
-        void onError();
+        void onError(String message);
     }
 
     void sendGame(User user, Grid grid, ChallengeDPSendGameCallbacks callbacks);
