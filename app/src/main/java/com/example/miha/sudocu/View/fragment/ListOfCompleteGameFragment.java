@@ -1,5 +1,6 @@
 package com.example.miha.sudocu.View.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,17 +14,45 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.View.IView.IDialogManager;
+import com.example.miha.sudocu.View.IView.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 import com.example.miha.sudocu.presenter.PresenterListOfCompleteGameFragment;
 
-public class ListOfCompleteGameFragment extends Fragment {
+public class ListOfCompleteGameFragment extends Fragment implements IListOfCompleteGameFragment {
     private ListView listView;
     private IPresenterOfCompleteGame presenter;
+    private IDialogManager activityCallback;
+    private int lastIdRecords;
+
+    @Override
+    public void authUser() {
+        activityCallback.showAuthDialog();
+    }
+
+    @Override
+    public void onSendGame(String msg) {
+
+    }
+
+    @Override
+    public void onAfterAuthUser() {
+        if (this.lastIdRecords > 0) {
+            presenter.sendGame(lastIdRecords);
+        }
+    }
+
+    @Override
+    public void onErrorSendGame(String msg) {
+
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new PresenterListOfCompleteGameFragment(getActivity());
+        presenter.setView(this);
     }
 
     @Override
@@ -31,6 +60,14 @@ public class ListOfCompleteGameFragment extends Fragment {
         super.onResume();
         presenter.onResume();
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof IDialogManager) {
+            this.activityCallback = (IDialogManager) activity;
+        }
     }
 
     @Nullable
@@ -56,6 +93,7 @@ public class ListOfCompleteGameFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.challenge:
+                lastIdRecords = info.position;
                 presenter.sendGame(info.position);
                 break;
             case R.id.delete:
