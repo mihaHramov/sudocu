@@ -23,6 +23,7 @@ public class PresenterRegistrationFragment implements IPresenterRegistration {
 
         @Override
         public void onError() {
+            view.onFailAuth("ошибка");
         }
     };
 
