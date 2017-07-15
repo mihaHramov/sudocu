@@ -21,16 +21,16 @@
         android:layout_centerVertical="true"
         android:orientation="vertical">
 
-        <TextView
+        <Button
             android:id="@+id/newGame"
             style="@style/menuItem"
             android:text="@string/new_game_menu" />
 
-        <TextView
+        <Button
             android:id="@+id/restore"
             style="@style/menuItem"
             android:text="@string/load_game_menu" />
-        <TextView
+        <Button
             android:id="@+id/rating"
             style="@style/menuItem"
             android:text="@string/rating"/>
