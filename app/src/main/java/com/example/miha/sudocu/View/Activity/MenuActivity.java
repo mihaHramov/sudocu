@@ -3,31 +3,30 @@ package com.example.miha.sudocu.View.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 
-public class MenuActivity extends Activity implements View.OnClickListener {
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class MenuActivity extends Activity {
 
     private AlertDialog dialog;
 
-    @Override
-    public void onClick(View v) {
-        Intent i;
-        switch (v.getId()) {
-            case R.id.restore:
-                i = new Intent(this, ListOfGameSavesActivity.class);
-                startActivity(i);
-                break;
-            case R.id.newGame:
-                dialog.showDialog();
-                break;
-            case R.id.rating:
-                i = new Intent(this,OnlineRating.class);
-                startActivity(i);
-                break;
-        }
+    @OnClick(R.id.restore)
+    void onClickRestore(){
+        openNewActivity(new Intent(this, ListOfGameSavesActivity.class));
+    }
+
+    @OnClick(R.id.rating)
+    void onClickRating(){
+        openNewActivity(new Intent(this, OnlineRating.class));
+    }
+
+    @OnClick(R.id.newGame)
+    void onClickNewGame(){
+        dialog.showDialog();
     }
 
     @Override
@@ -35,8 +34,10 @@ public class MenuActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         dialog = new AlertDialog(this);
-        findViewById(R.id.restore).setOnClickListener(this);
-        findViewById(R.id.newGame).setOnClickListener(this);
-        findViewById(R.id.rating).setOnClickListener(this);
+        ButterKnife.bind(this);
+    }
+
+    private void openNewActivity(Intent i) {
+        startActivity(i);
     }
 }
