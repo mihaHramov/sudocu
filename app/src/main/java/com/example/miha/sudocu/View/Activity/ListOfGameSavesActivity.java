@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.R;
@@ -52,21 +51,18 @@ public class ListOfGameSavesActivity extends FragmentActivity implements Registr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.list_game);
         toolbar.setTitle(R.string.games);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.navigateButtonBack:
-                        finish();
-                        break;
-                    case R.id.newGame:
-                        dialog.showDialog();
-                        break;
-                }
-
-                return false;
+        toolbar.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.navigateButtonBack:
+                    finish();
+                    break;
+                case R.id.newGame:
+                    dialog.showDialog();
+                    break;
             }
+
+            return false;
         });
     }
 

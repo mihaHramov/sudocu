@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.View.fragment.RecordsListFragment;
@@ -46,20 +45,17 @@ public class OnlineRating extends FragmentActivity implements RegistrationFragme
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.reiting_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.reload_login:
-                        fragment = new RegistrationFragment();
-                        changeFragment(R.id.fragment_container,fragment);
-                        showMenuItemById(R.id.reload_login,false);
-                        break;
-                }
-
-                return false;
+        toolbar.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.reload_login:
+                    fragment = new RegistrationFragment();
+                    changeFragment(R.id.fragment_container,fragment);
+                    showMenuItemById(R.id.reload_login,false);
+                    break;
             }
+
+            return false;
         });
     }
 
