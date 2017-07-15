@@ -14,6 +14,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
+import rx.Observable;
 
 
 public interface ChallengeApi {
@@ -23,7 +24,7 @@ public interface ChallengeApi {
     Call<ArrayList<Challenge>> getAllScore();// метод к которому будим обращатся
 
     @GET("login")
-    Call<User> login(@QueryMap Map<String, String> options);
+    Observable<User> login(@QueryMap Map<String, String> options);
 
     @POST("addChallenge")
     @FormUrlEncoded

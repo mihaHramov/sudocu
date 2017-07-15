@@ -4,27 +4,18 @@ import com.example.miha.sudocu.data.model.User;
 
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observable;
 
 
 public class Login implements ILogin {
+    private ChallengeApi instance;
+    public Login(ChallengeApi instance){
+        this.instance = instance;
+    }
 
     @Override
-    public void login(Map loginParams, final OnLogin onLogin) {
-        RetroClient.getInstance().login(loginParams).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    onLogin.onLogin(response.body());
-                }
-            }
+    public Observable<User> login(Map loginParams) {
+       return instance.login(loginParams);
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                onLogin.onError();
-            }
-        });
     }
 }
