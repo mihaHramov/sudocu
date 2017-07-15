@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroClient {
@@ -20,6 +21,7 @@ public class RetroClient {
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
             Retrofit retrofit =
                     new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson))
+                            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                             .baseUrl(ChallengeApi.URL)
                             .client(client).build();//базовый url
             system = retrofit.create(ChallengeApi.class); // интерфейс api с которой будим работать
