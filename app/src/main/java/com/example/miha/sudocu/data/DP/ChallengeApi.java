@@ -21,12 +21,12 @@ public interface ChallengeApi {
     String URL = "http://mysimple.zzz.com.ua/";
 
     @GET("getAllScore")
-    Call<ArrayList<Challenge>> getAllScore();// метод к которому будим обращатся
+    Observable<ArrayList<Challenge>> getAllScore();// метод к которому будим обращатся
 
     @GET("login")
     Observable<User> login(@QueryMap Map<String, String> options);
 
     @POST("addChallenge")
     @FormUrlEncoded
-    Call<Void> addChallenge(@Field("sendJson")  String options);
+    Observable<Void> addChallenge(@Field("sendJson")  String options);
 }

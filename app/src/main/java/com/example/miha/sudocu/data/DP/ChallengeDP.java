@@ -7,19 +7,9 @@ import com.example.miha.sudocu.data.model.User;
 
 import java.util.ArrayList;
 
+import rx.Observable;
+
 public interface ChallengeDP {
-    interface ChallengeDPGetAllScoreCallbacks {
-        void onSuccess(ArrayList<Challenge> challenges);
-
-        void onError();
-    }
-    interface ChallengeDPSendGameCallbacks{
-        void onSuccess();
-
-        void onError(String message);
-    }
-
-    void sendGame(User user, Grid grid, ChallengeDPSendGameCallbacks callbacks);
-
-    void getAllScore(ChallengeDPGetAllScoreCallbacks callbacks);
+    Observable<Void> sendGame(User user, Grid grid);
+    Observable<ArrayList<Challenge>> getAllScore();
 }

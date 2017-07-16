@@ -7,9 +7,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observable;
 
 
 public class ChallengeDpImpl implements ChallengeDP {
@@ -21,41 +19,13 @@ public class ChallengeDpImpl implements ChallengeDP {
     }
 
     @Override
-    public void sendGame(User user, Grid grid, final ChallengeDPSendGameCallbacks callbacks) {
+    public Observable<Void> sendGame(User user, Grid grid) {
         Gson g = new Gson();
-        instance.addChallenge(g.toJson(grid)).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    callbacks.onSuccess();
-                } else {
-                    callbacks.onError("error");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                 callbacks.onError(t.getMessage());
-            }
-        });
+        return instance.addChallenge(g.toJson(grid));
     }
 
     @Override
-    public void getAllScore(final ChallengeDPGetAllScoreCallbacks callbacks) {
-        instance.getAllScore().enqueue(new Callback<ArrayList<Challenge>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Challenge>> call, Response<ArrayList<Challenge>> response) {
-                if (response.isSuccessful()) {
-                    callbacks.onSuccess(response.body());
-                } else {
-                    callbacks.onError();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Challenge>> call, Throwable t) {
-                callbacks.onError();
-            }
-        });
+    public Observable<ArrayList<Challenge>> getAllScore() {
+        return instance.getAllScore();
     }
 }
