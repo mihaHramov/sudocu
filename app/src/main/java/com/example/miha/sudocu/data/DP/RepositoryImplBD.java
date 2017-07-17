@@ -8,13 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 import com.example.miha.sudocu.data.model.Grid;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Map;
 
 public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
@@ -27,7 +25,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     private static final String grid = "grid";
     private static final String undefined = "undefined";
     private static final String tableName = "myRepository";
-    private static final int dbVersion = 3;
+    private static final int dbVersion = 4;
     private SQLiteDatabase db;
 
     public RepositoryImplBD(Context context) {
@@ -38,30 +36,13 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     @Override
     public void saveGame(Grid g) {
         ContentValues cv = new ContentValues();
-        String[][] pole = g.getPole();
-        JSONArray poleJsonArray = new JSONArray();
-        JSONObject gridAnswer = new JSONObject();
-        Map<Integer, String> answers = g.getAnswers();
+        Gson parser = new Gson();
 
-        for (Map.Entry<Integer, String> entry : answers.entrySet()) {
-            Integer key = entry.getKey();
-            String val = entry.getValue();
-            try {
-                gridAnswer.put(key + "", val);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        for (int i = 0; i < pole.length; i++) {
-            for (int j = 0; j < pole.length; j++)
-                poleJsonArray.put(pole[i][j]);
-        }
-        cv.put(grid, poleJsonArray.toString());
+        cv.put(grid,parser.toJson(g.getGrid()));
         cv.put(complexity, g.getComplexity());
         cv.put(undefined, g.getUndefined());
         cv.put(gameTime, g.getGameTime());
-        cv.put(answer, gridAnswer.toString());
+        cv.put(answer, parser.toJson(g.getAnswers()));
         cv.put(name, g.getName());
         if (g.getId() == 0) {
             db.insert(tableName, null, cv);
@@ -89,7 +70,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
         return   getAllWithWhere(selection,new String[]{"1"});
     }
 
-    public ArrayList<Grid> getAllWithWhere(String selection,String[] args){
+    private ArrayList<Grid> getAllWithWhere(String selection,String[] args){
         ArrayList<Grid> arrGrid = new ArrayList<>();
         Cursor c = db.query(tableName, null, selection,args, null, null, null);
         if (c.moveToFirst()) {
@@ -100,6 +81,8 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
             int gameTimeColId = c.getColumnIndex(gameTime);
             int undefinedColId = c.getColumnIndex(undefined);
             int idColId = c.getColumnIndex("id");
+            Gson parser = new Gson();
+            Type type = new TypeToken<Map<Integer, String>>(){}.getType();
             do {
                 Grid g = new Grid();
                 g.setComplexity(c.getInt(complexityColId));
@@ -108,28 +91,8 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 g.setName(c.getString(nameColId));
                 g.setId(c.getInt(idColId));
                 String pole = c.getString(gridColId);
-                try {
-                    JSONArray jsonObject = new JSONArray(pole);
-                    int razmer = (int) Math.sqrt(jsonObject.length());
-                    String[][] p = new String[razmer][razmer];
-                    for (int i = 0; i < razmer; i++)
-                        for (int j = 0; j < razmer; j++)
-                            p[i][j] = jsonObject.getString(i * razmer + j);
-                    g.setPole(p);
-
-                    JSONObject answ = new JSONObject(c.getString(answerColId));
-                    JSONArray arrNames = answ.names();
-                    Map<Integer, String> answer = new Hashtable<>();
-
-                    for (int i = 0; i < arrNames.length(); i++)
-                        answer.put(arrNames.getInt(i), answ.getString(arrNames.getString(i)));
-
-                    g.setAnswers(answer);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+                g.setPole(parser.fromJson(pole,String[][].class));
+                g.setAnswers(parser.fromJson(c.getString(answerColId),type));
                 arrGrid.add(g);
             } while (c.moveToNext());
         }
