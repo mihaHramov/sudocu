@@ -1,5 +1,6 @@
 package com.example.miha.sudocu.View.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,23 +10,31 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
+import com.example.miha.sudocu.View.Activity.MainActivity;
+import com.example.miha.sudocu.View.IView.IListOfNotCompletedGameFragment;
+import com.example.miha.sudocu.data.model.Grid;
+import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
+import com.example.miha.sudocu.presenter.IPresenterOfNonCompleteGame;
 import com.example.miha.sudocu.presenter.PresenterListOfGameFragment;
 
-public class ListOfGameFragment extends Fragment {
+import java.util.ArrayList;
+
+public class ListOfGameFragment extends Fragment implements IListOfNotCompletedGameFragment{
     private ListView listView;
-    private IPresenterOfFragment presenter;
+    private IPresenterOfNonCompleteGame presenter;
+    private AdapterGrid adapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PresenterListOfGameFragment(getActivity());
+        this.presenter = new PresenterListOfGameFragment(getActivity());
+        presenter.setView(this);
+        adapter = new AdapterGrid(getContext());
     }
 
     @Override
     public void onResume() {
         super.onResume();
         presenter.onResume();
-
     }
 
     @Nullable
@@ -34,8 +43,17 @@ public class ListOfGameFragment extends Fragment {
         View rootView =
                 inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
         listView = (ListView) rootView.findViewById(R.id.listViewGrid);
-        presenter.initListView(listView);
-
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Intent i = new Intent(getActivity(), MainActivity.class);
+            i.putExtra(Grid.KEY, (Grid) adapter.getItem(position));
+            getActivity().startActivity(i);
+        });
+        listView.setAdapter(adapter);
         return rootView;
+    }
+
+    @Override
+    public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
+        adapter.setData(gridList);
     }
 }
