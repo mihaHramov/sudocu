@@ -1,8 +1,8 @@
 package com.example.miha.sudocu.View.IView;
 
-public interface IListOfCompleteGameFragment {
-    void onSendGame(String msg);
+public interface IListOfCompleteGameFragment extends IListOfNotCompletedGameFragment {
+    void onSendGame();
     void onAfterAuthUser();
-    void onErrorSendGame(String msg);
+    void onErrorSendGame();
     void authUser();
 }
