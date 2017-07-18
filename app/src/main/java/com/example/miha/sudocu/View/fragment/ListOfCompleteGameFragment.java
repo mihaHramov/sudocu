@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.R;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 
 public class ListOfCompleteGameFragment extends Fragment implements IListOfCompleteGameFragment {
     private ListView listView;
+    private ProgressBar progressBar;
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
@@ -82,11 +84,21 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         }
     }
 
+    @Override
+    public void showLoad(boolean flag) {
+        if(flag){
+            progressBar.setVisibility(ProgressBar.VISIBLE);
+        }else {
+            progressBar.setVisibility(ProgressBar.GONE);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView =
                 inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
+        progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
         listView = (ListView) rootView.findViewById(R.id.listViewGrid);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);

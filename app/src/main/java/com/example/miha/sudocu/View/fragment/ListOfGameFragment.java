@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.View.Activity.MainActivity;
@@ -23,12 +24,23 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
     private ListView listView;
     private IPresenterOfNonCompleteGame presenter;
     private AdapterGrid adapter;
+    private ProgressBar progressBar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.presenter = new PresenterListOfGameFragment(getActivity());
         presenter.setView(this);
         adapter = new AdapterGrid(getContext());
+    }
+
+    @Override
+    public void showLoad(boolean flag) {
+        if(flag){
+            progressBar.setVisibility(ProgressBar.VISIBLE);
+        }else {
+            progressBar.setVisibility(ProgressBar.GONE);
+        }
     }
 
     @Override
@@ -48,6 +60,7 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
             i.putExtra(Grid.KEY, (Grid) adapter.getItem(position));
             getActivity().startActivity(i);
         });
+        progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
         listView.setAdapter(adapter);
         return rootView;
     }
