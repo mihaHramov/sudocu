@@ -14,6 +14,9 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 
 public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
 
@@ -34,45 +37,59 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     }
 
     @Override
-    public void saveGame(Grid g) {
-        ContentValues cv = new ContentValues();
-        Gson parser = new Gson();
+    public Observable<Void> saveGame(Grid g) {
+        return Observable.create(subscriber -> {
+            ContentValues cv = new ContentValues();
+            Gson parser = new Gson();
 
-        cv.put(grid,parser.toJson(g.getGrid()));
-        cv.put(complexity, g.getComplexity());
-        cv.put(undefined, g.getUndefined());
-        cv.put(gameTime, g.getGameTime());
-        cv.put(answer, parser.toJson(g.getAnswers()));
-        cv.put(name, g.getName());
-        if (g.getId() == 0) {
-            db.insert(tableName, null, cv);
-            return;
-        }
-        db.update(tableName, cv, "id= ?", new String[]{Long.toString(g.getId())});
+            cv.put(grid, parser.toJson(g.getGrid()));
+            cv.put(complexity, g.getComplexity());
+            cv.put(undefined, g.getUndefined());
+            cv.put(gameTime, g.getGameTime());
+            cv.put(answer, parser.toJson(g.getAnswers()));
+            cv.put(name, g.getName());
+            if (g.getId() == 0) {
+                db.insert(tableName, null, cv);
+                return;
+            }
+            db.update(tableName, cv, "id= ?", new String[]{Long.toString(g.getId())});
+            subscriber.onCompleted();
+        });
+
     }
 
     @Override
-    public void deleteGame(Grid grid) {
-        String id = Long.toString(grid.getId());
-        db.delete(tableName,"id = ?",new String[]{id});
+    public Observable<Void> deleteGame(Grid grid) {
+        return Observable.create(subscriber -> {
+            String id = Long.toString(grid.getId());
+            db.delete(tableName, "id = ?", new String[]{id});
+            subscriber.onCompleted();
+        });
     }
 
+    private rx.Observable<ArrayList<Grid>> createObserveble(String selection) {
+        return rx.Observable.create(
+                sub -> {
+                    sub.onNext(getAllWithWhere(selection, new String[]{"0"}));
+                    sub.onCompleted();
+                }
+        );
+    }
 
     @Override
-    public ArrayList<Grid> getListGames() {
-        String selection = undefined+" > ?";
-        return   getAllWithWhere(selection,new String[]{"0"});
+    public rx.Observable<ArrayList<Grid>> getListGames() {
+        return createObserveble(undefined + " > ?");
     }
 
     @Override
-    public ArrayList<Grid> getListCompleteGames() {
-        String selection = undefined+" < ?";
-        return   getAllWithWhere(selection,new String[]{"1"});
+    public rx.Observable<ArrayList<Grid>> getListCompleteGames() {
+        return createObserveble(undefined + " <= ?");
     }
 
-    private ArrayList<Grid> getAllWithWhere(String selection,String[] args){
+    private ArrayList<Grid> getAllWithWhere(String selection, String[] args) {
         ArrayList<Grid> arrGrid = new ArrayList<>();
-        Cursor c = db.query(tableName, null, selection,args, null, null, null);
+
+        Cursor c = db.query(tableName, null, selection, args, null, null, null);
         if (c.moveToFirst()) {
             int nameColId = c.getColumnIndex(name);
             int gridColId = c.getColumnIndex(grid);
@@ -91,8 +108,8 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 g.setName(c.getString(nameColId));
                 g.setId(c.getInt(idColId));
                 String pole = c.getString(gridColId);
-                g.setPole(parser.fromJson(pole,String[][].class));
-                g.setAnswers(parser.fromJson(c.getString(answerColId),type));
+                g.setPole(parser.fromJson(pole, String[][].class));
+                g.setAnswers(parser.fromJson(c.getString(answerColId), type));
                 arrGrid.add(g);
             } while (c.moveToNext());
         }

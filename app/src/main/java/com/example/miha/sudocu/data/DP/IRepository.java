@@ -4,9 +4,11 @@ import com.example.miha.sudocu.data.model.Grid;
 
 import java.util.ArrayList;
 
+import rx.Observable;
+
 public interface IRepository {
-    void saveGame(Grid g);
-    void deleteGame(Grid id);
-    ArrayList<Grid> getListGames();
-    ArrayList<Grid> getListCompleteGames();
+    Observable<Void> saveGame(Grid g);
+    Observable<Void> deleteGame(Grid id);
+    Observable<ArrayList<Grid>> getListGames();
+    Observable<ArrayList<Grid>> getListCompleteGames();
 }

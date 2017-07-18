@@ -1,7 +1,6 @@
 package com.example.miha.sudocu.presenter;
 
 import android.app.Activity;
-import android.widget.ListView;
 
 import com.example.miha.sudocu.View.IView.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.DP.ChallengeDP;
@@ -14,6 +13,9 @@ import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 
+import java.util.ArrayList;
+
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -26,14 +28,23 @@ public class PresenterListOfCompleteGameFragment implements IPresenterOfComplete
 
     @Override
     public void deleteGame(Grid grid) {
-        repository.deleteGame(grid);
-        view.refreshListOfCompleteGame(repository.getListCompleteGames());
+        view.showLoad(true);
+        repository.deleteGame(grid)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(
+                        aVoid -> {},
+                        throwable -> view.showLoad(false),
+                        () -> {
+                            prepate(repository.getListCompleteGames());
+                            view.showLoad(false);
+                        });
     }
 
     @Override
     public void sendGame(Grid grid) {
         User user = repositoryUser.getUser();
-        if ( user != null) {
+        if (user != null) {
             challengeDP.sendGame(user,grid)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -53,10 +64,17 @@ public class PresenterListOfCompleteGameFragment implements IPresenterOfComplete
         repositoryUser = new RepositoryUser(activity);
     }
 
-
+    private Observable<ArrayList<Grid>> prepate(Observable<ArrayList<Grid>> gr) {
+        gr.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> view.showLoad(true))
+                .doOnCompleted(() -> view.showLoad(false))
+                .subscribe(grids -> view.refreshListOfCompleteGame(grids));
+        return gr;
+    }
 
     @Override
     public void onResume() {
-        view.refreshListOfCompleteGame(repository.getListCompleteGames());
+        prepate(repository.getListCompleteGames());
     }
 }

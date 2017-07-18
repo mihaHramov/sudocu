@@ -11,6 +11,8 @@ import com.example.miha.sudocu.data.DP.IRepository;
 import com.example.miha.sudocu.data.DP.RepositoryImplBD;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PresenterGrid implements IPresenterGrid {
     public static final String EXTRA_MODEL = "modelGrid";
@@ -66,7 +68,10 @@ public class PresenterGrid implements IPresenterGrid {
     @Override
     public void savedPresenter() {
         model.setGameTime(SystemClock.elapsedRealtime() - view.getGameTime());
-        repository.saveGame(model);
+        repository.saveGame(model)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aVoid -> {}, throwable -> {}, () ->{});
     }
 
     @Override
