@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.Activity;
+package com.example.miha.sudocu.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.IView.IGridView;
+import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
 import com.example.miha.sudocu.presenter.Service.MyMediaPlayerService;
@@ -74,7 +74,6 @@ public class MainActivity extends Activity implements IGridView {
                             lastAnswer = true;
                         }
                         lastEditText = (TextView) v;
-                        lastEditText.setText("");
                         lastEditText.setBackgroundResource(R.drawable.back);
                     });
                 }

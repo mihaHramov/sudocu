@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.Activity;
+package com.example.miha.sudocu.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.fragment.RecordsListFragment;
-import com.example.miha.sudocu.View.fragment.RegistrationFragment;
+import com.example.miha.sudocu.view.fragment.RecordsListFragment;
+import com.example.miha.sudocu.view.fragment.RegistrationFragment;
 import com.example.miha.sudocu.data.DP.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
 import com.example.miha.sudocu.data.model.User;

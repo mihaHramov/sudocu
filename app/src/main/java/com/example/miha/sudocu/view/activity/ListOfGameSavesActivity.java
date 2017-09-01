@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.Activity;
+package com.example.miha.sudocu.view.activity;
 
 import android.os.Bundle;
 
@@ -11,11 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.IView.IDialogManager;
-import com.example.miha.sudocu.View.IView.IListOfCompleteGameFragment;
-import com.example.miha.sudocu.View.fragment.ListOfCompleteGameFragment;
-import com.example.miha.sudocu.View.fragment.ListOfGameFragment;
-import com.example.miha.sudocu.View.fragment.RegistrationFragment;
+import com.example.miha.sudocu.view.IView.IDialogManager;
+import com.example.miha.sudocu.view.IView.IListOfCompleteGameFragment;
+import com.example.miha.sudocu.view.fragment.ListOfCompleteGameFragment;
+import com.example.miha.sudocu.view.fragment.ListOfGameFragment;
+import com.example.miha.sudocu.view.fragment.RegistrationFragment;
 import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.Adapter.AdapterLocalGameList;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;

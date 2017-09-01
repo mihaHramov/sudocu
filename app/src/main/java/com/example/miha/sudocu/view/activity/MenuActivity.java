@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.Activity;
+package com.example.miha.sudocu.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
