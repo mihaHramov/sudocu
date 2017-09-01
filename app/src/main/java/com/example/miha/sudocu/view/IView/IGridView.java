@@ -1,9 +1,5 @@
-package com.example.miha.sudocu.View.IView;
+package com.example.miha.sudocu.view.IView;
 
-
-/**
- * Created by miha on 17.10.2016.
- */
 public interface IGridView {
      IGridView clearGrid();
      IGridView showGrid(String[][] ar);

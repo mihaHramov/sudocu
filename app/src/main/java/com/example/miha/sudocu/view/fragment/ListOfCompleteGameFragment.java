@@ -1,6 +1,7 @@
-package com.example.miha.sudocu.View.fragment;
+package com.example.miha.sudocu.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,29 +16,28 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.IView.IDialogManager;
-import com.example.miha.sudocu.View.IView.IListOfCompleteGameFragment;
+import com.example.miha.sudocu.view.IView.IDialogManager;
+import com.example.miha.sudocu.view.IView.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
-import com.example.miha.sudocu.presenter.PresenterListOfCompleteGameFragment;
 
 import java.util.ArrayList;
 
 public class ListOfCompleteGameFragment extends Fragment implements IListOfCompleteGameFragment {
     private ListView listView;
     private ProgressBar progressBar;
+    private IPresenterOfCompleteGame presenter;
+    private IDialogManager activityCallback;
+    private int lastIdRecords;
+    private AdapterGrid adapter;
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
             adapter.setData(gridList);
     }
-
-    private IPresenterOfCompleteGame presenter;
-    private IDialogManager activityCallback;
-    private int lastIdRecords;
-    private AdapterGrid adapter;
 
     @Override
     public void authUser() {
@@ -65,9 +65,10 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PresenterListOfCompleteGameFragment(getActivity());
+        presenter = DP.get().getPresenterListOfCompleteGameFragment();
         presenter.setView(this);
         adapter = new AdapterGrid(getContext());
+        presenter.init(savedInstanceState);
     }
 
     @Override
@@ -77,10 +78,10 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof IDialogManager) {
-            this.activityCallback = (IDialogManager) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IDialogManager) {
+            this.activityCallback = (IDialogManager)context ;
         }
     }
 
@@ -91,6 +92,12 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         }else {
             progressBar.setVisibility(ProgressBar.GONE);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.savePresenterData(outState);
     }
 
     @Nullable

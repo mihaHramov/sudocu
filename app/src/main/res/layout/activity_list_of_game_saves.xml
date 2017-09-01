@@ -4,7 +4,7 @@
     android:id="@+id/activity_list_of_game_saves"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.miha.sudocu.View.Activity.ListOfGameSavesActivity">
+    tools:context="com.example.miha.sudocu.view.activity.ListOfGameSavesActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"

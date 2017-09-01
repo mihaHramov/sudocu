@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.fragment;
+package com.example.miha.sudocu.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

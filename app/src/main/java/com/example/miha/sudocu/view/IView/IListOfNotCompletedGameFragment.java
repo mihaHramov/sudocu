@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.IView;
+package com.example.miha.sudocu.view.IView;
 
 
 import com.example.miha.sudocu.data.model.Grid;

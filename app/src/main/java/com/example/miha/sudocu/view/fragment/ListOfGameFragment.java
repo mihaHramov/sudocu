@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.fragment;
+package com.example.miha.sudocu.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.Activity.MainActivity;
-import com.example.miha.sudocu.View.IView.IListOfNotCompletedGameFragment;
+import com.example.miha.sudocu.view.activity.MainActivity;
+import com.example.miha.sudocu.view.IView.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
 import com.example.miha.sudocu.presenter.IPresenterOfNonCompleteGame;
-import com.example.miha.sudocu.presenter.PresenterListOfGameFragment;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,8 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.presenter = new PresenterListOfGameFragment(getActivity());
+        presenter = DP.get().getPresenterListOfGameFragment();
+        presenter.init(savedInstanceState);
         presenter.setView(this);
         adapter = new AdapterGrid(getContext());
     }
@@ -41,6 +42,12 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
         }else {
             progressBar.setVisibility(ProgressBar.GONE);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        presenter.savePresenterData(outState);
     }
 
     @Override

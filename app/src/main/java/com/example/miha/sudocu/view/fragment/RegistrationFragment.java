@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.fragment;
+package com.example.miha.sudocu.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.View.IView.IFragmentRegistration;
+import com.example.miha.sudocu.view.IView.IFragmentRegistration;
 import com.example.miha.sudocu.data.DP.Login;
 import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.User;

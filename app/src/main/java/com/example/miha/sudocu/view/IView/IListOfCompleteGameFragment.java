@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.View.IView;
+package com.example.miha.sudocu.view.IView;
 
 public interface IListOfCompleteGameFragment extends IListOfNotCompletedGameFragment {
     void onSendGame();
