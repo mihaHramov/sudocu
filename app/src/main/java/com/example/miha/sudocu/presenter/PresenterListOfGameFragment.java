@@ -1,8 +1,9 @@
 package com.example.miha.sudocu.presenter;
 
-import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
 
-import com.example.miha.sudocu.View.IView.IListOfNotCompletedGameFragment;
+import com.example.miha.sudocu.view.IView.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.DP.RepositoryImplBD;
 import com.example.miha.sudocu.data.model.Grid;
 
@@ -15,22 +16,45 @@ import rx.schedulers.Schedulers;
 
 public class PresenterListOfGameFragment implements IPresenterOfNonCompleteGame {
     private RepositoryImplBD repository;
+    private static final String GAMES = "PRESENTER_SAVE_GAMES_IN_NON_COMPLETE_GAME";
     private IListOfNotCompletedGameFragment view;
+    private ArrayList<Grid> games;
 
-    public PresenterListOfGameFragment(Activity activity){
-        repository = new RepositoryImplBD(activity);
+    public PresenterListOfGameFragment(Context context) {
+        repository = new RepositoryImplBD(context);
     }
-    private Observable<ArrayList<Grid>> prepate(Observable<ArrayList<Grid>> gr){
+
+    @Override
+    public void savePresenterData(Bundle bundle) {
+        bundle.putSerializable(GAMES, games);
+    }
+
+    @Override
+    public void init(Bundle bundle) {
+        if (bundle != null) {
+            games = (ArrayList<Grid>) bundle.getSerializable(GAMES);
+        }
+    }
+
+    private Observable<ArrayList<Grid>> prepate(Observable<ArrayList<Grid>> gr) {
         gr.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> view.showLoad(true))
-                .doOnCompleted(() ->view.showLoad(false))
-                .subscribe(grids -> view.refreshListOfCompleteGame(grids));
+                .doOnCompleted(() -> view.showLoad(false))
+                .subscribe(grids -> {
+                    view.refreshListOfCompleteGame(grids);
+                    games = grids;
+                });
         return gr;
     }
+
     @Override
     public void onResume() {
-       prepate(repository.getListGames());
+        if (games == null) {
+            prepate(repository.getListGames());//выполнить запрос за свежими данными в БД
+        } else {
+            view.refreshListOfCompleteGame(games);
+        }
     }
 
     @Override

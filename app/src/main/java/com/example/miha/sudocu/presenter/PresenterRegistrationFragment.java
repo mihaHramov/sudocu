@@ -1,6 +1,6 @@
 package com.example.miha.sudocu.presenter;
 
-import com.example.miha.sudocu.View.IView.IFragmentRegistration;
+import com.example.miha.sudocu.view.IView.IFragmentRegistration;
 import com.example.miha.sudocu.data.DP.ILogin;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
 

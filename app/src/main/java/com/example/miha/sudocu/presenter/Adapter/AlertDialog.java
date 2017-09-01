@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.miha.sudocu.View.Activity.MainActivity;
+import com.example.miha.sudocu.view.activity.MainActivity;
 import com.example.miha.sudocu.R;
 
 public class AlertDialog  {

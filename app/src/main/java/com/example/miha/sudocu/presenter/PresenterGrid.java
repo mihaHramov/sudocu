@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
-import com.example.miha.sudocu.View.IView.IGridView;
+import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.DP.IRepository;
 import com.example.miha.sudocu.data.DP.RepositoryImplBD;
