@@ -25,7 +25,7 @@ public class PresenterGrid implements IPresenterGrid {
     public void reloadGame() {
         int complex = model.getComplexity();
         model = new Grid().setComplexity(complex).setUndefined(complex).init();
-        view.clearGrid().showGrid(model.getGrid());
+        view.showGrid(model.getGameGrid());
         loadGameTime();
     }
 
@@ -52,7 +52,7 @@ public class PresenterGrid implements IPresenterGrid {
             initModel();
         }
 
-        view.clearGrid().showGrid(model.getGrid());
+        view.showGrid(model.getGameGrid());
         loadGameTime();
     }
 
@@ -71,7 +71,7 @@ public class PresenterGrid implements IPresenterGrid {
         repository.saveGame(model)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {}, throwable -> {}, () ->{});
+                .subscribe(aVoid -> {}, throwable -> {}, () -> {});
     }
 
     @Override
@@ -84,13 +84,7 @@ public class PresenterGrid implements IPresenterGrid {
         if (answer.trim().isEmpty()) return;
         int id = view.getIdAnswer();
         if (model.getAnswer(id, answer)) {
-            view.success();
-            if (model.getUndefined() == 0) {
-                model.setGameTime(view.getGameTime());
-                view.gameOver();
-            }
-            return;
+            view.gameOver();
         }
-        view.failure();
     }
 }
