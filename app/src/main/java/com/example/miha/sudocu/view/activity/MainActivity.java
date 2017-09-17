@@ -2,7 +2,6 @@ package com.example.miha.sudocu.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
@@ -31,7 +31,6 @@ import butterknife.OnClick;
 public class MainActivity extends Activity implements IGridView {
     private IPresenterGrid presenterGrid;
     private TextView lastEditText;
-    private boolean lastAnswer = true;
     private Chronometer chronometer;
     private int countOfRowsAndCols;
     private Timer timer;
@@ -46,7 +45,6 @@ public class MainActivity extends Activity implements IGridView {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) findViewById(anArrIntIdGrid));
         }
         chronometer = (Chronometer) findViewById(R.id.chronometer);
-
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
@@ -58,43 +56,32 @@ public class MainActivity extends Activity implements IGridView {
     }
 
     @Override
-    public IGridView showGrid(String[][] grid) {
+    public IGridView showGrid(Answer[][] grid) {
         countOfRowsAndCols = grid.length;
         for (int i = 0; i < countOfRowsAndCols; i++) {
             for (int j = 0; j < countOfRowsAndCols; j++) {
-                TextView text = (TextView) getLayoutInflater().inflate(R.layout.text_view, null);//получил свою view
-                text.setId(i * countOfRowsAndCols + j);
-                text.setText(grid[i][j]);
-                if (grid[i][j].isEmpty()) {
-                    text.setOnClickListener(v -> {
-                        if (lastEditText != null) {
-                            if (lastAnswer) {
-                                lastEditText.setBackgroundColor(Color.WHITE);
-                            }
-                            lastAnswer = true;
-                        }
-                        lastEditText = (TextView) v;
-                        lastEditText.setBackgroundResource(R.drawable.back);
-                    });
-                }
                 int resI = (i / 3) * 3;
                 int resJ = j / 3;
                 TableLayout tab = tableLayouts.get(arrIntIdGrid[resI + resJ]);//выбрал необходимый квадрат
-                int rowsCol = tab.getChildCount();
-                if (tab.getChildCount() > 0) {
-                    TableRow row;
-                    if (((TableRow) tab.getChildAt(rowsCol - 1)).getChildCount() > 2) {
-                        row = new TableRow(this);
-                        tab.addView(row);
-                    } else {
-                        row = ((TableRow) tab.getChildAt(rowsCol - 1));
-                    }
-                    row.addView(text);
-                } else {
-                    TableRow row = new TableRow(this);
-                    row.addView(text);
-                    tab.addView(row);
+                TableRow row = (TableRow)tab.getChildAt(i % 3);
+                TextView textView = (TextView) row.getChildAt(j % 3);
+                textView.setText(grid[i][j].getNumber());
+
+                if(grid[i][j].isAnswer()){
+                    textView.setOnClickListener(v -> {
+                        if(lastEditText!=null){
+                            lastEditText.setBackgroundResource(R.drawable.background_grey);
+                        }
+                        lastEditText = (TextView) v;
+                        textView.setBackgroundResource(R.drawable.focus);
+                    });
+                    textView.setBackgroundResource(R.drawable.background_grey);
+                    textView.setId(i*countOfRowsAndCols+j);
+                }else{
+                    textView.setOnClickListener(null);
+                    textView.setBackgroundResource(R.drawable.back);
                 }
+
             }
         }
         return this;
@@ -148,7 +135,6 @@ public class MainActivity extends Activity implements IGridView {
                     presenterGrid.reloadGame();
                     break;
             }
-
             return false;
         });
     }
@@ -173,34 +159,10 @@ public class MainActivity extends Activity implements IGridView {
         return chronometer.getBase();
     }
 
-    @Override
-    public IGridView clearGrid() {
-        for (TableLayout tabl : tableLayouts.values()) {
-            tabl.removeAllViews();
-        }
-        return this;
-    }
-
 
     @Override
     public int getIdAnswer() {
         return lastEditText.getId();
-    }
-
-    @Override
-    public void failure() {
-        playInBackground(R.raw.applause);
-        lastEditText.setBackgroundColor(Color.RED);
-        lastAnswer = false;
-    }
-
-    @Override
-    public void success() {
-        playInBackground(R.raw.success);
-        lastEditText.setOnClickListener(null);
-        lastEditText.setBackgroundColor(Color.WHITE);
-        lastEditText = null;
-        lastAnswer = true;
     }
 
 

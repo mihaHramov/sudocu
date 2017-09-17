@@ -1,12 +1,11 @@
 package com.example.miha.sudocu.view.IView;
 
+import com.example.miha.sudocu.data.model.Answer;
+
 public interface IGridView {
-     IGridView clearGrid();
-     IGridView showGrid(String[][] ar);
+     IGridView showGrid(Answer[][] ar);
      int getIdAnswer();
-     void success();
      void gameOver();
-     void failure();
      void setGameTime(long time);
      long getGameTime();
 }
