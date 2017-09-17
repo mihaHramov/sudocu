@@ -1,13 +1,12 @@
 package com.example.miha.sudocu.data.model;
 
 
-
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
+
 import javax.annotation.Generated;
 
 import com.google.gson.annotations.Expose;
@@ -33,8 +32,8 @@ public class Grid implements Serializable {
     @Expose
     private int complexity;
     private transient final int dlinaBloka = 3;
-    private  String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
-    private  int razmer = grid.length;
+    private String[] grid = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};// основное множество
+    private int razmer = grid.length;
     @SerializedName("pole")
     @Expose
     private String[][] pole = new String[razmer][razmer];
@@ -42,7 +41,7 @@ public class Grid implements Serializable {
     @Expose
     private Map<Integer, String> answers = new Hashtable<>();
 
-    public  static final String KEY = "Grid";
+    public static final String KEY = "Grid";
 
     public long getGameTime() {
         return gameTime;
@@ -106,17 +105,20 @@ public class Grid implements Serializable {
     }
 
     public Boolean getAnswer(int i, String s) {
-
-        if (answers.get(i).equals(s)) {
-
-            //answers.put(i, "");
-            int str = i / razmer;
-            int col = i % razmer;
-            pole[str][col] = s;
-            undefined--;
-            return true;
+        int str = i / razmer;
+        int col = i % razmer;
+        pole[str][col] = s;
+        //потом изменить
+        for (int k = 0; k < pole.length; k++) {
+            for (int j = 0; j < pole.length; j++) {
+                int key = k * pole.length + j;
+                if (answers.containsKey(key) && !answers.get(key).equals(pole[k][j])) {
+                    return false;//ошибка
+                }
+            }
         }
-        return false;
+        undefined = 0;
+        return true;
     }
 
     private void initAnswer() {
@@ -129,6 +131,15 @@ public class Grid implements Serializable {
     }
 
 
+    public Answer[][] getGameGrid(){
+        Answer[][] answer = new Answer[razmer][razmer];
+        for (int i =0;i<razmer;i++){
+            for (int j =0;j<razmer;j++){
+                answer[i][j] = new Answer(pole[i][j],answers.containsKey(i*razmer+j));
+            }
+        }
+        return answer;
+    }
     public String[][] getGrid() {
         return pole;
     }
@@ -227,7 +238,7 @@ public class Grid implements Serializable {
 
         sdvig = 1;
         for (int i = dlinaBloka; i < razmer; i++) {
-            int temp =  sdvig, j = 0;
+            int temp = sdvig, j = 0;
             while (j < razmer) {
                 pole[i][j] = pole[i - dlinaBloka][temp];//Arra[temp];
                 j++;
