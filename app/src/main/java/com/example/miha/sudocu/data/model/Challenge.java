@@ -1,7 +1,5 @@
 package com.example.miha.sudocu.data.model;
 
-
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,13 +13,23 @@ public class Challenge {
     @Expose
     private String password;
 
+    @SerializedName("grid")
+    @Expose
+    private Grid grid;
 
+    public Challenge(String login, String password, Grid grid) {
+        this.login = login;
+        this.password = password;
+        this.grid = grid;
+    }
 
+    public void setGrid(Grid grid) {
+        this.grid = grid;
+    }
 
     public String getLogin() {
         return login;
     }
-
 
     public void setLogin(String login) {
         this.login = login;
@@ -30,5 +38,4 @@ public class Challenge {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }
