@@ -3,7 +3,6 @@ package com.example.miha.sudocu.data.DP;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.model.User;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -19,9 +18,9 @@ public class ChallengeDpImpl implements ChallengeDP {
     }
 
     @Override
-    public Observable<Void> sendGame(User user, Grid grid) {
-        Gson g = new Gson();
-        return instance.addChallenge(g.toJson(grid));
+    public Observable<Object> sendGame(User user, Grid grid) {
+        Challenge challenge = new Challenge(user.getName(),user.getPassword(),grid);
+        return instance.addChallenge(challenge);
     }
 
     @Override

@@ -10,6 +10,6 @@ import java.util.ArrayList;
 import rx.Observable;
 
 public interface ChallengeDP {
-    Observable<Void> sendGame(User user, Grid grid);
+    Observable<Object> sendGame(User user, Grid grid);
     Observable<ArrayList<Challenge>> getAllScore();
 }
