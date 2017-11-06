@@ -50,11 +50,7 @@ public class PresenterListOfGameFragment implements IPresenterOfNonCompleteGame 
 
     @Override
     public void onResume() {
-        if (games == null) {
-            prepate(repository.getListGames());//выполнить запрос за свежими данными в БД
-        } else {
-            view.refreshListOfCompleteGame(games);
-        }
+        prepate(repository.getListGames());
     }
 
     @Override
