@@ -3,7 +3,6 @@ package com.example.miha.sudocu.presenter.Adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -23,9 +22,6 @@ public class AlertDialog  {
             int level;
             if (progress < 20) {
                 level = R.string.level_easy;
-                if (level < 1) {
-                    level = 1;
-                }
             } else if (progress < 45) {
                 level = R.string.level_medium;
             } else {
@@ -63,18 +59,15 @@ public class AlertDialog  {
         dialogComplexityTextValue = (TextView) dialog.findViewById(R.id.textTitleValue);
         dialogComplexitySeekbar = (SeekBar) dialog.findViewById(R.id.complexity_grid);
         dialogComplexitySeekbar.setOnSeekBarChangeListener(seekBarChangeListener);
-        dialog.findViewById(R.id.newGameWithSettings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i;
-                switch (v.getId()) {
-                    case R.id.newGameWithSettings:
-                        dialog.hide();
-                        i = new Intent(ctx, MainActivity.class);
-                        i.putExtra(SETTINGS, dialogComplexitySeekbar.getProgress());
-                        ctx.startActivity(i);
-                        break;
-                }
+        dialog.findViewById(R.id.newGameWithSettings).setOnClickListener(v -> {
+            Intent i;
+            switch (v.getId()) {
+                case R.id.newGameWithSettings:
+                    dialog.hide();
+                    i = new Intent(ctx, MainActivity.class);
+                    i.putExtra(SETTINGS, dialogComplexitySeekbar.getProgress());
+                    ctx.startActivity(i);
+                    break;
             }
         });
     }
