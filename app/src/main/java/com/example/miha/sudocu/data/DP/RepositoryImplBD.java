@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
@@ -37,7 +36,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     }
 
     @Override
-    public Observable<Void> saveGame(Grid g) {
+    public Observable<Integer> saveGame(Grid g) {
         return Observable.create(subscriber -> {
             ContentValues cv = new ContentValues();
             Gson parser = new Gson();
@@ -50,9 +49,10 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
             cv.put(name, g.getName());
             if (g.getId() == 0) {
                 db.insert(tableName, null, cv);
+                subscriber.onCompleted();
                 return;
             }
-            db.update(tableName, cv, "id= ?", new String[]{Long.toString(g.getId())});
+            subscriber.onNext(db.update(tableName, cv, "id= ?", new String[]{Long.toString(g.getId())}));
             subscriber.onCompleted();
         });
 
