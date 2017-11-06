@@ -2,77 +2,22 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/focus"
+    android:padding="1dp"
     android:weightSum="3">
-
     <TableRow>
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
+       <include layout="@layout/text_view"/>
+       <include layout="@layout/text_view"/>
+       <include layout="@layout/text_view"/>
     </TableRow>
-
     <TableRow>
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
+       <include layout="@layout/text_view"/>
+       <include layout="@layout/text_view"/>
+       <include layout="@layout/text_view"/>
     </TableRow>
-
     <TableRow>
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
-
-        <TextView
-            style="@style/bigNumber"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/back" />
+       <include layout="@layout/text_view"/>
+       <include layout="@layout/text_view"/>
+       <include layout="@layout/text_view"/>
     </TableRow>
 </TableLayout>
