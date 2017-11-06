@@ -3,7 +3,9 @@ package com.example.miha.sudocu.presenter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 
+import com.example.miha.sudocu.data.DP.GenerateGame;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
@@ -24,14 +26,14 @@ public class PresenterGrid implements IPresenterGrid {
     @Override
     public void reloadGame() {
         int complex = model.getComplexity();
-        model = new Grid().setComplexity(complex).setUndefined(complex).init();
+        model = new Grid().setComplexity(complex).setUndefined(complex).init(new GenerateGame());
         view.showGrid(model.getGameGrid());
         loadGameTime();
     }
 
     private void initModel() {
         int complex = activity.getIntent().getIntExtra(AlertDialog.SETTINGS, 1);
-        model = new Grid().setComplexity(complex).setUndefined(complex).init();
+        model = new Grid().setComplexity(complex).setUndefined(complex).init(new GenerateGame());
     }
 
     @Override
@@ -71,7 +73,7 @@ public class PresenterGrid implements IPresenterGrid {
         repository.saveGame(model)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {}, throwable -> {}, () -> {});
+                .subscribe(aVoid -> {}, throwable -> Log.d("mihaHramov",throwable.getMessage()), () -> Log.d("mihaHramov","saveComplete"));
     }
 
     @Override
