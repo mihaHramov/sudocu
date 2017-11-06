@@ -14,7 +14,7 @@
         android:id="@+id/tableLayout1"
         layout="@layout/grid"
         android:layout_width="match_parent"
-        android:layout_height="290dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"

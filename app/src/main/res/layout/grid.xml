@@ -1,9 +1,10 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-
+    android:layout_height="match_parent"
     android:shrinkColumns="*"
-    android:stretchColumns="*">
+    android:stretchColumns="*"
+    android:padding="1dp"
+    android:background="@drawable/focus">
 
     <TableRow>
       <include layout="@layout/grid_table_layout" android:id="@+id/top_left"/>
