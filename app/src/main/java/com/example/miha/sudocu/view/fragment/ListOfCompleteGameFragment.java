@@ -31,6 +31,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
     private IPresenterOfCompleteGame presenter;
     private IDialogManager activityCallback;
     private int lastIdRecords;
+    private int lastIdRecordsDelete;
     private AdapterGrid adapter;
 
     @Override
@@ -53,6 +54,11 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         if (this.lastIdRecords > 0) {
             presenter.sendGame((Grid) adapter.getItem(lastIdRecords));
         }
+    }
+
+    @Override
+    public void deleteGameFromList() {
+        adapter.deleteItemById(lastIdRecordsDelete);
     }
 
     @Override
@@ -127,6 +133,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
                 presenter.sendGame((Grid) adapter.getItem(info.position));
                 break;
             case R.id.delete:
+                lastIdRecordsDelete = info.position;
                 presenter.deleteGame((Grid) adapter.getItem(info.position));
                 break;
         }
