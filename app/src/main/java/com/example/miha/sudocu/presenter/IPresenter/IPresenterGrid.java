@@ -1,20 +1,21 @@
 package com.example.miha.sudocu.presenter.IPresenter;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.content.Intent;
 
+import com.example.miha.sudocu.view.IView.IGridView;
 
-/**
- * Created by miha on 16.11.2016.
- */
 public interface IPresenterGrid extends IPresenter {
-    void init(Bundle onSaved, Activity activity);
+    void init(Intent intent);
 
     void reloadGame();
 
-    void answer(String answer);
-
-    void savedPresenter();
+    void answer(String answer, int id);
 
     void loadGameTime();
+
+    void setView(IGridView view);
+
+    void choseInput(int id);
+
+    void choseNotInput(int id);
 }
