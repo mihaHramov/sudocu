@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.data.DP.GenerateGame;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.IView.IGridView;
@@ -53,13 +52,13 @@ public class PresenterGrid implements IPresenterGrid {
     public void init(Intent intent) {
         saveData = false;
         this.intent = intent;
-        if (intent.getSerializableExtra(Grid.KEY) != null) {//если пришел с екрана не доигранных игр
+        if (intent.getSerializableExtra(Grid.KEY) != null) {
             model = (Grid) intent.getSerializableExtra(Grid.KEY);
         }
         if (model == null) {//если новая игра
             initModel();
-            viewState.showGameGrid();
         }
+        viewState.showGameGrid();
     }
 
     public PresenterGrid(IRepository repository) {
