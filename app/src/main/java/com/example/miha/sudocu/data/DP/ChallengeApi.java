@@ -9,6 +9,7 @@ import java.util.Map;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -23,6 +24,7 @@ public interface ChallengeApi {
     @GET("login")
     Observable<User> login(@QueryMap Map<String, String> options);
 
+    @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST("addChallenge")
     Observable<Object> addChallenge(@Body Challenge options);
 }
