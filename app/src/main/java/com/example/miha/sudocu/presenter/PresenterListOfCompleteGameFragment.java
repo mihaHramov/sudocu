@@ -1,15 +1,12 @@
 package com.example.miha.sudocu.presenter;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.data.DP.IRepository;
 import com.example.miha.sudocu.view.IView.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.DP.ChallengeDP;
 import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.data.DP.IRepositoryUser;
-import com.example.miha.sudocu.data.DP.RepositoryUser;
 import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.model.User;
