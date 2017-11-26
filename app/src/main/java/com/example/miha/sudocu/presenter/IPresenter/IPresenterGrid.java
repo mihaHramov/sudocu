@@ -9,13 +9,10 @@ public interface IPresenterGrid extends IPresenter {
 
     void reloadGame();
 
-    void answer(String answer, int id);
-
-    void loadGameTime();
+    void answer(String answer);
 
     void setView(IGridView view);
 
     void choseInput(int id);
 
-    void choseNotInput(int id);
 }
