@@ -2,6 +2,7 @@ package com.example.miha.sudocu.data.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;
@@ -108,10 +109,13 @@ public class Grid implements Serializable {
         return undefined;
     }
 
-    public Boolean getAnswer(int id, String s) {
+    public void setAnswer(int id, String s) {
         int str = id / pole.length;
         int col = id % pole.length;
         pole[str][col] = s;
+    }
+
+    public Boolean isGameOver() {
         for (Map.Entry<Integer, String> entry : answers.entrySet()) {
             int i = entry.getKey() / pole.length;
             int j = entry.getKey() % pole.length;
@@ -133,8 +137,105 @@ public class Grid implements Serializable {
         }
         return answer;
     }
+
     public String[][] getGrid() {
         return pole;
+    }
+
+    public ArrayList<Integer> getTheSameAnswers(int id) {
+        int k = id / razmer, l = id % razmer;
+        ArrayList<Integer> sameAnswers = new ArrayList<>();
+        for (int i = 0; i < razmer; i++) {
+            for (int j = 0; j < razmer; j++) {
+                if (i == k && j == l) {
+                    continue;
+                }
+                if (pole[k][l].equalsIgnoreCase(pole[i][j])) {
+                    sameAnswers.add(i * razmer + j);
+                }
+            }
+        }
+        return sameAnswers;
+    }
+
+    public ArrayList<Integer> getErrors(int id) {
+        int k = id / razmer, l = id % razmer;
+        ArrayList<Integer> sameAnswers = new ArrayList<>();
+
+        for (int i = 0; i < razmer; i++) {//
+            if (i == k) continue;
+            if (pole[i][l].equalsIgnoreCase(pole[k][l]) && !sameAnswers.contains(i * razmer + l)) {//по строкам
+                sameAnswers.add(i * razmer + l);
+            }
+        }
+        for (int j = 0; j < razmer; j++) {
+            if (j == l) continue;
+            if (pole[k][j].equalsIgnoreCase(pole[k][l]) && !sameAnswers.contains(k * razmer + j)) {
+                sameAnswers.add(k * razmer + j);
+            }
+        }
+
+        int i = (k / 3) * 3;
+        int j = (l / 3) * 3;
+
+        for (int count = 0; count < 3; count++) {
+            for (int countJ = 0; countJ < 3; countJ++) {
+
+                if ((i + count) == k && (j + countJ) == l) continue;
+                int temp = (i + count) * razmer + j + countJ;
+
+                if (pole[k][l].equalsIgnoreCase(pole[i + count][j + countJ])) {
+                    if (!sameAnswers.contains(temp)) {
+                        sameAnswers.add(temp);
+                    }
+                }
+            }
+        }
+        if (!sameAnswers.isEmpty() && !sameAnswers.contains(id)) {
+            sameAnswers.add(id);
+        }
+        return sameAnswers;
+    }
+
+    public ArrayList<Integer> getKnowOptions(Integer id) {
+        ArrayList<Integer> knowOption = new ArrayList<>();
+        int k = id / razmer, l = id % razmer;
+        for (int i = 0; i < razmer; i++) {//
+            if (i == k) continue;
+            if (answers.get(i * razmer + l) == null) {//по строкам
+                knowOption.add(i * razmer + l);
+            }
+        }
+
+        for (int j = 0; j < razmer; j++) {
+            if (j == l) continue;
+            if (answers.get(k * razmer + j) == null) {
+                knowOption.add(k * razmer + j);
+            }
+        }
+
+        int i = (k / 3) * 3;
+        int j = (l / 3) * 3;
+
+        for (int count = 0; count < 3; count++) {
+            for (int countJ = 0; countJ < 3; countJ++) {
+                int temp = (i + count) * razmer + j + countJ;
+                if (answers.get(temp) == null) {
+                    knowOption.add(temp);
+                }
+            }
+        }
+
+        return knowOption;
+    }
+
+    public Boolean isAnswer(int id) {
+        return answers.containsKey(id);
+    }
+
+    public String getAnswer(int id) {
+        int k = id / razmer, l = id % razmer;
+        return pole[k][l];
     }
 
     public Grid init(IGenerateGame generateGame) {
