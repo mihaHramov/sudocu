@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="black">@android:color/black</color>
     <color name="poleInputBorder">#b8b8b8</color>
     <color name="poleInput">#e6e6e6</color>
     <color name="poleTemp">#ffffff</color>
     <color name="poleFocus">#68cbfd</color>
     <color name="poleInputHasSearchAnsver">#b3e5fc</color>
+    <color name="poleInputSameAnswer">#d1effe</color>
     <color name="colorPrimary">#039be5</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorPrimaryDark">#303F9F</color>
