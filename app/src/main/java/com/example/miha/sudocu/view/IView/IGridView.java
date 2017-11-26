@@ -2,16 +2,32 @@ package com.example.miha.sudocu.view.IView;
 
 import com.example.miha.sudocu.data.model.Answer;
 
+import java.util.ArrayList;
+
 public interface IGridView {
-    IGridView showGrid(Answer[][] ar);
+    void showErrorFocus(int id);
+
+    void showGrid(Answer[][] ar);
+
+    void showTheSameAnswers(ArrayList<Integer> listId);
+
+    void showError(ArrayList<Integer> list);
+
+    void clearError(ArrayList<Integer> list);
+
+    void showKnownOptions(ArrayList<Integer> list);
+
+    void clearTheSameAnswer(ArrayList<Integer> theSameAnswers);
+
+    void clearKnownOptions(ArrayList<Integer> list);
 
     void gameOver();
 
-    void showKnownOptions(int id);
-
     void setGameTime(long time);
 
-    long getGameTime();
+    void setFocus(Integer id);
 
-    void focusInput(int id);
+    void removeFocus(Integer id);
+
+    void setTextToAnswer(Integer id, String answer);
 }
