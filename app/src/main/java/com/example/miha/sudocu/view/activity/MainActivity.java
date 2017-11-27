@@ -1,11 +1,10 @@
 package com.example.miha.sudocu.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Button;
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -17,6 +16,10 @@ import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.Service.MyMediaPlayerService;
+import com.example.miha.sudocu.view.events.BusProvider;
+import com.example.miha.sudocu.view.events.onAnswerChangeEvent;
+import com.example.miha.sudocu.view.fragment.KeyBoardFragment;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -24,11 +27,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
-public class MainActivity extends Activity implements IGridView {
+public class MainActivity extends AppCompatActivity implements IGridView {
     private IPresenterGrid presenterGrid;
     private Timer timer;
     private TextView[] textViewsGrid;
@@ -39,7 +40,6 @@ public class MainActivity extends Activity implements IGridView {
     public static String myMediaPlayer = "myMediaPlayer";
 
     private void initViews() {
-        ButterKnife.bind(this);
         for (int anArrIntIdGrid : arrIntIdGrid) {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) findViewById(anArrIntIdGrid));
         }
@@ -100,10 +100,10 @@ public class MainActivity extends Activity implements IGridView {
         list(list, R.drawable.show_all_know_answer);
     }
 
-    @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
-    void clickOnButton(View v) {
-        String answer = ((Button) v).getText().toString();
-        presenterGrid.answer(answer);
+    @Subscribe
+    public void clickOnButton(onAnswerChangeEvent answer) {
+        Log.d("mihaHramov","subscribe");
+        presenterGrid.answer(answer.getAnswer());
     }
 
     @Override
@@ -156,6 +156,8 @@ public class MainActivity extends Activity implements IGridView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportFragmentManager().beginTransaction().replace(R.id.keyboard,new KeyBoardFragment()).commit();
+        BusProvider.getInstance().register(this);
         initViews();
         toolbarInit();
         presenterGrid = DP.get().getPresenterOfGrid();
@@ -170,6 +172,7 @@ public class MainActivity extends Activity implements IGridView {
         stopService(new Intent(this, MyMediaPlayerService.class));
         presenterGrid.unSubscription();
         presenterGrid = null;
+        BusProvider.getInstance().unregister(this);
     }
 
     private void toolbarInit() {
