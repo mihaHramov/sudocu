@@ -1,9 +1,9 @@
 package com.example.miha.sudocu.view.events;
 
-public class onAnswerChangeEvent {
+public class OnAnswerChangeEvent {
     private String answer;
 
-    public onAnswerChangeEvent(String answer) {
+    public OnAnswerChangeEvent(String answer) {
         this.answer = answer;
     }
 

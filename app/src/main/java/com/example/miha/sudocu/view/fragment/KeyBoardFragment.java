@@ -11,7 +11,7 @@ import android.widget.Button;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.events.BusProvider;
-import com.example.miha.sudocu.view.events.onAnswerChangeEvent;
+import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,7 +27,7 @@ public class KeyBoardFragment extends Fragment {
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
     void clickOnButton(View v) {
         String answer = ((Button) v).getText().toString();
-        BusProvider.getInstance().post(new onAnswerChangeEvent(answer));
+        BusProvider.getInstance().post(new OnAnswerChangeEvent(answer));
     }
 
     @Nullable
