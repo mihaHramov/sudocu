@@ -3,6 +3,7 @@ package com.example.miha.sudocu.data.model;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.example.miha.sudocu.data.DP.IAudioCompleteCallback;
 
 public class AudioPlayer {
     private MediaPlayer mPlayer = null;
@@ -16,7 +17,7 @@ public class AudioPlayer {
         return player;
     }
 
-    public void stop() {
+    private void stop() {
         if (mPlayer != null) {
             mPlayer.release();
             mPlayer = null;
@@ -27,14 +28,12 @@ public class AudioPlayer {
         mContext = context;
     }
 
-    public void play(int resId) {
+    public void play(int resId, IAudioCompleteCallback callback) {
         stop();
         mPlayer = MediaPlayer.create(mContext, resId);
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                stop();
-            }
+        mPlayer.setOnCompletionListener(mp -> {
+            stop();
+            if(callback!=null) callback.execute();
         });
         mPlayer.start();
     }
