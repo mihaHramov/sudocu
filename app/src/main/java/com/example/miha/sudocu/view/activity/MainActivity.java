@@ -17,8 +17,11 @@ import com.squareup.otto.Subscribe;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Toolbar toolbar;
+    private KeyBoardFragment keyBoardFragment;
+    private PlayingFieldFragment playingField;
     private Bus bus;
+
+    private Toolbar toolbar;
     public static String myMediaPlayer = "myMediaPlayer";
 
     @Override
@@ -27,9 +30,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         bus = BusProvider.getInstance();
         bus.register(this);
+
+        keyBoardFragment = new KeyBoardFragment();
+        playingField = new PlayingFieldFragment();
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.keyboard, new KeyBoardFragment())
-                .replace(R.id.tableLayout1, new PlayingFieldFragment())
+                .replace(R.id.keyboard, keyBoardFragment)
+                .replace(R.id.tableLayout1, playingField)
                 .commit();
         toolbarInit();
     }
@@ -51,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             switch (id) {
                 case R.id.reloadGame:
-                    //          presenterGrid.reloadGame();
+                    playingField.reloadGame();
                     break;
             }
             return false;
@@ -59,9 +66,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void stopMusic(OnStopMusicEvent event){
+    public void stopMusic(OnStopMusicEvent event) {
         finish();
     }
+
     @Subscribe
     public void playMusic(PlayMusicEvent event) {
         Intent intent = new Intent(this, MyMediaPlayerService.class)

@@ -174,5 +174,7 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         Toast.makeText(getActivity(), "game over", Toast.LENGTH_SHORT).show();
         bus.post(new PlayMusicEvent(R.raw.success));
     }
-
+    public void reloadGame(){
+        presenterGrid.reloadGame();
+    }
 }
