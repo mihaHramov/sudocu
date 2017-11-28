@@ -59,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    void stopMusic(OnStopMusicEvent event){
+    public void stopMusic(OnStopMusicEvent event){
         finish();
     }
     @Subscribe
-    void playMusic(PlayMusicEvent event) {
+    public void playMusic(PlayMusicEvent event) {
         Intent intent = new Intent(this, MyMediaPlayerService.class)
                 .putExtra(myMediaPlayer, event.getResMusic());
         startService(intent);
