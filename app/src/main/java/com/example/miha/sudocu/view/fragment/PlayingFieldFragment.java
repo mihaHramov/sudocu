@@ -51,6 +51,11 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        presenterGrid.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
 
     @Subscribe
     public void clickOnButton(OnAnswerChangeEvent answer) {
@@ -60,6 +65,7 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     @Override
     public void onDestroy() {
         bus.unregister(this);
+        presenterGrid.unSubscription();
         super.onDestroy();
     }
 
