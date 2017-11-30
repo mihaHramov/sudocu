@@ -29,6 +29,7 @@ public class PresenterGrid implements IPresenterGrid {
         activityInfo = new MementoMainActivity();
         this.viewState = new ViewGridState();
         this.repository = repository;
+        saveData = false;
     }
 
 
@@ -48,7 +49,7 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     public void init(Intent intent) {
-        saveData = false;
+        if(saveData) return;
         this.intent = intent;
         if (intent.getSerializableExtra(Grid.KEY) != null) {
             model = (Grid) intent.getSerializableExtra(Grid.KEY);
@@ -56,7 +57,7 @@ public class PresenterGrid implements IPresenterGrid {
         if (model == null) {//если новая игра
             initModel();
         }
-        viewState.showGameGrid();
+
     }
 
 
@@ -76,7 +77,8 @@ public class PresenterGrid implements IPresenterGrid {
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(aVoid -> {
-                    }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> Log.d("mihaHramov", "saveComplete"));
+                    }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {
+                    });
             model = null;
             viewState.clearHistory();
         }
@@ -157,45 +159,17 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     //нужен для отслеживания состояния активити
-    public class ViewGridState {
-        private ArrayList<Integer> myList = new ArrayList<>();
+    private class ViewGridState {
         private IGridView view;
-        private final int SHOW_GRID = 0;
-        private final int SHOW_KNOW_OPTIONS = 1;
-        private final int FOCUS_INPUT = 3;
-        private final int REMOVE_FOCUS_INPUT = 2;
 
-        private static final int SHOW_GAME_OVER = 4;
-        private static final int SHOW_SAME_ANSWER = 5;
-        private static final int SHOW_ERROR_FOCUS = 6;
-        private static final int SHOW_ERRORS = 7;
-        private static final int CLEAR_ERRORS = 8;
-        private static final int CLEAR_KNOW_OPTION = 9;
-        private static final int CLEAR_KNOW_ANSWER = 10;
-        private static final int SHOW_ANSWER = 11;
-
-
-        private  void attachView(IGridView view) {
+        private void attachView(IGridView view) {
             this.view = view;
-            for (Integer i : myList) {
-                switch (i) {
-                    case SHOW_GRID:
-                        view.showGrid(model.getGameGrid());
-                        Log.d("miahHramov", "gameGrid");
-                        break;
-//                    case REMOVE_FOCUS_INPUT:
-//                        view.removeFocus(activityInfo.getLastChoseInputId());
-//                        Log.d("miahHramov", "removeFocus");
-//                        break;
-//                    case FOCUS_INPUT:
-//                        view.setFocus(activityInfo.getLastChoseInputId());
-//                        Log.d("miahHramov", "focus");
-//                        break;
-//                    case SHOW_KNOW_OPTIONS:
-//                        view.showKnownOptions(activityInfo.getKnowOption());
-//                        break;
-                }
-            }
+            showGameGrid();
+            showErrorInput();
+            focus();
+            showErrorFocus();
+            showTheSameAnswers();
+            showKnownOptions();
         }
 
 
@@ -205,117 +179,95 @@ public class PresenterGrid implements IPresenterGrid {
 
 
         private void removeFocus() {
-            if (activityInfo.getLastChoseInputId() != null) {
-                if (isViewAttach()) {
-                    view.removeFocus(activityInfo.getLastChoseInputId());
-                }
-                addToList(REMOVE_FOCUS_INPUT);
+            if (activityInfo.getLastChoseInputId() == null) return;
+            if (isViewAttach()) {
+                view.removeFocus(activityInfo.getLastChoseInputId());
             }
         }
 
-        public void showAnswer() {
+        private void showAnswer() {
+            if (activityInfo.getLastChoseInputId() == null || activityInfo.getLastAnswer() == null)
+                return;
             if (isViewAttach()) {
                 view.setTextToAnswer(activityInfo.getLastChoseInputId(), activityInfo.getLastAnswer());
             }
-            addToList(SHOW_ANSWER);
         }
 
-        public void showKnownOptions() {
+        private void showKnownOptions() {
             if (isViewAttach()) {
                 view.showKnownOptions(activityInfo.getKnowOption());
             }
-            addToList(SHOW_KNOW_OPTIONS);
         }
 
-        public void showErrorInput() {
+        private void showErrorInput() {
             if (activityInfo.getLastAnswer() != null && activityInfo.getLastChoseInputId() != null) {
-                if (!model.getAnswer(activityInfo.getLastChoseInputId()).isEmpty()) {
-                    if (isViewAttach()) {
-                        view.showError(activityInfo.getError());
-                    }
-                    addToList(SHOW_ERRORS);
+                if (isViewAttach()) {
+                    view.showError(activityInfo.getError());
                 }
             }
         }
 
-        public void clearHistory() {
+        private void clearHistory() {
             activityInfo.clear();
-            myList.clear();
         }
 
-        public void showTheSameAnswers() {
+        private void showTheSameAnswers() {
             if (isViewAttach()) {
                 view.showTheSameAnswers(activityInfo.getSameAnswer());
             }
-            addToList(SHOW_SAME_ANSWER);
         }
 
-        public void focus() {
+        private void focus() {
+            if (activityInfo.getLastChoseInputId() == null) return;
             if (isViewAttach()) {
                 view.setFocus(activityInfo.getLastChoseInputId());
             }
-            addToList(FOCUS_INPUT);
         }
 
-        public void showGameOver() {
+        private void showGameOver() {
             if (isViewAttach()) {
                 view.gameOver();
             }
-            addToList(SHOW_GAME_OVER);
         }
 
         //показать игровое поле
-        public void showGameGrid() {
+        private void showGameGrid() {
             if (isViewAttach()) {
                 view.showGrid(model.getGameGrid());
             }
-            addToList(SHOW_GRID);
         }
 
-        public void addToList(int k) {
-            myList.add(k);
-           /* if (myList.contains(k)) {
-                myList.set(myList.indexOf(k), k);
-            } else {
-                myList.add(k);
-            }*/
-        }
-
-
-        public void detachView() {
+        private void detachView() {
             this.view = null;
         }
 
-        public void clearTheSameAnswer() {
-            if (activityInfo.getLastChoseInputId() != null) {
-                if (isViewAttach()) {
-                    view.clearTheSameAnswer(activityInfo.getSameAnswer());
-                }
-                addToList(CLEAR_KNOW_ANSWER);//возможна ошибка
+        private void clearTheSameAnswer() {
+            if (activityInfo.getLastChoseInputId() == null) return;
+            if (isViewAttach()) {
+                view.clearTheSameAnswer(activityInfo.getSameAnswer());
             }
 
         }
 
-        public void clearKnownOptions() {
+        private void clearKnownOptions() {
             if (activityInfo.getLastChoseInputId() == null) return;
             if (isViewAttach()) {
                 view.clearKnownOptions(activityInfo.getKnowOption());
             }
-            addToList(CLEAR_KNOW_OPTION);
         }
 
-        public void clearError() {
+        private void clearError() {
             if (isViewAttach()) {
                 view.clearError(activityInfo.getErrorForClean());
             }
-            addToList(CLEAR_ERRORS);
         }
 
-        public void showErrorFocus() {
+        private void showErrorFocus() {
+            if (activityInfo.getLastChoseInputId() == null) return;
             if (isViewAttach()) {
-                view.showErrorFocus(activityInfo.getLastChoseInputId());
+                if(activityInfo.getError().contains(activityInfo.getLastChoseInputId()))
+                    view.showErrorFocus(activityInfo.getLastChoseInputId());
             }
-            addToList(SHOW_ERROR_FOCUS);
         }
-    }
+    }//end viewState
 }
