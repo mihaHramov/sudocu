@@ -86,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
                 case R.id.reloadGame:
                     playingField.reloadGame();
                     break;
+                case R.id.open_setting:
+                    Intent i = new Intent(this,SettingsActivity.class);
+                    startActivity(i);
+                    break;
             }
             return false;
         });
