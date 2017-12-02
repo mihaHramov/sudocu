@@ -28,6 +28,10 @@ public class MenuActivity extends Activity {
     void onClickNewGame(){
         dialog.showDialog();
     }
+    @OnClick(R.id.open_setting)
+     void onClickOpenSettings(){
+        openNewActivity(new Intent(this,SettingsActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

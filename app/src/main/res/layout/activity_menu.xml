@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/colorWhite"
         android:minHeight="?android:attr/actionBarSize"
-        app:title="@string/app_name" />
+        app:title="@string/app_name"
+        app:titleTextColor="@color/colorWhite" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -31,9 +31,15 @@
             android:id="@+id/restore"
             style="@style/menuItem"
             android:text="@string/load_game_menu" />
+
         <Button
             android:id="@+id/rating"
             style="@style/menuItem"
-            android:text="@string/rating"/>
+            android:text="@string/rating" />
+
+        <Button
+            android:id="@+id/open_setting"
+            style="@style/menuItem"
+            android:text="@string/title_activity_settings" />
     </LinearLayout>
 </RelativeLayout>
