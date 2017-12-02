@@ -87,6 +87,8 @@ public class MementoMainActivity {
         this.lastAnswer = null;
         this.lastChoseInputId = null;
         this.lastChoseNotInputId = null;
+        this.sameAnswer.clear();
+        this.knowOption.clear();
     }
 
     public void setSameAnswer(ArrayList<Integer> sameAnswer) {
