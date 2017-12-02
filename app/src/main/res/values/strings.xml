@@ -26,4 +26,8 @@
     <string name="delete">удалить</string>
     <string name="challenge">бросить вызов</string>
     <string name="error">Ошибка</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="settings">настройки</string>
+    <string name="mode_left_title">Режим Левши</string>
+    <string name="mode_left_body">Разместить клавиатуру с левой стороны</string>
 </resources>
