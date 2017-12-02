@@ -22,14 +22,12 @@ public class PresenterGrid implements IPresenterGrid {
     private boolean saveData;
     private IRepository repository;
     private Grid model;
-    private Intent intent;
     private MementoMainActivity activityInfo;
 
     public PresenterGrid(IRepository repository) {
         activityInfo = new MementoMainActivity();
         this.viewState = new ViewGridState();
         this.repository = repository;
-        saveData = false;
     }
 
 
@@ -43,21 +41,19 @@ public class PresenterGrid implements IPresenterGrid {
         viewState.showGameGrid();
     }
 
-    private void initModel() {
-        int complex = intent.getIntExtra(AlertDialog.SETTINGS, 1);
+    private void initModel(int complex) {
         model = new Grid().setComplexity(complex).setUndefined(complex).init(new GenerateGame());
     }
 
     public void init(Intent intent) {
-        if(saveData) return;
-        this.intent = intent;
-        if (intent.getSerializableExtra(Grid.KEY) != null) {
+        if (intent.getSerializableExtra(Grid.KEY) != null && model == null) {
             model = (Grid) intent.getSerializableExtra(Grid.KEY);
         }
         if (model == null) {//если новая игра
-            initModel();
+            int complex = intent.getIntExtra(AlertDialog.SETTINGS, 1);
+            initModel(complex);
         }
-
+        saveData = false;
     }
 
 
@@ -265,7 +261,7 @@ public class PresenterGrid implements IPresenterGrid {
         private void showErrorFocus() {
             if (activityInfo.getLastChoseInputId() == null) return;
             if (isViewAttach()) {
-                if(activityInfo.getError().contains(activityInfo.getLastChoseInputId()))
+                if (activityInfo.getError().contains(activityInfo.getLastChoseInputId()))
                     view.showErrorFocus(activityInfo.getLastChoseInputId());
             }
         }
