@@ -8,9 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterMainActivity;
-import com.example.miha.sudocu.presenter.PresenterMainActivity;
 import com.example.miha.sudocu.presenter.Service.MyMediaPlayerService;
 import com.example.miha.sudocu.view.IView.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
@@ -46,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
         bus = BusProvider.getInstance();
         bus.register(this);
         ButterKnife.bind(this);
-        presenter = new PresenterMainActivity(this);
+        presenter = DP.get().getPresenterMainActivity();
+        presenter.setView(this);
         isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
         if (savedInstanceState != null) {
             keyBoardFragment = (KeyBoardFragment) getSupportFragmentManager().findFragmentById(R.id.keyboard);
