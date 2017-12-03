@@ -30,4 +30,12 @@
     <string name="settings">настройки</string>
     <string name="mode_left_title">Режим Левши</string>
     <string name="mode_left_body">Разместить клавиатуру с левой стороны</string>
+    <string name="show_same_answer_title">Существующие ответы</string>
+    <string name="show_same_answer_body">Показывать существующие ответы</string>
+    <string name="show_error_answer_title">Конфликты</string>
+    <string name="show_error_answer_body">Пометка конфликтующих комбинаций</string>
+    <string name="show_know_answer_title">Показывать известные цифры</string>
+    <string name="show_know_answer_body">Показывать заранее известные  ответы(в строке и столбце)</string>
+    <string name="show_count_number_body">Показывать количество уже установленных ответов</string>
+    <string name="show_cout_number_title">Показывать число ответов</string>
 </resources>
