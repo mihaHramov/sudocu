@@ -2,6 +2,23 @@ package com.example.miha.sudocu.data.DP.intf;
 
 
 public interface IRepositorySettings {
-    void changeKeyboardMode(Boolean flag);
     Boolean getKeyboardMode();
+
+    Boolean getErrorMode();
+
+    Boolean getKnowAnswerMode();
+
+    Boolean getShowCountNumberOnButtonMode();
+
+    Boolean getShowSameAnswerMode();
+
+    void changeKeyboardMode(Boolean flag);
+
+    void changeShowErrorMode(boolean isChecked);
+
+    void changeShowKnowAnswerMode(boolean isChecked);
+
+    void changeShowCountNumberOnButtonMode(boolean isChecked);
+
+    void changeShowSameAnswerMode(boolean isChecked);
 }
