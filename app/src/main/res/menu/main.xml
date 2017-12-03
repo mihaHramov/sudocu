@@ -7,8 +7,9 @@
         android:title="@string/reload_game"
         app:showAsAction="never" />
     <item
+        android:icon="@drawable/ic_action_settings"
         android:id="@+id/open_setting"
         android:orderInCategory="200"
         android:title="@string/settings"
-        app:showAsAction="never"/>
+        app:showAsAction="ifRoom"/>
 </menu>
