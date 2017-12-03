@@ -17,17 +17,18 @@ import com.example.miha.sudocu.presenter.PresenterSettings;
 
 public class App extends Application {
     private static final String APP_SHARED_PREFERENCE = "APP_SHARED_PREFERENCE";
+
     @Override
     public void onCreate() {
         super.onCreate();
         IRepository repository = new RepositoryImplBD(this);
         IRepositoryUser repositoryUser = new RepositoryUser(this);
-        IRepositorySettings repositorySettings = new RepositorySettings(getSharedPreferences(APP_SHARED_PREFERENCE,MODE_PRIVATE));
+        IRepositorySettings repositorySettings = new RepositorySettings(getSharedPreferences(APP_SHARED_PREFERENCE, MODE_PRIVATE));
         DP.setDp(new DP());
         DP.get()
-                .setPresenterListOfCompleteGameFragment(new PresenterListOfCompleteGameFragment(repository,repositoryUser))
+                .setPresenterListOfCompleteGameFragment(new PresenterListOfCompleteGameFragment(repository, repositoryUser))
                 .setPresenterListOfGameFragment(new PresenterListOfGameFragment(repository))
-                .setPresenterGrid(new PresenterGrid(repository))
+                .setPresenterGrid(new PresenterGrid(repository, repositorySettings))
                 .setPresenterSettings(new PresenterSettings(repositorySettings))
                 .setPresenterMainActivity(new PresenterMainActivity(repositorySettings));
     }

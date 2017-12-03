@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.miha.sudocu.data.DP.GenerateGame;
 import com.example.miha.sudocu.data.DP.MementoMainActivity;
+import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
@@ -21,10 +22,12 @@ public class PresenterGrid implements IPresenterGrid {
     private ViewGridState viewState;
     private boolean saveData;
     private IRepository repository;
+    private IRepositorySettings settings;
     private Grid model;
     private MementoMainActivity activityInfo;
 
-    public PresenterGrid(IRepository repository) {
+    public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
+        this.settings = repositorySettings;
         activityInfo = new MementoMainActivity();
         this.viewState = new ViewGridState();
         this.repository = repository;
