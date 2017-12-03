@@ -44,11 +44,15 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         for (int anArrIntIdGrid : arrIntIdGrid) {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) rootView.findViewById(anArrIntIdGrid));
         }
-
         presenterGrid = DP.get().getPresenterOfGrid();
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
         presenterGrid.init(getActivity().getIntent());
         presenterGrid.setView(this);
-        return rootView;
+        super.onResume();
     }
 
     @Override
