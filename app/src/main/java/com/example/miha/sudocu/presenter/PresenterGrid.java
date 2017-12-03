@@ -97,7 +97,9 @@ public class PresenterGrid implements IPresenterGrid {
 
         viewState.clearError();//очистил ошибки
 
-        activityInfo.addError(lastChoseInputId, model.getErrors(lastChoseInputId));//выбрал ошибки для текущего
+        if(settings.getErrorMode()){
+            activityInfo.addError(lastChoseInputId, model.getErrors(lastChoseInputId));//выбрал ошибки для текущего
+        }
         activityInfo.setLastAnswer(answer);
 
         viewState.showErrorInput();
@@ -107,11 +109,15 @@ public class PresenterGrid implements IPresenterGrid {
         activityInfo.setKnowOption(knowOption);
 
         viewState.showAnswer();
-        viewState.showKnownOptions();
+        if(settings.getKnowAnswerMode()) {
+            viewState.showKnownOptions();
+        }
         ArrayList<Integer> sameAnswers = model.getTheSameAnswers(activityInfo.getLastChoseInputId());
         sameAnswers.removeAll(activityInfo.getError());
         activityInfo.setSameAnswer(sameAnswers);
-        viewState.showTheSameAnswers();
+        if(settings.getShowSameAnswerMode()){
+            viewState.showTheSameAnswers();
+        }
 
         if (model.isGameOver()) {//проверка на конец игры
             viewState.showGameOver();
@@ -141,7 +147,9 @@ public class PresenterGrid implements IPresenterGrid {
             ArrayList<Integer> sameAnswer = model.getTheSameAnswers(id);
             sameAnswer.removeAll(error);
             activityInfo.setSameAnswer(sameAnswer);
-            viewState.showTheSameAnswers();
+            if(settings.getShowSameAnswerMode()){
+                viewState.showTheSameAnswers();
+            }
         }
 
         ArrayList<Integer> knowOptions = model.getKnowOptions(id);
@@ -149,7 +157,9 @@ public class PresenterGrid implements IPresenterGrid {
         activityInfo.setKnowOption(knowOptions);//выбрал точно известные ответы
         activityInfo.setLastChoseInputId(id);//установить новый id
 
-        viewState.showKnownOptions();//показать известные варианты
+        if(settings.getKnowAnswerMode()) {
+            viewState.showKnownOptions();//показать известные варианты
+        }
         if (error.contains(activityInfo.getLastChoseInputId())) {
             viewState.showErrorFocus();
         } else {
