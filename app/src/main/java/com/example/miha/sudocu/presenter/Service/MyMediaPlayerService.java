@@ -2,20 +2,19 @@ package com.example.miha.sudocu.presenter.Service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.example.miha.sudocu.view.activity.MainActivity;
-import com.example.miha.sudocu.data.model.AudioPlayer;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnStopMusicEvent;
 import com.squareup.otto.Bus;
 
 
 public class MyMediaPlayerService extends Service {
-    private AudioPlayer mPlayer;
     private Bus bus;
-
+    private MediaPlayer player = null;
     @Override
     public void onCreate() {
         bus = BusProvider.getInstance();
@@ -31,9 +30,19 @@ public class MyMediaPlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mPlayer = AudioPlayer.getInstance(getApplicationContext());
         int resultMelody = intent.getIntExtra(MainActivity.myMediaPlayer, 0);
-        mPlayer.play(resultMelody, () -> bus.post(new OnStopMusicEvent()));
+        if(player!=null){
+            player.release();//освободил
+        }
+        if(player==null){
+          player = MediaPlayer.create(getApplicationContext(),resultMelody);
+        }
+        player.setOnCompletionListener(mp -> {
+            player.release();
+            player = null;
+            bus.post(new OnStopMusicEvent());
+        });
+        player.start();
         return START_STICKY;
     }
 
