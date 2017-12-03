@@ -147,9 +147,7 @@ public class PresenterGrid implements IPresenterGrid {
             ArrayList<Integer> sameAnswer = model.getTheSameAnswers(id);
             sameAnswer.removeAll(error);
             activityInfo.setSameAnswer(sameAnswer);
-            if(settings.getShowSameAnswerMode()){
-                viewState.showTheSameAnswers();
-            }
+            viewState.showTheSameAnswers();
         }
 
         ArrayList<Integer> knowOptions = model.getKnowOptions(id);
@@ -203,14 +201,14 @@ public class PresenterGrid implements IPresenterGrid {
         }
 
         private void showKnownOptions() {
-            if (isViewAttach()) {
+            if (isViewAttach()&&settings.getKnowAnswerMode()) {
                 view.showKnownOptions(activityInfo.getKnowOption());
             }
         }
 
         private void showErrorInput() {
             if (activityInfo.getLastAnswer() != null && activityInfo.getLastChoseInputId() != null) {
-                if (isViewAttach()) {
+                if (isViewAttach()&&settings.getErrorMode()) {
                     view.showError(activityInfo.getError());
                 }
             }
@@ -221,7 +219,7 @@ public class PresenterGrid implements IPresenterGrid {
         }
 
         private void showTheSameAnswers() {
-            if (isViewAttach()) {
+            if (isViewAttach()&&settings.getShowSameAnswerMode()) {
                 view.showTheSameAnswers(activityInfo.getSameAnswer());
             }
         }
@@ -273,7 +271,7 @@ public class PresenterGrid implements IPresenterGrid {
 
         private void showErrorFocus() {
             if (activityInfo.getLastChoseInputId() == null) return;
-            if (isViewAttach()) {
+            if (isViewAttach()&&settings.getErrorMode()) {
                 if (activityInfo.getError().contains(activityInfo.getLastChoseInputId()))
                     view.showErrorFocus(activityInfo.getLastChoseInputId());
             }
