@@ -103,9 +103,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     }
     @Override
     public void showTheKeyboardOnTheLeftSide() {
-        if (!isPortrait) {
             replaceView(keyboard,play);
-        }
     }
 
     @Override
