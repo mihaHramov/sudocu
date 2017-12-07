@@ -51,7 +51,9 @@ public class AlertDialog  {
         }
         dialog.show();
     }
-
+public void dismissDialog(){
+    dialog.dismiss();
+}
 
     private void initDialog() {
         dialog = new Dialog(ctx);

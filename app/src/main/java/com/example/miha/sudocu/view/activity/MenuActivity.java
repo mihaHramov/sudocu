@@ -29,7 +29,7 @@ public class MenuActivity extends Activity {
         dialog.showDialog();
     }
     @OnClick(R.id.open_setting)
-     void onClickOpenSettings(){
+    void onClickOpenSettings(){
         openNewActivity(new Intent(this,SettingsActivity.class));
     }
 
@@ -39,6 +39,12 @@ public class MenuActivity extends Activity {
         setContentView(R.layout.activity_menu);
         dialog = new AlertDialog(this);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        dialog.dismissDialog();
+        super.onDestroy();
     }
 
     private void openNewActivity(Intent i) {
