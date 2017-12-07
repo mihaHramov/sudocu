@@ -61,6 +61,34 @@ public class PresenterGrid implements IPresenterGrid {
 
 
     public void setView(IGridView view) {
+        Boolean modeError = !settings.getErrorMode();
+        ArrayList<Integer> errors = new ArrayList<>();
+
+        if (!modeError) {
+            errors = model.getErrors();
+        }
+        viewState.setErrors(errors);
+
+        ArrayList<Integer> knowOpt = new ArrayList<>();
+        if (settings.getKnowAnswerMode()) {
+            knowOpt = model.getKnowOptions(viewState.getLastId());
+        }
+        if (!modeError) {
+            knowOpt.removeAll(errors);
+        }
+        viewState.setKnowOption(knowOpt);
+
+        ArrayList<Integer> sameAnswers = new ArrayList<>();
+        if (settings.getShowSameAnswerMode()) {
+           sameAnswers  = model.getTheSameAnswers(viewState.getLastId());
+           Log.d("mihaHramov","Mode On sameAnswer has "+sameAnswers.size());
+        }
+        if (!modeError) {
+            sameAnswers.removeAll(errors);
+            Log.d("mihaHramov","sameAnswer has errors"+errors.size());
+        }
+        viewState.setSameAnswer(sameAnswers);
+
         viewState.attachView(view);
     }
 
@@ -89,44 +117,41 @@ public class PresenterGrid implements IPresenterGrid {
             return;
         }
 
-        viewState.clearTheSameAnswer();
-
-        model.setAnswer(lastChoseInputId, answer);//установил новый ответ
-
-        activityInfo.setErrorForClean(activityInfo.getError());//зачистил все
+        ArrayList<Integer> clearAnswer = model.getTheSameAnswers(lastChoseInputId);
+        viewState.clearTheSameAnswer(clearAnswer);
 
         viewState.clearError();//очистил ошибки
 
-        if(settings.getErrorMode()){
-            activityInfo.addError(lastChoseInputId, model.getErrors(lastChoseInputId));//выбрал ошибки для текущего
+        model.setAnswer(lastChoseInputId, answer);//установил новый ответ
+
+        ArrayList<Integer> error = new ArrayList<>();
+        if (settings.getErrorMode()) {
+            error = model.getErrors();
+            viewState.showErrorInput(error);
         }
-        activityInfo.setLastAnswer(answer);
+        viewState.showAnswer(lastChoseInputId, answer);
 
-        viewState.showErrorInput();
-
-        ArrayList<Integer> knowOption = model.getKnowOptions(lastChoseInputId);
-        knowOption.removeAll(activityInfo.getError());
-        activityInfo.setKnowOption(knowOption);
-
-        viewState.showAnswer();
-        if(settings.getKnowAnswerMode()) {
-            viewState.showKnownOptions();
+        if (settings.getKnowAnswerMode()) {
+            ArrayList<Integer> knowOption = model.getKnowOptions(lastChoseInputId);
+            knowOption.removeAll(error);
+            viewState.showKnownOptions(knowOption);
         }
-        ArrayList<Integer> sameAnswers = model.getTheSameAnswers(activityInfo.getLastChoseInputId());
-        sameAnswers.removeAll(activityInfo.getError());
-        activityInfo.setSameAnswer(sameAnswers);
-        if(settings.getShowSameAnswerMode()){
-            viewState.showTheSameAnswers();
+
+
+        if (settings.getShowSameAnswerMode()) {
+            ArrayList<Integer> sameAnswers = model.getTheSameAnswers(lastChoseInputId);
+            sameAnswers.removeAll(error);
+            viewState.showTheSameAnswers(sameAnswers);
         }
 
         if (model.isGameOver()) {//проверка на конец игры
             viewState.showGameOver();
         }
 
-        if (activityInfo.getError().contains(activityInfo.getLastChoseInputId())) {
-            viewState.showErrorFocus();
+        if (error.contains(lastChoseInputId)) {
+            viewState.showErrorFocus(lastChoseInputId);
         } else {
-            viewState.focus();
+            viewState.focus(lastChoseInputId);
         }
     }
 
@@ -135,48 +160,94 @@ public class PresenterGrid implements IPresenterGrid {
         if (lastInputId != null && lastInputId == id) {//проверка на повторный клик по одному и тому же полю
             return;
         }
-        ArrayList<Integer> error = activityInfo.getError();//получил ошибки
+        ArrayList<Integer> error = new ArrayList<>();
+        if (settings.getErrorMode()) {
+            error = model.getErrors();//получил ошибки
+        }
+        if (lastInputId != null) {
+            ArrayList clearKnowOption = model.getKnowOptions(lastInputId);
+            clearKnowOption.removeAll(error);
+            viewState.clearKnownOptions(clearKnowOption);//убрал старые ответы
+            viewState.removeFocus(lastInputId);      //убрал старый фокус
 
-        viewState.clearKnownOptions();//убрал старые ответы
-        viewState.removeFocus();      //убрал старый фокус
-        viewState.clearTheSameAnswer();//убрал такие же ответы
-        viewState.showErrorInput();
+            ArrayList<Integer> clearSameAnswer = model.getTheSameAnswers(lastInputId);
+            clearSameAnswer.removeAll(error);
+            viewState.clearTheSameAnswer(clearSameAnswer);//убрал такие же ответы
+        }
 
-        if (!model.getAnswer(id).trim().isEmpty()) {//если выбраное поле не пустое
-            //оговорка очищать только те что не в списке ошибок
+
+        if (settings.getErrorMode()) {
+            viewState.showErrorInput(error);//отобразил ошибки
+        }
+
+        if (!model.getAnswer(id).trim().isEmpty()) {
             ArrayList<Integer> sameAnswer = model.getTheSameAnswers(id);
-            sameAnswer.removeAll(error);
-            activityInfo.setSameAnswer(sameAnswer);
-            viewState.showTheSameAnswers();
+            if (settings.getErrorMode()) {
+                sameAnswer.removeAll(error);
+            }
+            viewState.showTheSameAnswers(sameAnswer);
         }
 
-        ArrayList<Integer> knowOptions = model.getKnowOptions(id);
-        knowOptions.removeAll(error);
-        activityInfo.setKnowOption(knowOptions);//выбрал точно известные ответы
-        activityInfo.setLastChoseInputId(id);//установить новый id
 
-        if(settings.getKnowAnswerMode()) {
-            viewState.showKnownOptions();//показать известные варианты
+        if (settings.getKnowAnswerMode()) {
+            ArrayList<Integer> knowOptions = model.getKnowOptions(id);
+            if (settings.getErrorMode()) {
+                knowOptions.removeAll(error);
+            }
+            viewState.showKnownOptions(knowOptions);//показать известные варианты
         }
-        if (error.contains(activityInfo.getLastChoseInputId())) {
-            viewState.showErrorFocus();
+
+        if (error.contains(id)) {
+            viewState.showErrorFocus(id);
         } else {
-            viewState.focus();
+            viewState.focus(id);
         }
+        activityInfo.setLastChoseInputId(id);
     }
 
     //нужен для отслеживания состояния активити
     private class ViewGridState {
         private IGridView view;
+        private Integer lastId;
+        private ArrayList<Integer> sameAnswer;
+        private ArrayList<Integer> knowOption;
+        private ArrayList<Integer> errors;
+
+        public Integer getLastId() {
+            return lastId;
+        }
+
+        public void setLastId(Integer lastid) {
+            this.lastId = lastid;
+        }
+
+        public ViewGridState() {
+            sameAnswer = new ArrayList<>();
+            knowOption = new ArrayList<>();
+            errors = new ArrayList<>();
+        }
+
+        public void setSameAnswer(ArrayList<Integer> sameAnswer) {
+            this.sameAnswer = sameAnswer;
+        }
+
+        public void setKnowOption(ArrayList<Integer> knowOption) {
+            this.knowOption = knowOption;
+        }
+
+        public void setErrors(ArrayList<Integer> errors) {
+            this.errors = errors;
+        }
 
         private void attachView(IGridView view) {
             this.view = view;
             showGameGrid();
-            showErrorInput();
-            focus();
-            showErrorFocus();
-            showTheSameAnswers();
-            showKnownOptions();
+            clearError();
+            showErrorInput(errors);
+            focus(lastId);
+            showErrorFocus(lastId);
+            showTheSameAnswers(sameAnswer);
+            showKnownOptions(knowOption);
         }
 
 
@@ -185,49 +256,53 @@ public class PresenterGrid implements IPresenterGrid {
         }
 
 
-        private void removeFocus() {
-            if (activityInfo.getLastChoseInputId() == null) return;
+        private void removeFocus(Integer id) {
             if (isViewAttach()) {
-                view.removeFocus(activityInfo.getLastChoseInputId());
+                view.removeFocus(id);
             }
         }
 
-        private void showAnswer() {
-            if (activityInfo.getLastChoseInputId() == null || activityInfo.getLastAnswer() == null)
-                return;
+        private void showAnswer(Integer id, String answer) {
             if (isViewAttach()) {
-                view.setTextToAnswer(activityInfo.getLastChoseInputId(), activityInfo.getLastAnswer());
+                view.setTextToAnswer(id, answer);
             }
         }
 
-        private void showKnownOptions() {
-            if (isViewAttach()&&settings.getKnowAnswerMode()) {
-                view.showKnownOptions(activityInfo.getKnowOption());
+        private void showKnownOptions(ArrayList<Integer> ar) {
+            knowOption = ar;
+            if (isViewAttach()) {
+                view.showKnownOptions(ar);
             }
         }
 
-        private void showErrorInput() {
-            if (activityInfo.getLastAnswer() != null && activityInfo.getLastChoseInputId() != null) {
-                if (isViewAttach()&&settings.getErrorMode()) {
-                    view.showError(activityInfo.getError());
-                }
+        private void showErrorInput(ArrayList<Integer> er) {
+            errors = er;
+            if (isViewAttach()) {
+                view.showError(errors);
             }
+
         }
 
         private void clearHistory() {
+            errors = null;
+            sameAnswer = null;
+            lastId = null;
+            knowOption = null;
             activityInfo.clear();
         }
 
-        private void showTheSameAnswers() {
-            if (isViewAttach()&&settings.getShowSameAnswerMode()) {
-                view.showTheSameAnswers(activityInfo.getSameAnswer());
+        private void showTheSameAnswers(ArrayList<Integer> ar) {
+            sameAnswer = ar;
+            if (isViewAttach()) {
+                view.showTheSameAnswers(ar);
             }
         }
 
-        private void focus() {
-            if (activityInfo.getLastChoseInputId() == null) return;
+        private void focus(Integer id) {
+            if (id == null) return;
+            lastId = id;
             if (isViewAttach()) {
-                view.setFocus(activityInfo.getLastChoseInputId());
+                view.setFocus(id);
             }
         }
 
@@ -248,32 +323,29 @@ public class PresenterGrid implements IPresenterGrid {
             this.view = null;
         }
 
-        private void clearTheSameAnswer() {
-            if (activityInfo.getLastChoseInputId() == null) return;
+        private void clearTheSameAnswer(ArrayList<Integer> arr) {
             if (isViewAttach()) {
-                view.clearTheSameAnswer(activityInfo.getSameAnswer());
+                view.clearTheSameAnswer(arr);
             }
-
         }
 
-        private void clearKnownOptions() {
-            if (activityInfo.getLastChoseInputId() == null) return;
+        private void clearKnownOptions(ArrayList<Integer> arr) {
             if (isViewAttach()) {
-                view.clearKnownOptions(activityInfo.getKnowOption());
+                view.clearKnownOptions(arr);
             }
         }
 
         private void clearError() {
             if (isViewAttach()) {
-                view.clearError(activityInfo.getErrorForClean());
+                view.clearError(model.getErrors());
             }
         }
 
-        private void showErrorFocus() {
-            if (activityInfo.getLastChoseInputId() == null) return;
-            if (isViewAttach()&&settings.getErrorMode()) {
-                if (activityInfo.getError().contains(activityInfo.getLastChoseInputId()))
-                    view.showErrorFocus(activityInfo.getLastChoseInputId());
+        private void showErrorFocus(Integer id) {
+            if (isViewAttach() && settings.getErrorMode()) {
+                if (model.getErrors().contains(id)) {
+                    view.showErrorFocus(id);
+                }
             }
         }
     }//end viewState
