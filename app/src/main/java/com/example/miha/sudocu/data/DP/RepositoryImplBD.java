@@ -20,6 +20,7 @@ import rx.Observable;
 public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
 
     private static final String nameBD = "myBD";
+    private static final String lastChoiceField = "lastChoiceField";
     private static final String complexity = "complexity";
     private static final String name = "name";
     private static final String answer = "answer";
@@ -27,7 +28,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     private static final String grid = "grid";
     private static final String undefined = "undefined";
     private static final String tableName = "myRepository";
-    private static final int dbVersion = 4;
+    private static final int dbVersion = 5;
     private SQLiteDatabase db;
 
     public RepositoryImplBD(Context context) {
@@ -42,6 +43,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
             Gson parser = new Gson();
 
             cv.put(grid, parser.toJson(g.getGrid()));
+            cv.put(lastChoiceField,g.getLastChoiseField());
             cv.put(complexity, g.getComplexity());
             cv.put(undefined, g.getUndefined());
             cv.put(gameTime, g.getGameTime());
@@ -97,6 +99,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
             int answerColId = c.getColumnIndex(answer);
             int gameTimeColId = c.getColumnIndex(gameTime);
             int undefinedColId = c.getColumnIndex(undefined);
+            int lastChoiceCollId = c.getColumnIndex(lastChoiceField);
             int idColId = c.getColumnIndex("id");
             Gson parser = new Gson();
             Type type = new TypeToken<Map<Integer, String>>(){}.getType();
@@ -107,6 +110,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 g.setUndefined(c.getInt(undefinedColId));
                 g.setName(c.getString(nameColId));
                 g.setId(c.getInt(idColId));
+                g.setLastChoiseField(c.getInt(lastChoiceCollId));
                 String pole = c.getString(gridColId);
                 g.setPole(parser.fromJson(pole, String[][].class));
                 g.setAnswers(parser.fromJson(c.getString(answerColId), type));
@@ -125,6 +129,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 + grid + " text,"
                 + complexity + " integer,"
                 + undefined + " integer,"
+                + lastChoiceField+" integer,"
                 + answer + " text,"
                 + gameTime + " integer,"
                 + "name text" + ");");
@@ -139,7 +144,9 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
                 + complexity + " integer,"
                 + undefined + " integer,"
                 + answer + " text,"
+                + lastChoiceField +" integer,"
                 + gameTime + " integer,"
                 + "name text" + ");");
     }
+
 }
