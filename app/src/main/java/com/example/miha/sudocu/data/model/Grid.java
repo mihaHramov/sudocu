@@ -18,6 +18,10 @@ public class Grid implements Serializable {
     private transient Random random = new Random();
     private int razmer;
 
+    @SerializedName("lastChoiseField")
+    @Expose
+    private Integer lastChoiseField;
+
     @SerializedName("undefined")
     @Expose
     private int undefined;
@@ -47,6 +51,14 @@ public class Grid implements Serializable {
     private Map<Integer, String> answers = new Hashtable<>();
 
     public static final String KEY = "Grid";
+
+    public Integer getLastChoiseField() {
+        return lastChoiseField;
+    }
+
+    public void setLastChoiseField(Integer lastChoiseField) {
+        this.lastChoiseField = lastChoiseField;
+    }
 
     public long getGameTime() {
         return gameTime;
@@ -167,10 +179,12 @@ public class Grid implements Serializable {
         return arrayList;
     }
 
-    public ArrayList<Integer> getErrors(int id) {
-        int k = id / razmer, l = id % razmer;
+    public ArrayList<Integer> getErrors(Integer id) {
 
         ArrayList<Integer> sameErrors = new ArrayList<>();
+        if(id==null) return sameErrors;
+        razmer = pole.length;
+        int k = id / razmer, l = id % razmer;
         if (pole[k][l].isEmpty()) return sameErrors;
         for (int i = 0; i < razmer; i++) {//
             if (i == k) continue;

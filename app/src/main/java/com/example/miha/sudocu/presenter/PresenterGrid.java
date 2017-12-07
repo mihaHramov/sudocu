@@ -24,11 +24,9 @@ public class PresenterGrid implements IPresenterGrid {
     private IRepository repository;
     private IRepositorySettings settings;
     private Grid model;
-    private MementoMainActivity activityInfo;
 
     public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
-        activityInfo = new MementoMainActivity();
         this.viewState = new ViewGridState();
         this.repository = repository;
     }
@@ -63,7 +61,9 @@ public class PresenterGrid implements IPresenterGrid {
     public void setView(IGridView view) {
         Boolean modeError = !settings.getErrorMode();
         ArrayList<Integer> errors = new ArrayList<>();
-
+        if (model.getLastChoiseField() != null) {
+            viewState.setLastId(model.getLastChoiseField());
+        }
         if (!modeError) {
             errors = model.getErrors();
         }
@@ -80,12 +80,10 @@ public class PresenterGrid implements IPresenterGrid {
 
         ArrayList<Integer> sameAnswers = new ArrayList<>();
         if (settings.getShowSameAnswerMode()) {
-           sameAnswers  = model.getTheSameAnswers(viewState.getLastId());
-           Log.d("mihaHramov","Mode On sameAnswer has "+sameAnswers.size());
+            sameAnswers = model.getTheSameAnswers(viewState.getLastId());
         }
         if (!modeError) {
             sameAnswers.removeAll(errors);
-            Log.d("mihaHramov","sameAnswer has errors"+errors.size());
         }
         viewState.setSameAnswer(sameAnswers);
 
@@ -112,7 +110,7 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     public void answer(String answer) {
-        Integer lastChoseInputId = activityInfo.getLastChoseInputId();
+        Integer lastChoseInputId = model.getLastChoiseField();
         if (answer.trim().isEmpty() || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
             return;
         }
@@ -156,7 +154,7 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     public void choseInput(int id) {
-        Integer lastInputId = activityInfo.getLastChoseInputId();
+        Integer lastInputId = model.getLastChoiseField();
         if (lastInputId != null && lastInputId == id) {//проверка на повторный клик по одному и тому же полю
             return;
         }
@@ -202,7 +200,7 @@ public class PresenterGrid implements IPresenterGrid {
         } else {
             viewState.focus(id);
         }
-        activityInfo.setLastChoseInputId(id);
+        model.setLastChoiseField(id);
     }
 
     //нужен для отслеживания состояния активити
@@ -288,7 +286,6 @@ public class PresenterGrid implements IPresenterGrid {
             sameAnswer = null;
             lastId = null;
             knowOption = null;
-            activityInfo.clear();
         }
 
         private void showTheSameAnswers(ArrayList<Integer> ar) {
