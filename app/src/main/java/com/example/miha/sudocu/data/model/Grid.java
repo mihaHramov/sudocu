@@ -142,9 +142,10 @@ public class Grid implements Serializable {
         return pole;
     }
 
-    public ArrayList<Integer> getTheSameAnswers(int id) {
-        int k = id / razmer, l = id % razmer;
+    public ArrayList<Integer> getTheSameAnswers(Integer id) {
         ArrayList<Integer> sameAnswers = new ArrayList<>();
+        if (id == null) return sameAnswers;
+        int k = id / razmer, l = id % razmer;
         for (int i = 0; i < razmer; i++) {
             for (int j = 0; j < razmer; j++) {
                 if (i == k && j == l) {
@@ -158,20 +159,30 @@ public class Grid implements Serializable {
         return sameAnswers;
     }
 
+    public ArrayList<Integer> getErrors() {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        for (Map.Entry<Integer, String> entry : answers.entrySet()) {
+            arrayList.addAll(getErrors(entry.getKey()));
+        }
+        return arrayList;
+    }
+
     public ArrayList<Integer> getErrors(int id) {
         int k = id / razmer, l = id % razmer;
-        ArrayList<Integer> sameAnswers = new ArrayList<>();
 
+        ArrayList<Integer> sameErrors = new ArrayList<>();
+        if (pole[k][l].isEmpty()) return sameErrors;
         for (int i = 0; i < razmer; i++) {//
             if (i == k) continue;
-            if (pole[i][l].equalsIgnoreCase(pole[k][l]) && !sameAnswers.contains(i * razmer + l)) {//по строкам
-                sameAnswers.add(i * razmer + l);
+            if (pole[i][l].equalsIgnoreCase(pole[k][l]) && !sameErrors.contains(i * razmer + l)) {//по строкам
+                sameErrors.add(i * razmer + l);
             }
         }
+
         for (int j = 0; j < razmer; j++) {
             if (j == l) continue;
-            if (pole[k][j].equalsIgnoreCase(pole[k][l]) && !sameAnswers.contains(k * razmer + j)) {
-                sameAnswers.add(k * razmer + j);
+            if (pole[k][j].equalsIgnoreCase(pole[k][l]) && !sameErrors.contains(k * razmer + j)) {
+                sameErrors.add(k * razmer + j);
             }
         }
 
@@ -185,20 +196,21 @@ public class Grid implements Serializable {
                 int temp = (i + count) * razmer + j + countJ;
 
                 if (pole[k][l].equalsIgnoreCase(pole[i + count][j + countJ])) {
-                    if (!sameAnswers.contains(temp)) {
-                        sameAnswers.add(temp);
+                    if (!sameErrors.contains(temp)) {
+                        sameErrors.add(temp);
                     }
                 }
             }
         }
-        if (!sameAnswers.isEmpty() && !sameAnswers.contains(id)) {
-            sameAnswers.add(id);
+        if (!sameErrors.isEmpty()) {
+            sameErrors.add(id);
         }
-        return sameAnswers;
+        return sameErrors;
     }
 
     public ArrayList<Integer> getKnowOptions(Integer id) {
         ArrayList<Integer> knowOption = new ArrayList<>();
+        if (id == null) return knowOption;
         int k = id / razmer, l = id % razmer;
         for (int i = 0; i < razmer; i++) {//
             if (i == k) continue;
