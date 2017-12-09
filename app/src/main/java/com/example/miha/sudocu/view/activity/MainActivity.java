@@ -103,12 +103,15 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.reloadGame:
+            case R.id.reload_game:
                 playingField.reloadGame();
                 break;
             case R.id.open_setting:
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
+                break;
+            case R.id.replay_game:
+                playingField.replayGame();
                 break;
         }
         return false;
