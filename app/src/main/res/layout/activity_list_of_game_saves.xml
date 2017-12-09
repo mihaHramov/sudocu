@@ -9,11 +9,14 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
+        android:theme="@style/MyTheme.AppBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            app:popupTheme="@style/MyTheme.PopupOverlay"
+            app:title="@string/games"
             app:titleTextColor="@color/colorWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
