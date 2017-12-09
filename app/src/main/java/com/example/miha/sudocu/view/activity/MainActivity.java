@@ -5,6 +5,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -40,6 +42,16 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     @BindView(R.id.tableLayout1) View play;
 
     @Override
+    public void changeTitleToolbar(String str) {
+        toolbar.setTitle(str);
+    }
+
+    @Override
+    public void changeSubTitleToolbar(String str) {
+        toolbar.setSubtitle(str);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -60,7 +72,11 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
                 .replace(R.id.keyboard, keyBoardFragment)
                 .replace(R.id.tableLayout1, playingField)
                 .commit();
-        toolbarInit();
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
     }
 
     @Override
@@ -77,39 +93,42 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
         stopService(new Intent(this, MyMediaPlayerService.class));
     }
 
-    private void toolbarInit() {
-        toolbar.inflateMenu(R.menu.main);
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
-        toolbar.setOnMenuItemClickListener(item -> {
-            int id = item.getItemId();
-            switch (id) {
-                case R.id.reloadGame:
-                    playingField.reloadGame();
-                    break;
-                case R.id.open_setting:
-                    Intent i = new Intent(this,SettingsActivity.class);
-                    startActivity(i);
-                    break;
-            }
-            return false;
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
-    private void replaceView(View first,View second){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.reloadGame:
+                playingField.reloadGame();
+                break;
+            case R.id.open_setting:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                break;
+        }
+        return false;
+    }
+
+    private void replaceView(View first, View second) {
         layoutContainer.removeAllViews();
         layoutContainer.addView(first);
         layoutContainer.addView(second);
     }
+
     @Override
     public void showTheKeyboardOnTheLeftSide() {
-            replaceView(keyboard,play);
+        replaceView(keyboard, play);
     }
 
     @Override
     public void showTheKeyboardOnTheRightSide() {
         if (!isPortrait) {
-            replaceView(play,keyboard);
+            replaceView(play, keyboard);
         }
     }
 
