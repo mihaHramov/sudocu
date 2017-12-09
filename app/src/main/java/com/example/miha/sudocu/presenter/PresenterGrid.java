@@ -13,6 +13,7 @@ import com.example.miha.sudocu.data.DP.IRepository;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -108,6 +109,11 @@ public class PresenterGrid implements IPresenterGrid {
         viewState.setSameAnswer(sameAnswers);
         viewState.attachView(view);
         viewState.showGameName(model.getName());
+        if(settings.getShowCountNumberOnButtonMode()){
+            viewState.showCountAnswer(model.getCountOfAnswers());
+        }else {
+            viewState.clearCountAnswer();
+        }
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -134,7 +140,6 @@ public class PresenterGrid implements IPresenterGrid {
         if (answer.trim().isEmpty() || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
             return;
         }
-
         ArrayList<Integer> clearAnswer = model.getTheSameAnswers(lastChoseInputId);
         viewState.clearTheSameAnswer(clearAnswer);
 
@@ -161,7 +166,10 @@ public class PresenterGrid implements IPresenterGrid {
             sameAnswers.removeAll(error);
             viewState.showTheSameAnswers(sameAnswers);
         }
-
+        if(settings.getShowCountNumberOnButtonMode()){
+            Map<String,Integer> count = model.getCountOfAnswers();
+            viewState.showCountAnswer(count);
+        }
         if (model.isGameOver()) {//проверка на конец игры
             viewState.showGameOver();
         }
@@ -203,7 +211,9 @@ public class PresenterGrid implements IPresenterGrid {
             if (settings.getErrorMode()) {
                 sameAnswer.removeAll(error);
             }
-            viewState.showTheSameAnswers(sameAnswer);
+            if(settings.getShowSameAnswerMode()){
+                viewState.showTheSameAnswers(sameAnswer);
+            }
         }
 
 
@@ -231,6 +241,7 @@ public class PresenterGrid implements IPresenterGrid {
         private ArrayList<Integer> knowOption;
         private ArrayList<Integer> errors;
         private Long gameTime;
+        private Map<String, Integer> countAnswer;
 
         public Integer getLastId() {
             return lastId;
@@ -377,6 +388,19 @@ public class PresenterGrid implements IPresenterGrid {
 
         public void showGameName(String name) {
             view.setGameName(name);
+        }
+
+        public void showCountAnswer(Map<String, Integer> count) {
+            countAnswer = count;
+            if(isViewAttach()){
+                view.showCountOfAnswer(countAnswer);
+            }
+        }
+
+        public void clearCountAnswer() {
+            if(isViewAttach()){
+                view.clearCountOfAnswer();
+            }
         }
     }//end viewState
 }
