@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.miha.sudocu.data.DP.GenerateGame;
-import com.example.miha.sudocu.data.DP.MementoMainActivity;
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.IView.IGridView;
@@ -14,16 +13,37 @@ import com.example.miha.sudocu.data.DP.IRepository;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class PresenterGrid implements IPresenterGrid {
+    private Subscription subscription;
     private ViewGridState viewState;
     private boolean saveData;
     private IRepository repository;
     private IRepositorySettings settings;
     private Grid model;
+
+    @Override
+    public void onResume() {
+        if (subscription==null||subscription.isUnsubscribed()) {
+            subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.newThread()).subscribe(aLong -> {
+                        viewState.showGameTime(model.getGameTime());
+                        model.setGameTime(model.getGameTime() + 1);
+                    });
+        }
+    }
+
+    @Override
+    public void onStop() {
+        subscription.unsubscribe();
+    }
 
     public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
@@ -86,8 +106,8 @@ public class PresenterGrid implements IPresenterGrid {
             sameAnswers.removeAll(errors);
         }
         viewState.setSameAnswer(sameAnswers);
-
         viewState.attachView(view);
+        viewState.showGameName(model.getName());
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -96,7 +116,7 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     @Override
-    public void unSubscription() {//отписался
+    public void unSubscription() {
         if (!saveData) {
             repository.saveGame(model)
                     .subscribeOn(Schedulers.newThread())
@@ -210,6 +230,7 @@ public class PresenterGrid implements IPresenterGrid {
         private ArrayList<Integer> sameAnswer;
         private ArrayList<Integer> knowOption;
         private ArrayList<Integer> errors;
+        private Long gameTime;
 
         public Integer getLastId() {
             return lastId;
@@ -237,6 +258,13 @@ public class PresenterGrid implements IPresenterGrid {
             this.errors = errors;
         }
 
+        public void showGameTime(Long l) {
+            gameTime = l;
+            if (isViewAttach() && gameTime != null) {
+                view.setGameTime(gameTime);
+            }
+        }
+
         private void attachView(IGridView view) {
             this.view = view;
             showGameGrid();
@@ -246,6 +274,7 @@ public class PresenterGrid implements IPresenterGrid {
             showErrorFocus(lastId);
             showTheSameAnswers(sameAnswer);
             showKnownOptions(knowOption);
+            showGameTime(gameTime);
         }
 
 
@@ -344,6 +373,10 @@ public class PresenterGrid implements IPresenterGrid {
                     view.showErrorFocus(id);
                 }
             }
+        }
+
+        public void showGameName(String name) {
+            view.setGameName(name);
         }
     }//end viewState
 }
