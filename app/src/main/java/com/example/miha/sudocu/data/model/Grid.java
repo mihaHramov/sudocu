@@ -274,4 +274,20 @@ public class Grid implements Serializable {
         name = sdf.format(date);
         return this;
     }
+
+    public Map<String,Integer> getCountOfAnswers() {
+        Map<String,Integer> countOfAnswers = new Hashtable<>();
+        for (int i=0;i<pole.length;i++)
+            for (int j=0;j<pole.length;j++){
+                String answer = pole[i][j];
+                if(answer.trim().isEmpty())continue;
+                Integer count = 0;
+                if(countOfAnswers.containsKey(answer)){
+                   count = countOfAnswers.get(answer);
+                }
+                count++;
+                countOfAnswers.put(answer,count);
+            }
+            return countOfAnswers;
+    }
 }
