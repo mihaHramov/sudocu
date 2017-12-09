@@ -2,13 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="com.example.miha.sudocu.view.activity.MainActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/MyTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            app:popupTheme="@style/MyTheme.PopupOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?android:attr/actionBarSize"
+            android:id="@+id/toolbar"
+            app:titleTextColor="@color/colorWhite"
+            app:subtitleTextColor="@color/colorWhite"/>
+    </android.support.design.widget.AppBarLayout>
+
 
     <LinearLayout
         android:id="@+id/container_fragments"
