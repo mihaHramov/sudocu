@@ -2,7 +2,8 @@
     <string name="show_login_screen">Авторизироваться</string>
     <string name="games">Игры</string>
     <string name="send_game_to_challenge">Вызов Брошен</string>
-    <string name="reload_game">сгенерировать новую игру</string>
+    <string name="reload_game">Сгенерировать новую игру</string>
+    <string name="replay_game">Начать игру заново</string>
     <string name="complete_game">Завершенные игры</string>
     <string name="un_complete_game">Не завершенные игры</string>
     <string name="app_name">Судоку</string>
@@ -11,7 +12,6 @@
     <string name="itemBack">назад</string>
     <string name="undefined">не найденно</string>
     <string name="time">Время:</string>
-    <string name="item1">Настройки</string>
     <string name="enterNumber">Введите количество пробелов</string>
     <string name="save_text">Сохранить</string>
     <string name="new_game">Сохраниь и начать новую игру</string>
@@ -27,7 +27,7 @@
     <string name="challenge">бросить вызов</string>
     <string name="error">Ошибка</string>
     <string name="title_activity_settings">Настройки</string>
-    <string name="settings">настройки</string>
+    <string name="settings">Настройки</string>
     <string name="mode_left_title">Режим Левши</string>
     <string name="mode_left_body">Разместить клавиатуру с левой стороны</string>
     <string name="show_same_answer_title">Существующие ответы</string>

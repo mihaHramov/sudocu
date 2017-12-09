@@ -2,14 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/reloadGame"
+        android:id="@+id/reload_game"
         android:orderInCategory="100"
         android:title="@string/reload_game"
         app:showAsAction="never" />
     <item
-        android:icon="@drawable/ic_action_settings"
+        android:id="@+id/replay_game"
+        android:orderInCategory="200"
+        android:title="@string/replay_game"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/open_setting"
+        android:icon="@drawable/ic_action_settings"
         android:orderInCategory="200"
         android:title="@string/settings"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>
