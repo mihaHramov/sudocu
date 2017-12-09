@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.IView.IDialogManager;
@@ -20,8 +22,13 @@ import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.Adapter.AdapterLocalGameList;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class ListOfGameSavesActivity extends FragmentActivity implements RegistrationFragment.LoginCallback, IDialogManager {
+
+public class ListOfGameSavesActivity extends AppCompatActivity implements RegistrationFragment.LoginCallback, IDialogManager {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     private AlertDialog dialog;
     private DialogFragment dialogFragment;
     private AdapterLocalGameList adapterLocalGameList;
@@ -29,7 +36,6 @@ public class ListOfGameSavesActivity extends FragmentActivity implements Registr
     @Override
     public void showAuthDialog() {
         dialogFragment.show(getSupportFragmentManager(), "tag");
-        Toast.makeText(this, "show Auth dialog", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -41,29 +47,30 @@ public class ListOfGameSavesActivity extends FragmentActivity implements Registr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_game_saves);
+        ButterKnife.bind(this);
         dialogFragment = new RegistrationFragment();
         initTabLayout();
-        initToolbar();
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
         dialog = new AlertDialog(this);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.list_game, menu);
+        return true;
+    }
 
-    public void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.list_game);
-        toolbar.setTitle(R.string.games);
-        toolbar.setOnMenuItemClickListener(item -> {
-            int id = item.getItemId();
-            switch (id) {
-                case R.id.navigateButtonBack:
-                    finish();
-                    break;
-                case R.id.newGame:
-                    dialog.showDialog();
-                    break;
-            }
-
-            return false;
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_game:
+                dialog.showDialog();
+                break;
+        }
+        return false;
     }
 
     public void initTabLayout() {
