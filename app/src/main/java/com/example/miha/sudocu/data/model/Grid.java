@@ -290,4 +290,13 @@ public class Grid implements Serializable {
             }
             return countOfAnswers;
     }
+
+    public void replayGame() {
+        Integer length = pole.length;
+        for (Map.Entry<Integer,String> entry: answers.entrySet()) {
+            pole[entry.getKey()/length][entry.getKey()%length] = "";
+        }
+        setGameTime(0);
+        setLastChoiseField(null);
+    }
 }
