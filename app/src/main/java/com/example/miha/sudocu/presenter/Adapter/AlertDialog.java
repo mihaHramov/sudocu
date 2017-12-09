@@ -52,7 +52,8 @@ public class AlertDialog  {
         dialog.show();
     }
 public void dismissDialog(){
-    dialog.dismiss();
+        if(dialog!=null)
+            dialog.dismiss();
 }
 
     private void initDialog() {
