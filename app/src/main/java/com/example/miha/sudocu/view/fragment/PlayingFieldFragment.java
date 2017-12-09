@@ -15,7 +15,9 @@ import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
+import com.example.miha.sudocu.utils.ConverterTime;
 import com.example.miha.sudocu.view.IView.IGridView;
+import com.example.miha.sudocu.view.IView.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
@@ -38,13 +40,13 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        presenterGrid = DP.get().getPresenterOfGrid();
         bus = BusProvider.getInstance();
         bus.register(this);
         View rootView = inflater.inflate(R.layout.playing_fragment, container, false);
         for (int anArrIntIdGrid : arrIntIdGrid) {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) rootView.findViewById(anArrIntIdGrid));
         }
-        presenterGrid = DP.get().getPresenterOfGrid();
         return rootView;
     }
 
@@ -52,7 +54,19 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     public void onResume() {
         presenterGrid.init(getActivity().getIntent());
         presenterGrid.setView(this);
+        presenterGrid.onResume();
         super.onResume();
+    }
+
+    @Override
+    public void setGameName(String name) {
+        ((IMainActivity) getActivity()).changeTitleToolbar(name);
+    }
+
+    @Override
+    public void onStop() {
+        presenterGrid.onStop();
+        super.onStop();
     }
 
     @Override
@@ -176,15 +190,18 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
 
     @Override
     public void setGameTime(long time) {
+        ConverterTime converterTime = ConverterTime.getInstance();
+        Long minutes = converterTime.converterLongToMinutes(time);
+        Long second = converterTime.converterLongToSeconds(time);
+        ((IMainActivity) getActivity()).changeSubTitleToolbar(Long.toString(minutes)+":"+Long.toString(second));
     }
-
 
     @Override
     public void gameOver() {
         Toast.makeText(getActivity(), "game over", Toast.LENGTH_SHORT).show();
         bus.post(new PlayMusicEvent(R.raw.success));
     }
-    public void reloadGame(){
+    public void reloadGame() {
         presenterGrid.reloadGame();
     }
 }

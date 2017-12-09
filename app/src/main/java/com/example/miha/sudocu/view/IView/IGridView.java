@@ -30,4 +30,6 @@ public interface IGridView {
     void removeFocus(Integer id);
 
     void setTextToAnswer(Integer id, String answer);
+
+    void setGameName(String name);
 }
