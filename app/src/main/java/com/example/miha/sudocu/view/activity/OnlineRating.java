@@ -2,8 +2,10 @@ package com.example.miha.sudocu.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.fragment.RecordsListFragment;
@@ -12,59 +14,67 @@ import com.example.miha.sudocu.data.DP.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
 import com.example.miha.sudocu.data.model.User;
 
-public class OnlineRating extends FragmentActivity implements RegistrationFragment.LoginCallback {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class OnlineRating extends AppCompatActivity implements RegistrationFragment.LoginCallback {
     private Fragment fragment;
     private IRepositoryUser userRepository = null;
-    private Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_rating);
-
-        initToolbar();
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
         userRepository = new RepositoryUser(this);
         if (userRepository.getUser() == null) {
             fragment = new RegistrationFragment();
-            showMenuItemById(R.id.reload_login,false);
+            showMenuItemById(R.id.reload_login, false);
         } else {
             fragment = new RecordsListFragment();
         }
 
-        changeFragment(R.id.fragment_container,fragment);
+        changeFragment(R.id.fragment_container, fragment);
     }
 
-    private void changeFragment(int id,Fragment fr){
+    private void changeFragment(int id, Fragment fr) {
         getSupportFragmentManager().beginTransaction().replace(id, fr).commit();
     }
 
-    private void showMenuItemById(int id,boolean visible){
+    private void showMenuItemById(int id, boolean visible) {
         toolbar.getMenu().findItem(id).setVisible(visible);
     }
 
-    private void initToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.reiting_menu);
-        toolbar.setOnMenuItemClickListener(item -> {
-            int id = item.getItemId();
-            switch (id) {
-                case R.id.reload_login:
-                    fragment = new RegistrationFragment();
-                    changeFragment(R.id.fragment_container,fragment);
-                    showMenuItemById(R.id.reload_login,false);
-                    break;
-            }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.reiting_menu, menu);
+        return true;
+    }
 
-            return false;
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.reload_login:
+                fragment = new RegistrationFragment();
+                changeFragment(R.id.fragment_container, fragment);
+                showMenuItemById(R.id.reload_login, false);
+                break;
+        }
+        return false;
     }
 
 
     @Override
     public void onLogin(User user) {
         fragment = new RecordsListFragment();
-        changeFragment(R.id.fragment_container,fragment);
-        showMenuItemById(R.id.reload_login,true);
+        changeFragment(R.id.fragment_container, fragment);
+        showMenuItemById(R.id.reload_login, true);
         this.userRepository.setUser(user);
     }
 }
