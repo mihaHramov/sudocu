@@ -3,6 +3,7 @@ package com.example.miha.sudocu.view.IView;
 import com.example.miha.sudocu.data.model.Answer;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface IGridView {
     void showErrorFocus(int id);
@@ -32,4 +33,8 @@ public interface IGridView {
     void setTextToAnswer(Integer id, String answer);
 
     void setGameName(String name);
+
+    void showCountOfAnswer(Map<String, Integer> count);
+
+    void clearCountOfAnswer();
 }

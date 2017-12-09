@@ -19,6 +19,8 @@ import com.example.miha.sudocu.utils.ConverterTime;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.view.IView.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
+import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
+import com.example.miha.sudocu.view.events.OnChangeShowCountAnswerMode;
 import com.example.miha.sudocu.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
 import com.squareup.otto.Bus;
@@ -48,6 +50,16 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) rootView.findViewById(anArrIntIdGrid));
         }
         return rootView;
+    }
+
+    @Override
+    public void clearCountOfAnswer() {
+        bus.post(new OnChangeShowCountAnswerMode());
+    }
+
+    @Override
+    public void showCountOfAnswer(Map<String, Integer> count) {
+        bus.post(new OnChangeCountOfAnswer(count));
     }
 
     @Override
