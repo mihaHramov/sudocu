@@ -186,9 +186,8 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
                 textView.setText(grid[i][j].getNumber());
                 textView.setId(i * countOfRowsAndCols + j);
                 textViewsGrid[i * countOfRowsAndCols + j] = textView;
-                int backgroundResource;
                 textView.setOnClickListener(v -> presenterGrid.choseInput(v.getId()));
-                backgroundResource = grid[i][j].isAnswer() ? R.drawable.background_grey : R.drawable.back;
+                int backgroundResource = grid[i][j].isAnswer() ? R.drawable.background_grey : R.drawable.back;
                 textView.setBackgroundResource(backgroundResource);
                 textBackgroundResource.put(i * countOfRowsAndCols + j, backgroundResource);
             }
@@ -215,5 +214,9 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     }
     public void reloadGame() {
         presenterGrid.reloadGame();
+    }
+
+    public void replayGame() {
+        presenterGrid.replayGame();
     }
 }
