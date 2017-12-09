@@ -9,6 +9,8 @@ public interface IPresenterGrid extends IPresenter {
 
     void reloadGame();
 
+    void replayGame();
+
     void answer(String answer);
 
     void setView(IGridView view);

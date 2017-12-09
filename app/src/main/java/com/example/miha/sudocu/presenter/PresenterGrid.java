@@ -30,6 +30,13 @@ public class PresenterGrid implements IPresenterGrid {
     private Grid model;
 
     @Override
+    public void replayGame() {
+        viewState.clearError();
+        model.replayGame();
+        viewState.showGameGrid();
+    }
+
+    @Override
     public void onResume() {
         if (subscription==null||subscription.isUnsubscribed()) {
             subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
@@ -101,7 +108,10 @@ public class PresenterGrid implements IPresenterGrid {
 
         ArrayList<Integer> sameAnswers = new ArrayList<>();
         if (settings.getShowSameAnswerMode()) {
-            sameAnswers = model.getTheSameAnswers(viewState.getLastId());
+            if(viewState.getLastId()!=null&&!model.getAnswer(viewState.getLastId()).trim().isEmpty()){
+                sameAnswers = model.getTheSameAnswers(viewState.getLastId());
+            }
+
         }
         if (!modeError) {
             sameAnswers.removeAll(errors);
