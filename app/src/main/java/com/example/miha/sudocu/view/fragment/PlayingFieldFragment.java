@@ -76,9 +76,9 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     }
 
     @Override
-    public void onStop() {
-        presenterGrid.onStop();
-        super.onStop();
+    public void onPause() {
+        presenterGrid.onPause();
+        super.onPause();
     }
 
     @Override
