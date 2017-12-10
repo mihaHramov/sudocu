@@ -43,14 +43,16 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
             Gson parser = new Gson();
 
             cv.put(grid, parser.toJson(g.getGrid()));
-            cv.put(lastChoiceField,g.getLastChoiseField());
+            cv.put(lastChoiceField, g.getLastChoiseField());
             cv.put(complexity, g.getComplexity());
             cv.put(undefined, g.getUndefined());
             cv.put(gameTime, g.getGameTime());
             cv.put(answer, parser.toJson(g.getAnswers()));
             cv.put(name, g.getName());
             if (g.getId() == 0) {
-                db.insert(tableName, null, cv);
+                Long d = db.insert(tableName, null, cv);
+                subscriber.onNext(d.intValue());
+                g.setId(d);
                 subscriber.onCompleted();
                 return;
             }
