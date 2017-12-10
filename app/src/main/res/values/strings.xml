@@ -38,4 +38,6 @@
     <string name="show_know_answer_body">Показывать заранее известные  ответы(в строке и столбце)</string>
     <string name="show_count_number_body">Показывать количество уже установленных ответов</string>
     <string name="show_cout_number_title">Показывать число ответов</string>
+    <string name="history_forward">Шаг вперед</string>
+    <string name="history_back">Шаг назад</string>
 </resources>

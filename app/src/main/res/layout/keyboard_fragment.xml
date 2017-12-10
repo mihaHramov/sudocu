@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TableLayout
+
+    <include layout="@layout/button_choise" />
+
+    <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/button_choise" />
-    </TableLayout>
-</LinearLayout>
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/history_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/history_back" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/history_forward"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/history_forward" />
+    </TableRow>
+</TableLayout>
