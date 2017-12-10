@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -28,6 +29,7 @@ public class PresenterGrid implements IPresenterGrid {
     private IRepository repository;
     private IRepositorySettings settings;
     private Grid model;
+    private Scheduler scheduler;
 
     @Override
     public void replayGame() {
@@ -37,8 +39,16 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     @Override
+    public void onPause() {
+        repository.saveGame(model)
+                .subscribeOn(scheduler)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aVoid ->{}, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
+        subscription.unsubscribe();
+    }
+    @Override
     public void onResume() {
-        if (subscription==null||subscription.isUnsubscribed()) {
+        if (subscription == null || subscription.isUnsubscribed()) {
             subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.newThread()).subscribe(aLong -> {
@@ -46,11 +56,6 @@ public class PresenterGrid implements IPresenterGrid {
                         model.setGameTime(model.getGameTime() + 1);
                     });
         }
-    }
-
-    @Override
-    public void onStop() {
-        subscription.unsubscribe();
     }
 
     public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
@@ -108,7 +113,7 @@ public class PresenterGrid implements IPresenterGrid {
 
         ArrayList<Integer> sameAnswers = new ArrayList<>();
         if (settings.getShowSameAnswerMode()) {
-            if(viewState.getLastId()!=null&&!model.getAnswer(viewState.getLastId()).trim().isEmpty()){
+            if (viewState.getLastId() != null && !model.getAnswer(viewState.getLastId()).trim().isEmpty()) {
                 sameAnswers = model.getTheSameAnswers(viewState.getLastId());
             }
 
@@ -119,9 +124,9 @@ public class PresenterGrid implements IPresenterGrid {
         viewState.setSameAnswer(sameAnswers);
         viewState.attachView(view);
         viewState.showGameName(model.getName());
-        if(settings.getShowCountNumberOnButtonMode()){
+        if (settings.getShowCountNumberOnButtonMode()) {
             viewState.showCountAnswer(model.getCountOfAnswers());
-        }else {
+        } else {
             viewState.clearCountAnswer();
         }
     }
@@ -134,12 +139,6 @@ public class PresenterGrid implements IPresenterGrid {
     @Override
     public void unSubscription() {
         if (!saveData) {
-            repository.saveGame(model)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aVoid -> {
-                    }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {
-                    });
             model = null;
             viewState.clearHistory();
         }
@@ -176,8 +175,8 @@ public class PresenterGrid implements IPresenterGrid {
             sameAnswers.removeAll(error);
             viewState.showTheSameAnswers(sameAnswers);
         }
-        if(settings.getShowCountNumberOnButtonMode()){
-            Map<String,Integer> count = model.getCountOfAnswers();
+        if (settings.getShowCountNumberOnButtonMode()) {
+            Map<String, Integer> count = model.getCountOfAnswers();
             viewState.showCountAnswer(count);
         }
         if (model.isGameOver()) {//проверка на конец игры
@@ -221,7 +220,7 @@ public class PresenterGrid implements IPresenterGrid {
             if (settings.getErrorMode()) {
                 sameAnswer.removeAll(error);
             }
-            if(settings.getShowSameAnswerMode()){
+            if (settings.getShowSameAnswerMode()) {
                 viewState.showTheSameAnswers(sameAnswer);
             }
         }
@@ -241,6 +240,10 @@ public class PresenterGrid implements IPresenterGrid {
             viewState.focus(id);
         }
         model.setLastChoiseField(id);
+    }
+
+    public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
     //нужен для отслеживания состояния активити
@@ -402,13 +405,13 @@ public class PresenterGrid implements IPresenterGrid {
 
         public void showCountAnswer(Map<String, Integer> count) {
             countAnswer = count;
-            if(isViewAttach()){
+            if (isViewAttach()) {
                 view.showCountOfAnswer(countAnswer);
             }
         }
 
         public void clearCountAnswer() {
-            if(isViewAttach()){
+            if (isViewAttach()) {
                 view.clearCountOfAnswer();
             }
         }

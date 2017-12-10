@@ -17,7 +17,7 @@ public interface IPresenterGrid extends IPresenter {
 
     void choseInput(int id);
 
-    void onStop();
-
     void onResume();
+
+    void onPause();
 }
