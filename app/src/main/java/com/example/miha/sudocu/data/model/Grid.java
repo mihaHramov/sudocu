@@ -66,6 +66,10 @@ public class Grid implements Serializable {
     }
 
     public void addAnswerToHistory(HistoryAnswer answer) {
+        if ((history_id != null) && history_id != history.size() - 1) {//если не последний
+            history.subList(history_id + 1, history.size()).clear();
+            history_id = null;
+        }
         history.add(answer);
     }
 
@@ -82,7 +86,7 @@ public class Grid implements Serializable {
         if (history_id == null) {
             history_id = history.size() - 1;
         }
-        if (history_id == 0||history.size()==0) return null;
+        if (history_id == 0 || history.size() == 0) return null;
         history_id--;
         return getLastAnswerFromHistory();
     }
