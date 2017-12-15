@@ -5,6 +5,11 @@ import android.content.Intent;
 import com.example.miha.sudocu.view.IView.IGridView;
 
 public interface IPresenterGrid extends IPresenter {
+
+    void historyForward();
+
+    void historyBack();
+
     void init(Intent intent);
 
     void reloadGame();

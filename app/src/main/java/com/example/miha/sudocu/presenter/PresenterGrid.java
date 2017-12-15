@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.miha.sudocu.data.DP.GenerateGame;
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
+import com.example.miha.sudocu.data.model.HistoryAnswer;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
@@ -39,13 +40,37 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     @Override
+    public void historyForward() {
+        history(model.incrementHistory());
+    }
+
+    private void history(HistoryAnswer incre) {
+        if (incre != null) {
+            this.choseInput(incre.getAnswerId());
+            this.addAnswer(incre.getAnswer(), incre.getAnswerId());
+        }
+    }
+
+    @Override
+    public void historyBack() {
+        HistoryAnswer historyAnswer = model.decrementHistory();
+        if(historyAnswer!=null){
+            viewState.showAnswer(model.getLastChoiseField(), "");
+        }
+        history(historyAnswer);
+    }
+
+    @Override
     public void onPause() {
         repository.saveGame(model)
                 .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid ->{}, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
+                .subscribe(aVoid -> {
+                }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {
+                });
         subscription.unsubscribe();
     }
+
     @Override
     public void onResume() {
         if (subscription == null || subscription.isUnsubscribed()) {
@@ -144,14 +169,10 @@ public class PresenterGrid implements IPresenterGrid {
         }
     }
 
-    public void answer(String answer) {
-        Integer lastChoseInputId = model.getLastChoiseField();
-        if (answer.trim().isEmpty() || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
-            return;
-        }
+    private void addAnswer(String answer, Integer lastChoseInputId) {
+
         ArrayList<Integer> clearAnswer = model.getTheSameAnswers(lastChoseInputId);
         viewState.clearTheSameAnswer(clearAnswer);
-
         viewState.clearError();//очистил ошибки
 
         model.setAnswer(lastChoseInputId, answer);//установил новый ответ
@@ -168,13 +189,12 @@ public class PresenterGrid implements IPresenterGrid {
             knowOption.removeAll(error);
             viewState.showKnownOptions(knowOption);
         }
-
-
         if (settings.getShowSameAnswerMode()) {
             ArrayList<Integer> sameAnswers = model.getTheSameAnswers(lastChoseInputId);
             sameAnswers.removeAll(error);
             viewState.showTheSameAnswers(sameAnswers);
         }
+
         if (settings.getShowCountNumberOnButtonMode()) {
             Map<String, Integer> count = model.getCountOfAnswers();
             viewState.showCountAnswer(count);
@@ -182,12 +202,22 @@ public class PresenterGrid implements IPresenterGrid {
         if (model.isGameOver()) {//проверка на конец игры
             viewState.showGameOver();
         }
-
         if (error.contains(lastChoseInputId)) {
             viewState.showErrorFocus(lastChoseInputId);
         } else {
             viewState.focus(lastChoseInputId);
         }
+    }
+
+    public void answer(String answer) {
+        Integer lastChoseInputId = model.getLastChoiseField();
+        if (answer.trim().isEmpty() || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
+            return;
+        }
+
+        addAnswer(answer, lastChoseInputId);
+        HistoryAnswer historyAnswer = new HistoryAnswer(lastChoseInputId, answer);
+        model.addAnswerToHistory(historyAnswer);
     }
 
     public void choseInput(int id) {
