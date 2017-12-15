@@ -17,6 +17,7 @@ import com.google.gson.annotations.SerializedName;
 public class Grid implements Serializable {
     private transient Random random = new Random();
     private int razmer;
+    private Integer history_id;
 
     @SerializedName("lastChoiseField")
     @Expose
@@ -50,6 +51,10 @@ public class Grid implements Serializable {
     @Expose
     private Map<Integer, String> answers = new Hashtable<>();
 
+    @SerializedName("history")
+    @Expose
+    private ArrayList<HistoryAnswer> history;
+
     public static final String KEY = "Grid";
 
     public Integer getLastChoiseField() {
@@ -58,6 +63,32 @@ public class Grid implements Serializable {
 
     public void setLastChoiseField(Integer lastChoiseField) {
         this.lastChoiseField = lastChoiseField;
+    }
+
+    public void addAnswerToHistory(HistoryAnswer answer) {
+        history.add(answer);
+    }
+
+    public HistoryAnswer incrementHistory() {
+        if (history_id == null) {
+            history_id = 0;
+        }
+        if (history.size() == history_id + 1 || history.size() == 0) return null;
+        history_id++;
+        return getLastAnswerFromHistory();
+    }
+
+    public HistoryAnswer decrementHistory() {
+        if (history_id == null) {
+            history_id = history.size() - 1;
+        }
+        if (history_id == 0||history.size()==0) return null;
+        history_id--;
+        return getLastAnswerFromHistory();
+    }
+
+    private HistoryAnswer getLastAnswerFromHistory() {
+        return history.get(history_id);
     }
 
     public long getGameTime() {
@@ -154,6 +185,11 @@ public class Grid implements Serializable {
         return pole;
     }
 
+    public Grid() {
+        history = new ArrayList<>();
+        history_id = null;
+    }
+
     public ArrayList<Integer> getTheSameAnswers(Integer id) {
         ArrayList<Integer> sameAnswers = new ArrayList<>();
         if (id == null) return sameAnswers;
@@ -182,7 +218,7 @@ public class Grid implements Serializable {
     public ArrayList<Integer> getErrors(Integer id) {
 
         ArrayList<Integer> sameErrors = new ArrayList<>();
-        if(id==null) return sameErrors;
+        if (id == null) return sameErrors;
         razmer = pole.length;
         int k = id / razmer, l = id % razmer;
         if (pole[k][l].isEmpty()) return sameErrors;
@@ -268,33 +304,32 @@ public class Grid implements Serializable {
         pole = generateGame.generateGame();
         razmer = pole.length;
         answers = generateGame.initAnswer(getUndefined());
-
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");
         name = sdf.format(date);
         return this;
     }
 
-    public Map<String,Integer> getCountOfAnswers() {
-        Map<String,Integer> countOfAnswers = new Hashtable<>();
-        for (int i=0;i<pole.length;i++)
-            for (int j=0;j<pole.length;j++){
+    public Map<String, Integer> getCountOfAnswers() {
+        Map<String, Integer> countOfAnswers = new Hashtable<>();
+        for (int i = 0; i < pole.length; i++)
+            for (int j = 0; j < pole.length; j++) {
                 String answer = pole[i][j];
-                if(answer.trim().isEmpty())continue;
+                if (answer.trim().isEmpty()) continue;
                 Integer count = 0;
-                if(countOfAnswers.containsKey(answer)){
-                   count = countOfAnswers.get(answer);
+                if (countOfAnswers.containsKey(answer)) {
+                    count = countOfAnswers.get(answer);
                 }
                 count++;
-                countOfAnswers.put(answer,count);
+                countOfAnswers.put(answer, count);
             }
-            return countOfAnswers;
+        return countOfAnswers;
     }
 
     public void replayGame() {
         Integer length = pole.length;
-        for (Map.Entry<Integer,String> entry: answers.entrySet()) {
-            pole[entry.getKey()/length][entry.getKey()%length] = "";
+        for (Map.Entry<Integer, String> entry : answers.entrySet()) {
+            pole[entry.getKey() / length][entry.getKey() % length] = "";
         }
         setGameTime(0);
         setLastChoiseField(null);
