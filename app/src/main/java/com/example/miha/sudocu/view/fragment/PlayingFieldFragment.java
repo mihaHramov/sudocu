@@ -20,6 +20,7 @@ import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.view.IView.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
+import com.example.miha.sudocu.view.events.OnChangeHistoryGame;
 import com.example.miha.sudocu.view.events.OnChangeShowCountAnswerMode;
 import com.example.miha.sudocu.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
@@ -90,6 +91,15 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     @Subscribe
     public void clickOnButton(OnAnswerChangeEvent answer) {
         presenterGrid.answer(answer.getAnswer());
+    }
+
+    @Subscribe
+    public void changeHistory(OnChangeHistoryGame change) {
+        if (change.getForward()) {
+            presenterGrid.historyForward();
+        } else {
+            presenterGrid.historyBack();
+        }
     }
 
     @Override
@@ -204,7 +214,7 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         ConverterTime converterTime = ConverterTime.getInstance();
         Long minutes = converterTime.converterLongToMinutes(time);
         Long second = converterTime.converterLongToSeconds(time);
-        ((IMainActivity) getActivity()).changeSubTitleToolbar(Long.toString(minutes)+":"+Long.toString(second));
+        ((IMainActivity) getActivity()).changeSubTitleToolbar(Long.toString(minutes) + ":" + Long.toString(second));
     }
 
     @Override
@@ -212,6 +222,7 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         Toast.makeText(getActivity(), "game over", Toast.LENGTH_SHORT).show();
         bus.post(new PlayMusicEvent(R.raw.success));
     }
+
     public void reloadGame() {
         presenterGrid.reloadGame();
     }

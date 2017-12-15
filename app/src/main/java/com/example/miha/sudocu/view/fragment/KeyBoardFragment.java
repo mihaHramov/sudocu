@@ -12,6 +12,7 @@ import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
 import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
+import com.example.miha.sudocu.view.events.OnChangeHistoryGame;
 import com.example.miha.sudocu.view.events.OnChangeShowCountAnswerMode;
 import com.squareup.otto.Subscribe;
 
@@ -23,7 +24,6 @@ import butterknife.OnClick;
 
 
 public class KeyBoardFragment extends Fragment {
-
     @BindView(R.id.button1)
     Button button1;
     @BindView(R.id.button2)
@@ -42,6 +42,15 @@ public class KeyBoardFragment extends Fragment {
     Button button8;
     @BindView(R.id.button9)
     Button button9;
+
+    @OnClick({R.id.history_back,R.id.history_forward})
+    void clickOnButtonHistory(View view){
+        if(view.getId()==R.id.history_forward){
+            BusProvider.getInstance().post(new OnChangeHistoryGame(true));
+        }else {
+            BusProvider.getInstance().post(new OnChangeHistoryGame(false));
+        }
+    }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
     void clickOnButton(View v) {
