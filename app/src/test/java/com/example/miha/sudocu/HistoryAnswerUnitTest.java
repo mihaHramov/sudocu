@@ -35,7 +35,7 @@ public class HistoryAnswerUnitTest {
     }
 
     @Test
-    public void IncrementHistory_isCorrect() throws Exception{
+    public void IncrementHistory_isCorrect() throws Exception {
         Grid gr = new Grid();
         gr.addAnswerToHistory(historyAnswer1);
         gr.addAnswerToHistory(historyAnswer2);
@@ -46,12 +46,24 @@ public class HistoryAnswerUnitTest {
         gr.incrementHistory();//id =  answer3
         gr.decrementHistory();//id = answer2
         gr.decrementHistory();//id = answer1
-        assertEquals(historyAnswer2,gr.incrementHistory());
+        assertEquals(historyAnswer2, gr.incrementHistory());
     }
 
     @Test
-    public void IncrementEmptyHistory_isCorrect() throws Exception{
+    public void IncrementEmptyHistory_isCorrect() throws Exception {
         Grid gr = new Grid();
-        assertEquals(gr.incrementHistory(),null);
+        assertEquals(gr.incrementHistory(), null);
+    }
+    @Test
+    public void AddNewHistoryAfterDecrementHistory_isCorrect() throws Exception{
+        Grid gr = new Grid();
+        gr.addAnswerToHistory(historyAnswer1);
+        gr.addAnswerToHistory(historyAnswer2);
+        gr.addAnswerToHistory(historyAnswer3);
+        gr.decrementHistory();//id = historyAnswer2
+        gr.addAnswerToHistory(historyAnswer3);//id = historyAnswer3
+        gr.addAnswerToHistory(historyAnswer3);//id = historyAnswer3
+        HistoryAnswer temp = gr.decrementHistory();//id = historyAnswer1
+        assertEquals(temp,historyAnswer3);
     }
 }
