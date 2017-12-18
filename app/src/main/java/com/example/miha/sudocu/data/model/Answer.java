@@ -5,13 +5,10 @@ public class Answer {
 
     private boolean answer;
     private String number;
+    private Integer id;
 
     public boolean isAnswer() {
         return answer;
-    }
-
-    public void setAnswer(boolean answer) {
-        this.answer = answer;
     }
 
     public String getNumber() {
@@ -23,7 +20,12 @@ public class Answer {
         this.number = number;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public Integer getId() {
+        return id;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 }
