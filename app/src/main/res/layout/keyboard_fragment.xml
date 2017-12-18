@@ -10,16 +10,24 @@
         android:layout_height="wrap_content">
 
         <Button
-            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/history_back"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/history_back" />
 
         <Button
+            android:id="@+id/delete_answer"
             style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete_answer" />
+
+        <Button
             android:id="@+id/history_forward"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -40,4 +40,5 @@
     <string name="show_cout_number_title">Показывать число ответов</string>
     <string name="history_forward">Шаг вперед</string>
     <string name="history_back">Шаг назад</string>
+    <string name="delete_answer">Удалить отет</string>
 </resources>
