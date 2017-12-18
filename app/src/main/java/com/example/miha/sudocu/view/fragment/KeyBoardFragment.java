@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
+import com.example.miha.sudocu.view.events.OnAnswerDeleteEvent;
 import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
 import com.example.miha.sudocu.view.events.OnChangeHistoryGame;
 import com.example.miha.sudocu.view.events.OnChangeShowCountAnswerMode;
@@ -42,6 +43,11 @@ public class KeyBoardFragment extends Fragment {
     Button button8;
     @BindView(R.id.button9)
     Button button9;
+
+    @OnClick(R.id.delete_answer)
+    void clickOnButtondDeleteAnswer(){
+        BusProvider.getInstance().post(new OnAnswerDeleteEvent());
+    }
 
     @OnClick({R.id.history_back,R.id.history_forward})
     void clickOnButtonHistory(View view){
