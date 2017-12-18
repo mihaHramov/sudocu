@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.miha.sudocu.data.DP.GenerateGame;
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
+import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.data.model.HistoryAnswer;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.IView.IGridView;
@@ -220,6 +221,21 @@ public class PresenterGrid implements IPresenterGrid {
         model.addAnswerToHistory(historyAnswer);
     }
 
+    @Override
+    public void deleteAnswer() {
+        Integer idAnswer = model.getLastChoiseField();
+        Boolean isAnswer =  model.isAnswer(idAnswer);
+        Answer answerForDelete = new Answer("",isAnswer);
+        answerForDelete.setId(idAnswer);
+        if(isAnswer){
+            viewState.clearError();
+            viewState.clearTheSameAnswer(model.getTheSameAnswers(idAnswer));
+            model.deleteAnswer(answerForDelete);
+            viewState.showAnswer(idAnswer,answerForDelete.getNumber());
+            viewState.showKnownOptions(model.getKnowOptions(answerForDelete.getId()));
+            viewState.focus(answerForDelete.getId());
+        }
+    }
     public void choseInput(int id) {
         Integer lastInputId = model.getLastChoiseField();
         if (lastInputId != null && lastInputId == id) {//проверка на повторный клик по одному и тому же полю

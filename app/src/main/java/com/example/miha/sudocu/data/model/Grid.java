@@ -152,6 +152,11 @@ public class Grid implements Serializable {
         return this;
     }
 
+    public void deleteAnswer(Answer answer){
+        int str = answer.getId() / pole.length;
+        int col = answer.getId() % pole.length;
+        pole[str][col] = answer.getNumber();
+    }
     public int getUndefined() {
         return undefined;
     }

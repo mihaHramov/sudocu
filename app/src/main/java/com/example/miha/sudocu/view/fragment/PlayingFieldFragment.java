@@ -91,7 +91,7 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
 
     @Subscribe
     public void clickOnButtonDeleteAnswer(OnAnswerDeleteEvent event){
-
+        presenterGrid.deleteAnswer();
     }
 
     @Subscribe

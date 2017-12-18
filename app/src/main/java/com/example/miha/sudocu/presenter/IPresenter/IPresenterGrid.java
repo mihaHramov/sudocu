@@ -25,4 +25,6 @@ public interface IPresenterGrid extends IPresenter {
     void onResume();
 
     void onPause();
+
+    void deleteAnswer();
 }
