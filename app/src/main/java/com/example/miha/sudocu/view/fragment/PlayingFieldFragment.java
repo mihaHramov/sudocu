@@ -19,6 +19,7 @@ import com.example.miha.sudocu.utils.ConverterTime;
 import com.example.miha.sudocu.view.IView.IGridView;
 import com.example.miha.sudocu.view.IView.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
+import com.example.miha.sudocu.view.events.OnAnswerDeleteEvent;
 import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
 import com.example.miha.sudocu.view.events.OnChangeHistoryGame;
 import com.example.miha.sudocu.view.events.OnChangeShowCountAnswerMode;
@@ -86,6 +87,11 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     public void onSaveInstanceState(Bundle outState) {
         presenterGrid.onSaveInstanceState(outState);
         super.onSaveInstanceState(outState);
+    }
+
+    @Subscribe
+    public void clickOnButtonDeleteAnswer(OnAnswerDeleteEvent event){
+
     }
 
     @Subscribe
