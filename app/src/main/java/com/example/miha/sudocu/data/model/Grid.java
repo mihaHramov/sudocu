@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.Generated;
 
@@ -15,9 +14,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Generated("org.jsonschema2pojo")
 public class Grid implements Serializable {
-    private transient Random random = new Random();
     private int razmer;
-    private Integer history_id;
 
     @SerializedName("lastChoiseField")
     @Expose
@@ -51,9 +48,7 @@ public class Grid implements Serializable {
     @Expose
     private Map<Integer, String> answers = new Hashtable<>();
 
-    @SerializedName("history")
-    @Expose
-    private ArrayList<HistoryAnswer> history;
+   private HistoryOfAnswers history;
 
     public static final String KEY = "Grid";
 
@@ -66,33 +61,15 @@ public class Grid implements Serializable {
     }
 
     public void addAnswerToHistory(HistoryAnswer answer) {
-        if ((history_id != null) && history_id != history.size() - 1) {//если не последний
-            history.subList(history_id + 1, history.size()).clear();
-            history_id = null;
-        }
-        history.add(answer);
+        history.addAnswerToHistory(answer);
     }
 
     public HistoryAnswer incrementHistory() {
-        if (history_id == null) {
-            history_id = 0;
-        }
-        if (history.size() == history_id + 1 || history.size() == 0) return null;
-        history_id++;
-        return getLastAnswerFromHistory();
+       return history.incrementHistory();
     }
 
     public HistoryAnswer decrementHistory() {
-        if (history_id == null) {
-            history_id = history.size() - 1;
-        }
-        if (history_id == 0 || history.size() == 0) return null;
-        history_id--;
-        return getLastAnswerFromHistory();
-    }
-
-    private HistoryAnswer getLastAnswerFromHistory() {
-        return history.get(history_id);
+        return history.decrementHistory();
     }
 
     public long getGameTime() {
@@ -152,11 +129,12 @@ public class Grid implements Serializable {
         return this;
     }
 
-    public void deleteAnswer(Answer answer){
+    public void deleteAnswer(Answer answer) {
         int str = answer.getId() / pole.length;
         int col = answer.getId() % pole.length;
         pole[str][col] = answer.getNumber();
     }
+
     public int getUndefined() {
         return undefined;
     }
@@ -195,8 +173,7 @@ public class Grid implements Serializable {
     }
 
     public Grid() {
-        history = new ArrayList<>();
-        history_id = null;
+       history  = new HistoryOfAnswers();
     }
 
     public ArrayList<Integer> getTheSameAnswers(Integer id) {
