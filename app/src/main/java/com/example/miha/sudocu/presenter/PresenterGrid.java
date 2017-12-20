@@ -40,11 +40,6 @@ public class PresenterGrid implements IPresenterGrid {
         viewState.showGameGrid();
     }
 
-    @Override
-    public void historyForward() {
-        history(model.incrementHistory());
-    }
-
     private void history(HistoryAnswer incre) {
         if (incre != null) {
             this.choseInput(incre.getAnswerId());
@@ -53,12 +48,14 @@ public class PresenterGrid implements IPresenterGrid {
     }
 
     @Override
+    public void historyForward() {
+        history(model.incrementHistory());
+    }
+
+    @Override
     public void historyBack() {
-        HistoryAnswer historyAnswer = model.decrementHistory();
-        if(historyAnswer!=null){
-            viewState.showAnswer(model.getLastChoiseField(), "");
-        }
-        history(historyAnswer);
+        this.deleteAnswer();
+        history(model.decrementHistory());
     }
 
     @Override
@@ -224,18 +221,20 @@ public class PresenterGrid implements IPresenterGrid {
     @Override
     public void deleteAnswer() {
         Integer idAnswer = model.getLastChoiseField();
-        Boolean isAnswer =  model.isAnswer(idAnswer);
-        Answer answerForDelete = new Answer("",isAnswer);
+        Boolean isAnswer = model.isAnswer(idAnswer);
+        Answer answerForDelete = new Answer("", isAnswer);
         answerForDelete.setId(idAnswer);
-        if(isAnswer){
+        if (isAnswer) {
             viewState.clearError();
             viewState.clearTheSameAnswer(model.getTheSameAnswers(idAnswer));
             model.deleteAnswer(answerForDelete);
-            viewState.showAnswer(idAnswer,answerForDelete.getNumber());
+            viewState.showAnswer(idAnswer, answerForDelete.getNumber());
             viewState.showKnownOptions(model.getKnowOptions(answerForDelete.getId()));
             viewState.focus(answerForDelete.getId());
+            viewState.showErrorInput(model.getErrors());
         }
     }
+
     public void choseInput(int id) {
         Integer lastInputId = model.getLastChoiseField();
         if (lastInputId != null && lastInputId == id) {//проверка на повторный клик по одному и тому же полю
