@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.data.DP;
+package com.example.miha.sudocu.data.DP.intf;
 
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.User;
@@ -19,7 +19,7 @@ public interface ChallengeApi {
     String URL = "http://mysimple.zzz.com.ua/";//"http://httpbin.org/";
 
     @GET("getAllScore")
-    Observable<ArrayList<Challenge>> getAllScore();// метод к которому будим обращатся
+    Observable<ArrayList<Challenge>> getAllScore();
 
     @GET("login")
     Observable<User> login(@QueryMap Map<String, String> options);

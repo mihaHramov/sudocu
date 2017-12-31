@@ -9,9 +9,9 @@ import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.data.model.HistoryAnswer;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
-import com.example.miha.sudocu.view.IView.IGridView;
+import com.example.miha.sudocu.view.intf.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.data.DP.IRepository;
+import com.example.miha.sudocu.data.DP.intf.IRepository;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 import java.util.ArrayList;
@@ -153,7 +153,6 @@ public class PresenterGrid implements IPresenterGrid {
             viewState.clearCountAnswer();
         }
     }
-
     public void onSaveInstanceState(Bundle outState) {
         saveData = true;
         viewState.detachView();
@@ -245,7 +244,7 @@ public class PresenterGrid implements IPresenterGrid {
             error = model.getErrors();//получил ошибки
         }
         if (lastInputId != null) {
-            ArrayList clearKnowOption = model.getKnowOptions(lastInputId);
+            ArrayList<Integer> clearKnowOption = model.getKnowOptions(lastInputId);
             clearKnowOption.removeAll(error);
             viewState.clearKnownOptions(clearKnowOption);//убрал старые ответы
             viewState.removeFocus(lastInputId);      //убрал старый фокус

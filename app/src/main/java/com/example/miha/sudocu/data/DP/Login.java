@@ -1,5 +1,7 @@
 package com.example.miha.sudocu.data.DP;
 
+import com.example.miha.sudocu.data.DP.intf.ChallengeApi;
+import com.example.miha.sudocu.data.DP.intf.ILogin;
 import com.example.miha.sudocu.data.model.User;
 
 import java.util.Map;
@@ -14,7 +16,7 @@ public class Login implements ILogin {
     }
 
     @Override
-    public Observable<User> login(Map loginParams) {
+    public Observable<User> login(Map<String,String> loginParams) {
        return instance.login(loginParams);
 
     }

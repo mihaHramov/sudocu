@@ -1,5 +1,7 @@
 package com.example.miha.sudocu.data.DP;
 
+import com.example.miha.sudocu.data.DP.intf.IGenerateGame;
+
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Random;

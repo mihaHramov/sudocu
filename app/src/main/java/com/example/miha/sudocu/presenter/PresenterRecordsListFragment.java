@@ -2,8 +2,8 @@ package com.example.miha.sudocu.presenter;
 
 import android.os.Bundle;
 
-import com.example.miha.sudocu.data.DP.ChallengeApi;
-import com.example.miha.sudocu.data.DP.ChallengeDP;
+import com.example.miha.sudocu.data.DP.intf.ChallengeApi;
+import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
 import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
 

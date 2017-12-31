@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Generated;
 
-import com.example.miha.sudocu.data.DP.IGenerateGame;
+import com.example.miha.sudocu.data.DP.intf.IGenerateGame;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

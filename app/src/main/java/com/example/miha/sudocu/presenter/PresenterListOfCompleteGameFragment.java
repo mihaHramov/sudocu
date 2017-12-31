@@ -2,11 +2,11 @@ package com.example.miha.sudocu.presenter;
 
 import android.os.Bundle;
 
-import com.example.miha.sudocu.data.DP.IRepository;
-import com.example.miha.sudocu.view.IView.IListOfCompleteGameFragment;
-import com.example.miha.sudocu.data.DP.ChallengeDP;
+import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
+import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
 import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
-import com.example.miha.sudocu.data.DP.IRepositoryUser;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.model.User;
@@ -31,7 +31,7 @@ public class PresenterListOfCompleteGameFragment implements IPresenterOfComplete
     @Override
     public void init(Bundle bundle) {
         if (bundle != null) {
-            ArrayList<Grid> localGrid = (ArrayList<Grid>) bundle.getSerializable(SAVE_GAME);
+            ArrayList<Grid> localGrid =  (ArrayList<Grid>) bundle.getSerializable(SAVE_GAME);
             if (localGrid != null) {
                 view.refreshListOfCompleteGame(localGrid);
             }

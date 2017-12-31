@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.data.DP;
+package com.example.miha.sudocu.data.DP.intf;
 
 
 import java.util.Map;

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
+import com.example.miha.sudocu.data.DP.intf.IRepository;
 import com.example.miha.sudocu.data.model.Grid;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

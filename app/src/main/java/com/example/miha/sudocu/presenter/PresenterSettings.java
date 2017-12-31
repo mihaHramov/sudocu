@@ -2,7 +2,7 @@ package com.example.miha.sudocu.presenter;
 
 
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
-import com.example.miha.sudocu.view.IView.ISettingsFragment;
+import com.example.miha.sudocu.view.intf.ISettingsFragment;
 
 public class PresenterSettings {
     private ISettingsFragment view;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
+import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.data.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,6 +38,6 @@ public class RepositoryUser implements IRepositoryUser {
         Gson gs = new GsonBuilder().create();
         String str = gs.toJson(user);
         e.putString(MY_SETTINGS,str);
-        e.commit();
+        e.apply();
     }
 }

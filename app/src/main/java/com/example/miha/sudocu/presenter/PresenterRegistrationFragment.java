@@ -1,7 +1,7 @@
 package com.example.miha.sudocu.presenter;
 
-import com.example.miha.sudocu.view.IView.IFragmentRegistration;
-import com.example.miha.sudocu.data.DP.ILogin;
+import com.example.miha.sudocu.view.intf.IFragmentRegistration;
+import com.example.miha.sudocu.data.DP.intf.ILogin;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
 
 import java.util.Hashtable;

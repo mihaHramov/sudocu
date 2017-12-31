@@ -2,8 +2,8 @@ package com.example.miha.sudocu;
 
 import android.app.Application;
 
-import com.example.miha.sudocu.data.DP.IRepository;
-import com.example.miha.sudocu.data.DP.IRepositoryUser;
+import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryImplBD;
 import com.example.miha.sudocu.data.DP.RepositorySettings;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
@@ -21,7 +21,6 @@ import rx.schedulers.Schedulers;
 
 
 public class App extends Application {
-    private static final String APP_SHARED_PREFERENCE = "APP_SHARED_PREFERENCE";
 
     @Override
     public void onCreate() {
@@ -29,7 +28,7 @@ public class App extends Application {
         Scheduler my = Schedulers.from(Executors.newSingleThreadExecutor());
         IRepository repository = new RepositoryImplBD(this);
         IRepositoryUser repositoryUser = new RepositoryUser(this);
-        IRepositorySettings repositorySettings = new RepositorySettings(getSharedPreferences(APP_SHARED_PREFERENCE, MODE_PRIVATE));
+        IRepositorySettings repositorySettings = new RepositorySettings(getApplicationContext());
         DP.setDp(new DP());
         PresenterListOfGameFragment presenterListOfGameFragment = new PresenterListOfGameFragment(repository);
         PresenterGrid presenterGrid = new PresenterGrid(repository, repositorySettings);

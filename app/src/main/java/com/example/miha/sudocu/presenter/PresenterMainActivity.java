@@ -2,7 +2,7 @@ package com.example.miha.sudocu.presenter;
 
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterMainActivity;
-import com.example.miha.sudocu.view.IView.IMainActivity;
+import com.example.miha.sudocu.view.intf.IMainActivity;
 
 
 public class PresenterMainActivity implements IPresenterMainActivity {

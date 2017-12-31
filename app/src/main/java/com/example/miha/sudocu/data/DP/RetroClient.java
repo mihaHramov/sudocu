@@ -1,5 +1,6 @@
 package com.example.miha.sudocu.data.DP;
 
+import com.example.miha.sudocu.data.DP.intf.ChallengeApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

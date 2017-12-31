@@ -2,7 +2,7 @@ package com.example.miha.sudocu.presenter.IPresenter;
 
 import android.content.Intent;
 
-import com.example.miha.sudocu.view.IView.IGridView;
+import com.example.miha.sudocu.view.intf.IGridView;
 
 public interface IPresenterGrid extends IPresenter {
 

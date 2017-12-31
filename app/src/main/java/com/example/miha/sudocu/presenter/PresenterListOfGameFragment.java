@@ -2,8 +2,9 @@ package com.example.miha.sudocu.presenter;
 
 import android.os.Bundle;
 
-import com.example.miha.sudocu.data.DP.IRepository;
-import com.example.miha.sudocu.view.IView.IListOfNotCompletedGameFragment;
+import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfNonCompleteGame;
+import com.example.miha.sudocu.view.intf.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 
 import java.util.ArrayList;
