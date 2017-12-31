@@ -35,7 +35,6 @@ public class OnlineRating extends AppCompatActivity implements RegistrationFragm
         userRepository = new RepositoryUser(this);
         if (userRepository.getUser() == null) {
             fragment = new RegistrationFragment();
-            showMenuItemById(R.id.reload_login, false);
         } else {
             fragment = new RecordsListFragment();
         }
@@ -54,6 +53,9 @@ public class OnlineRating extends AppCompatActivity implements RegistrationFragm
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.reiting_menu, menu);
+        if(userRepository.getUser()==null){
+            showMenuItemById(R.id.reload_login, false);
+        }
         return true;
     }
 
