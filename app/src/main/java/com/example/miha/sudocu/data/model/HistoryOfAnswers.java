@@ -1,9 +1,10 @@
 package com.example.miha.sudocu.data.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class HistoryOfAnswers {
+public class HistoryOfAnswers implements Serializable {
     private Boolean isTopStack;
     private Integer history_id;
     private ArrayList<HistoryAnswer> history;

@@ -48,7 +48,7 @@ public class Grid implements Serializable {
     @Expose
     private Map<Integer, String> answers = new Hashtable<>();
 
-   private HistoryOfAnswers history;
+    private HistoryOfAnswers history;
 
     public static final String KEY = "Grid";
 
@@ -65,7 +65,7 @@ public class Grid implements Serializable {
     }
 
     public HistoryAnswer incrementHistory() {
-       return history.incrementHistory();
+        return history.incrementHistory();
     }
 
     public HistoryAnswer decrementHistory() {
@@ -173,7 +173,7 @@ public class Grid implements Serializable {
     }
 
     public Grid() {
-       history  = new HistoryOfAnswers();
+        history = new HistoryOfAnswers();
     }
 
     public ArrayList<Integer> getTheSameAnswers(Integer id) {
