@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.view.IView.IFragmentRegistration;
+import com.example.miha.sudocu.view.intf.IFragmentRegistration;
 import com.example.miha.sudocu.data.DP.Login;
 import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.User;
@@ -45,7 +44,6 @@ public class RegistrationFragment extends DialogFragment implements View.OnClick
 
     @Override
     public void onFailAuth(String error) {
-        Log.d("mihaHramov","errorMiha"+error);
         auth.setEnabled(true);
     }
 

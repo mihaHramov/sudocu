@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.view.IView;
+package com.example.miha.sudocu.view.intf;
 
 import com.example.miha.sudocu.data.model.Answer;
 

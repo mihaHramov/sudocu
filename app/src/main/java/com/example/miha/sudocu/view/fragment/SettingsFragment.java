@@ -11,7 +11,7 @@ import android.widget.Switch;
 import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.presenter.PresenterSettings;
-import com.example.miha.sudocu.view.IView.ISettingsFragment;
+import com.example.miha.sudocu.view.intf.ISettingsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

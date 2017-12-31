@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.fragment.RecordsListFragment;
 import com.example.miha.sudocu.view.fragment.RegistrationFragment;
-import com.example.miha.sudocu.data.DP.IRepositoryUser;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
 import com.example.miha.sudocu.data.model.User;
 

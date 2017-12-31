@@ -13,8 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.view.IView.IDialogManager;
-import com.example.miha.sudocu.view.IView.IListOfCompleteGameFragment;
+import com.example.miha.sudocu.view.intf.IDialogManager;
+import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.fragment.ListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.fragment.ListOfGameFragment;
 import com.example.miha.sudocu.view.fragment.RegistrationFragment;

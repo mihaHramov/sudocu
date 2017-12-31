@@ -13,10 +13,10 @@ import android.widget.ProgressBar;
 import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.view.activity.MainActivity;
-import com.example.miha.sudocu.view.IView.IListOfNotCompletedGameFragment;
+import com.example.miha.sudocu.view.intf.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
-import com.example.miha.sudocu.presenter.IPresenterOfNonCompleteGame;
+import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfNonCompleteGame;
 
 import java.util.ArrayList;
 

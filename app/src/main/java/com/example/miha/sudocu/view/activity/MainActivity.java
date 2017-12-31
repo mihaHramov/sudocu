@@ -14,7 +14,7 @@ import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterMainActivity;
 import com.example.miha.sudocu.presenter.Service.MyMediaPlayerService;
-import com.example.miha.sudocu.view.IView.IMainActivity;
+import com.example.miha.sudocu.view.intf.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnStopMusicEvent;
 import com.example.miha.sudocu.view.events.PlayMusicEvent;

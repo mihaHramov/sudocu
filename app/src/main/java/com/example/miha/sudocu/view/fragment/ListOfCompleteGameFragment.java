@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.view.IView.IDialogManager;
-import com.example.miha.sudocu.view.IView.IListOfCompleteGameFragment;
+import com.example.miha.sudocu.view.intf.IDialogManager;
+import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
