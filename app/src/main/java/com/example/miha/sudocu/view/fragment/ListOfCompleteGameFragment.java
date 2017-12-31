@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -26,12 +27,11 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 import java.util.ArrayList;
 
 public class ListOfCompleteGameFragment extends Fragment implements IListOfCompleteGameFragment {
-    private ListView listView;
     private ProgressBar progressBar;
     private IPresenterOfCompleteGame presenter;
     private IDialogManager activityCallback;
-    private int lastIdRecords;
-    private int lastIdRecordsDelete;
+    private Integer lastIdRecords = null;
+    private Integer lastIdRecordsDelete = null;
     private AdapterGrid adapter;
 
     @Override
@@ -51,7 +51,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
 
     @Override
     public void onAfterAuthUser() {
-        if (this.lastIdRecords > 0) {
+        if (this.lastIdRecords != null) {
             presenter.sendGame((Grid) adapter.getItem(lastIdRecords));
         }
     }
@@ -111,7 +111,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         View rootView =
                 inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
         progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
-        listView = (ListView) rootView.findViewById(R.id.listViewGrid);
+        ListView listView = (ListView) rootView.findViewById(R.id.listViewGrid);
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
         return rootView;
@@ -130,6 +130,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         switch (item.getItemId()) {
             case R.id.challenge:
                 lastIdRecords = info.position;
+                Log.d("mihaHramov",""+info.position);
                 presenter.sendGame((Grid) adapter.getItem(info.position));
                 break;
             case R.id.delete:

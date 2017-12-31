@@ -8,16 +8,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.view.events.BusProvider;
+import com.example.miha.sudocu.view.events.OnUserLogin;
 import com.example.miha.sudocu.view.fragment.RecordsListFragment;
 import com.example.miha.sudocu.view.fragment.RegistrationFragment;
 import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
-import com.example.miha.sudocu.data.model.User;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class OnlineRating extends AppCompatActivity implements RegistrationFragment.LoginCallback {
+public class OnlineRating extends AppCompatActivity  {
     private Fragment fragment;
     private IRepositoryUser userRepository = null;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -27,6 +29,7 @@ public class OnlineRating extends AppCompatActivity implements RegistrationFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.online_rating);
         ButterKnife.bind(this);
+        BusProvider.getInstance().register(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,11 +75,17 @@ public class OnlineRating extends AppCompatActivity implements RegistrationFragm
     }
 
 
-    @Override
-    public void onLogin(User user) {
+    @Subscribe
+    public void onLogin(OnUserLogin onUserLogin) {
         fragment = new RecordsListFragment();
         changeFragment(R.id.fragment_container, fragment);
         showMenuItemById(R.id.reload_login, true);
-        this.userRepository.setUser(user);
+        this.userRepository.setUser(onUserLogin.getUser());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
     }
 }

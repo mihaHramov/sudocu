@@ -13,20 +13,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.view.events.BusProvider;
+import com.example.miha.sudocu.view.events.OnUserLogin;
 import com.example.miha.sudocu.view.intf.IDialogManager;
 import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.fragment.ListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.fragment.ListOfGameFragment;
 import com.example.miha.sudocu.view.fragment.RegistrationFragment;
-import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.Adapter.AdapterLocalGameList;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ListOfGameSavesActivity extends AppCompatActivity implements RegistrationFragment.LoginCallback, IDialogManager {
+public class ListOfGameSavesActivity extends AppCompatActivity implements  IDialogManager {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     private AlertDialog dialog;
@@ -44,10 +46,17 @@ public class ListOfGameSavesActivity extends AppCompatActivity implements Regist
     }
 
     @Override
+    protected void onDestroy() {
+        BusProvider.getInstance().unregister(this);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_game_saves);
         ButterKnife.bind(this);
+        BusProvider.getInstance().register(this);
         dialogFragment = new RegistrationFragment();
         initTabLayout();
         setSupportActionBar(toolbar);
@@ -83,10 +92,10 @@ public class ListOfGameSavesActivity extends AppCompatActivity implements Regist
 
     }
 
-    @Override
-    public void onLogin(User user) {
-        if (user != null) {
-            dialogFragment.dismiss();
+    @Subscribe
+    public void onLogin(OnUserLogin onUserLogin) {
+        if (onUserLogin.getUser() != null) {
+            dialogFragment.dismiss();//закрыл диалог
             int i = ((TabLayout) findViewById(R.id.tableLayout)).getSelectedTabPosition();
             Fragment fr = adapterLocalGameList.getItem(i);
             if (fr instanceof IListOfCompleteGameFragment){

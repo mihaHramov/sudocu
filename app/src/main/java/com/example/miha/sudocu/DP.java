@@ -2,6 +2,7 @@ package com.example.miha.sudocu;
 
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterMainActivity;
+import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
 import com.example.miha.sudocu.presenter.PresenterListOfCompleteGameFragment;
 import com.example.miha.sudocu.presenter.PresenterListOfGameFragment;
 import com.example.miha.sudocu.presenter.PresenterSettings;
@@ -14,6 +15,12 @@ public class DP {
     private IPresenterGrid mPresenterOfGrid;
     private PresenterSettings mPrestnterSettings;
     private IPresenterMainActivity mPresenterMainActivity;
+    private IPresenterRegistration mPresenterRegistrationFragment;
+
+    public DP setPresenterRegistrationFragment(IPresenterRegistration mPresenterRegistrationFragment) {
+        this.mPresenterRegistrationFragment = mPresenterRegistrationFragment;
+        return this;
+    }
 
     public static DP get() {
         return dp;
@@ -64,5 +71,8 @@ public class DP {
 
     public IPresenterMainActivity getPresenterMainActivity(){
         return mPresenterMainActivity;
+    }
+    public IPresenterRegistration getPresenterRegistrationFragment(){
+        return mPresenterRegistrationFragment;
     }
 }

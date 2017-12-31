@@ -1,5 +1,6 @@
 package com.example.miha.sudocu.presenter;
 
+import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.view.intf.IFragmentRegistration;
 import com.example.miha.sudocu.data.DP.intf.ILogin;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
@@ -12,11 +13,16 @@ import rx.schedulers.Schedulers;
 
 public class PresenterRegistrationFragment implements IPresenterRegistration {
     private ILogin loginInSystem;
+    private IRepositoryUser repositoryUser;
     private IFragmentRegistration view;
 
-    public PresenterRegistrationFragment(IFragmentRegistration fragment,ILogin loginAPI) {
-        view = fragment;//внедрил зависимости
+    public PresenterRegistrationFragment( ILogin loginAPI, IRepositoryUser repositoryUser) {
+        this.repositoryUser = repositoryUser;
         loginInSystem = loginAPI;
+    }
+    @Override
+    public void setView(IFragmentRegistration fr ){
+        this.view = fr;
     }
 
     @Override
@@ -28,7 +34,11 @@ public class PresenterRegistrationFragment implements IPresenterRegistration {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        user -> view.onLogin(user),
-                        e -> view.onFailAuth(e.getMessage()));
+                        user -> {
+                            repositoryUser.setUser(user);
+                            view.onLogin(user);
+                        },
+                        e -> view.onFailAuth(e.getMessage())
+                );
     }
 }
