@@ -14,25 +14,28 @@ import com.example.miha.sudocu.presenter.Adapter.AdapterChallenge;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
 import com.example.miha.sudocu.presenter.PresenterRecordsListFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class RecordsListFragment extends Fragment {
-    private ListView listOfRecords;
-    private IPresenterOfFragment presenter;
+    @BindView(R.id.list_records)
+    ListView listOfRecords;
     private AdapterChallenge adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView =
-                inflater.inflate(R.layout.records_list_fragment, container, false);
-        listOfRecords = (ListView) rootView.findViewById(R.id.list_records);
+        View rootView = inflater.inflate(R.layout.records_list_fragment, container, false);
+        ButterKnife.bind(this, rootView);
         listOfRecords.setAdapter(adapter);
         return rootView;
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PresenterRecordsListFragment(RetroClient.getInstance());
+        IPresenterOfFragment presenter = new PresenterRecordsListFragment(RetroClient.getInstance());
         adapter = new AdapterChallenge(getContext());
     }
 }

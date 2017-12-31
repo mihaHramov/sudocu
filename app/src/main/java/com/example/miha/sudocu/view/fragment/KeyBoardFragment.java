@@ -45,7 +45,7 @@ public class KeyBoardFragment extends Fragment {
     Button button9;
 
     @OnClick(R.id.delete_answer)
-    void clickOnButtondDeleteAnswer(){
+    void clickOnButtonDeleteAnswer(){
         BusProvider.getInstance().post(new OnAnswerDeleteEvent());
     }
 

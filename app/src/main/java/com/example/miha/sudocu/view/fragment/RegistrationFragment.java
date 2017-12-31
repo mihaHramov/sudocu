@@ -19,17 +19,21 @@ import com.example.miha.sudocu.view.intf.IFragmentRegistration;
 import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class RegistrationFragment extends DialogFragment implements  IFragmentRegistration {
-    private Button auth;
-    private EditText login, password;
+
+public class RegistrationFragment extends DialogFragment implements IFragmentRegistration {
+    @BindView(R.id.auth) Button auth;
+    @BindView(R.id.login) EditText login;
+    @BindView(R.id.password)EditText password;
     private IPresenterRegistration presenter;
 
     @Override
     public void onLogin(User user) {
         // прячем клавиатуру
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(getContext().INPUT_METHOD_SERVICE);
-        if(imm!=null){
+        if (imm != null) {
             imm.hideSoftInputFromWindow(auth.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
@@ -61,11 +65,8 @@ public class RegistrationFragment extends DialogFragment implements  IFragmentRe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         BusProvider.getInstance().register(this);
-        View rootView =
-                inflater.inflate(R.layout.registration_fragment, container, false);
-        auth = (Button) rootView.findViewById(R.id.auth);
-        password = (EditText) rootView.findViewById(R.id.password);
-        login = (EditText) rootView.findViewById(R.id.login);
+        View rootView = inflater.inflate(R.layout.registration_fragment, container, false);
+        ButterKnife.bind(this, rootView);
         auth.setOnClickListener(v -> {
             presenter.login(login.getText().toString(), password.getText().toString());
             auth.setEnabled(false);

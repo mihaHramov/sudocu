@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -130,7 +129,6 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         switch (item.getItemId()) {
             case R.id.challenge:
                 lastIdRecords = info.position;
-                Log.d("mihaHramov",""+info.position);
                 presenter.sendGame((Grid) adapter.getItem(info.position));
                 break;
             case R.id.delete:

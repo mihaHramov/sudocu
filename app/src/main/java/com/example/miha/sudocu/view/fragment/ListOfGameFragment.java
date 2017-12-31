@@ -20,11 +20,14 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfNonCompleteGame;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ListOfGameFragment extends Fragment implements IListOfNotCompletedGameFragment{
-    private ListView listView;
+    @BindView(R.id.listViewGrid) ListView listView;
     private IPresenterOfNonCompleteGame presenter;
     private AdapterGrid adapter;
-    private ProgressBar progressBar;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,15 +62,13 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView =
-                inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
-        listView = (ListView) rootView.findViewById(R.id.listViewGrid);
+        View rootView = inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
+        ButterKnife.bind(this,rootView);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent i = new Intent(getActivity(), MainActivity.class);
             i.putExtra(Grid.KEY, (Grid) adapter.getItem(position));
             getActivity().startActivity(i);
         });
-        progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
         listView.setAdapter(adapter);
         return rootView;
     }
