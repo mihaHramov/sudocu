@@ -1,5 +1,6 @@
 package com.example.miha.sudocu.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,13 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.Challenge;
+import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterChallenge;
 import com.example.miha.sudocu.presenter.PresenterRecordsListFragment;
+import com.example.miha.sudocu.view.activity.MainActivity;
 import com.example.miha.sudocu.view.intf.IRecordsList;
 
 import java.util.ArrayList;
@@ -48,8 +50,15 @@ public class RecordsListFragment extends Fragment implements IRecordsList {
 
     @Override
     public void showRecords(ArrayList<Challenge> challenges)  {
-        adapter = new AdapterChallenge(challenges, challenge -> Toast.makeText(getActivity().getApplicationContext(),challenge.getLogin(),Toast.LENGTH_LONG).show());
+        adapter = new AdapterChallenge(challenges, challenge ->presenter.choiceChallenge(challenge) );
         listOfRecords.setAdapter(adapter);
+    }
+
+    @Override
+    public void choiceChallenge(Challenge challenge) {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra(Grid.KEY,challenge.getGrid());
+        startActivity(intent);
     }
 
     @Override
