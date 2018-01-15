@@ -1,12 +1,26 @@
 package com.example.miha.sudocu.data.model;
 
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.annotation.Generated;
+
+@Generated("org.jsonschema2pojo")
 public class HistoryOfAnswers implements Serializable {
+    @SerializedName("isTopStack")
+    @Expose
     private Boolean isTopStack;
+
+    @SerializedName("id")
+    @Expose
     private Integer history_id;
+
+    @SerializedName("history")
+    @Expose
     private ArrayList<HistoryAnswer> history;
 
     private HistoryAnswer getLastAnswerFromHistory() {

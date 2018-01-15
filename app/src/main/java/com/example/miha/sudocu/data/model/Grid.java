@@ -48,6 +48,8 @@ public class Grid implements Serializable {
     @Expose
     private Map<Integer, String> answers = new Hashtable<>();
 
+    @SerializedName("historyAnswer")
+    @Expose
     private HistoryOfAnswers history;
 
     public static final String KEY = "Grid";
