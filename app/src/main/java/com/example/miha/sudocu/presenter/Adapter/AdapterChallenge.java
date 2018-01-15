@@ -16,6 +16,9 @@ import com.example.miha.sudocu.view.intf.ChallengeItemClickListener;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.ViewHolder> {
     private final ChallengeItemClickListener onClickListener;
@@ -54,18 +57,14 @@ public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView login;
-        TextView gameTimeMinute;
-        TextView gameName;
-        TextView gameTimeSeconds;
-        CardView cardView;
+        @BindView(R.id.login) TextView login;
+        @BindView(R.id.gameTimeMinute) TextView gameTimeMinute;
+        @BindView(R.id.gameName) TextView gameName;
+        @BindView(R.id.gameTimeSecond) TextView gameTimeSeconds;
+        @BindView(R.id.cardViewItemChallenge) CardView cardView;
         public ViewHolder(View itemView) {
             super(itemView);
-            login = (TextView) itemView.findViewById(R.id.login);
-            gameName = (TextView) itemView.findViewById(R.id.gameName);
-            gameTimeMinute = (TextView) itemView.findViewById(R.id.gameTimeMinute);
-            gameTimeSeconds = (TextView) itemView.findViewById(R.id.gameTimeSecond);
-            cardView = (CardView) itemView.findViewById(R.id.cardViewItemChallenge);
+            ButterKnife.bind(this,itemView);
         }
     }
 }
