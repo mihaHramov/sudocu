@@ -6,7 +6,8 @@ import android.util.Log;
 import com.example.miha.sudocu.data.DP.intf.ChallengeApi;
 import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
 import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
+import com.example.miha.sudocu.data.model.Challenge;
+import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfRecordsList;
 import com.example.miha.sudocu.view.intf.IRecordsList;
 
 
@@ -14,13 +15,19 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-public class PresenterRecordsListFragment implements IPresenterOfFragment {
+public class PresenterRecordsListFragment implements IPresenterOfRecordsList {
     private ChallengeDP challengeDP;
+
     private IRecordsList view;
 
     public PresenterRecordsListFragment(ChallengeApi api, IRecordsList view) {
         this.view = view;
         this.challengeDP = new ChallengeDpImpl(api);
+    }
+
+    @Override
+    public void choiceChallenge(Challenge challenge) {
+        view.choiceChallenge(challenge);
     }
 
     @Override
