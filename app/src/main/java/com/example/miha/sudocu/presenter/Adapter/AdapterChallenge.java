@@ -10,14 +10,13 @@ import android.widget.TextView;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.model.Challenge;
+import com.example.miha.sudocu.utils.ConverterTime;
 
 import java.util.ArrayList;
 
 
-
 public class AdapterChallenge extends BaseAdapter {
     ArrayList<Challenge> arrayChallenges = new ArrayList<>();
-    Context ctx;
     LayoutInflater lInflater;
 
 
@@ -43,24 +42,21 @@ public class AdapterChallenge extends BaseAdapter {
         }
         Challenge challenge = (Challenge) getItem(position);
         ((TextView) view.findViewById(R.id.login)).setText(challenge.getLogin());
+        ((TextView) view.findViewById(R.id.gameName)).setText(challenge.getGrid().getName());
+        Long minute = ConverterTime.getInstance().converterLongToMinutes(challenge.getGrid().getGameTime());
+        Long second = ConverterTime.getInstance().converterLongToSeconds(challenge.getGrid().getGameTime());
+        ((TextView) view.findViewById(R.id.gameTime)).setText(minute.toString()+":"+second.toString());
         return view;
     }
 
 
     public void setData(ArrayList<Challenge> challenges) {
         arrayChallenges = challenges;
+        notifyDataSetChanged();
     }
 
     public AdapterChallenge(Context ctx) {
-        this.ctx = ctx;
         this.lInflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    public AdapterChallenge(Context context, ArrayList<Challenge> challenges) {
-        ctx = context;
-        arrayChallenges = challenges;
-        lInflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 }
