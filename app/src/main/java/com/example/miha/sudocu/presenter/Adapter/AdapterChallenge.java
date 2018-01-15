@@ -1,11 +1,11 @@
 package com.example.miha.sudocu.presenter.Adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.miha.sudocu.R;
@@ -15,48 +15,50 @@ import com.example.miha.sudocu.utils.ConverterTime;
 import java.util.ArrayList;
 
 
-public class AdapterChallenge extends BaseAdapter {
+public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.ViewHolder> {
     ArrayList<Challenge> arrayChallenges = new ArrayList<>();
-    LayoutInflater lInflater;
 
+    public AdapterChallenge(ArrayList<Challenge> arrayChallenges) {
+        this.arrayChallenges = arrayChallenges;
+    }
 
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater =  LayoutInflater.from(context);
+        View view =  inflater.inflate(R.layout.item_challenge,parent,false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+       Challenge challenge =  arrayChallenges.get(position);
+       ConverterTime converter =  ConverterTime.getInstance();
+       Long time = challenge.getGrid().getGameTime();
+       String minute =  Long.toString(converter.converterLongToMinutes(time));
+       String seconds =  Long.toString(converter.converterLongToSeconds(time));
+       holder.login.setText(challenge.getLogin());
+       holder.gameName.setText(challenge.getGrid().getName());
+       holder.gameTimeMinute.setText(minute);
+       holder.gameTimeSeconds.setText(seconds);
+    }
+
+    @Override
+    public int getItemCount() {
         return arrayChallenges.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return arrayChallenges.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        if (view == null) {
-            view = lInflater.inflate(R.layout.item_challenge, parent, false);//создать свой вид
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView login;
+        TextView gameTimeMinute;
+        TextView gameName;
+        TextView gameTimeSeconds;
+        public ViewHolder(View itemView) {
+            super(itemView);
+            login = (TextView) itemView.findViewById(R.id.login);
+            gameName = (TextView) itemView.findViewById(R.id.gameName);
+            gameTimeMinute = (TextView) itemView.findViewById(R.id.gameTimeMinute);
+            gameTimeSeconds = (TextView) itemView.findViewById(R.id.gameTimeSecond);
         }
-        Challenge challenge = (Challenge) getItem(position);
-        ((TextView) view.findViewById(R.id.login)).setText(challenge.getLogin());
-        ((TextView) view.findViewById(R.id.gameName)).setText(challenge.getGrid().getName());
-        Long minute = ConverterTime.getInstance().converterLongToMinutes(challenge.getGrid().getGameTime());
-        Long second = ConverterTime.getInstance().converterLongToSeconds(challenge.getGrid().getGameTime());
-        ((TextView) view.findViewById(R.id.gameTime)).setText(minute.toString()+":"+second.toString());
-        return view;
-    }
-
-
-    public void setData(ArrayList<Challenge> challenges) {
-        arrayChallenges = challenges;
-        notifyDataSetChanged();
-    }
-
-    public AdapterChallenge(Context ctx) {
-        this.lInflater = (LayoutInflater) ctx
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 }

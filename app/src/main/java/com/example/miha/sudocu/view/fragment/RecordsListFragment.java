@@ -3,10 +3,11 @@ package com.example.miha.sudocu.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.DP.RetroClient;
@@ -22,8 +23,8 @@ import butterknife.ButterKnife;
 
 
 public class RecordsListFragment extends Fragment implements IRecordsList {
-    @BindView(R.id.list_records)
-    ListView listOfRecords;
+    @BindView(R.id.recycler_list_records)
+    RecyclerView listOfRecords;
     private AdapterChallenge adapter;
     private PresenterRecordsListFragment presenter;
 
@@ -32,7 +33,8 @@ public class RecordsListFragment extends Fragment implements IRecordsList {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.records_list_fragment, container, false);
         ButterKnife.bind(this, rootView);
-        listOfRecords.setAdapter(adapter);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this.getContext());
+        listOfRecords.setLayoutManager(manager);
         return rootView;
     }
 
@@ -41,12 +43,12 @@ public class RecordsListFragment extends Fragment implements IRecordsList {
         super.onCreate(savedInstanceState);
         presenter = new PresenterRecordsListFragment(RetroClient.getInstance(), this);
         presenter.init(savedInstanceState);
-        adapter = new AdapterChallenge(getContext());
     }
 
     @Override
-    public void showRecords(ArrayList<Challenge> challenges) {
-        adapter.setData(challenges);
+    public void showRecords(ArrayList<Challenge> challenges)  {
+        adapter = new AdapterChallenge(challenges);
+        listOfRecords.setAdapter(adapter);
     }
 
     @Override
