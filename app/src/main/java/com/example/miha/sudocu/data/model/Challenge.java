@@ -30,6 +30,9 @@ public class Challenge {
     public String getLogin() {
         return login;
     }
+    public Grid getGrid(){
+        return grid;
+    }
 
     public void setLogin(String login) {
         this.login = login;
