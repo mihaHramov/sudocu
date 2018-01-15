@@ -10,18 +10,22 @@ import android.widget.ListView;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.DP.RetroClient;
+import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.presenter.Adapter.AdapterChallenge;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfFragment;
 import com.example.miha.sudocu.presenter.PresenterRecordsListFragment;
+import com.example.miha.sudocu.view.intf.IRecordsList;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class RecordsListFragment extends Fragment {
+public class RecordsListFragment extends Fragment implements IRecordsList {
     @BindView(R.id.list_records)
     ListView listOfRecords;
     private AdapterChallenge adapter;
+    private PresenterRecordsListFragment presenter;
 
     @Nullable
     @Override
@@ -35,7 +39,19 @@ public class RecordsListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IPresenterOfFragment presenter = new PresenterRecordsListFragment(RetroClient.getInstance());
+        presenter = new PresenterRecordsListFragment(RetroClient.getInstance(), this);
+        presenter.init(savedInstanceState);
         adapter = new AdapterChallenge(getContext());
+    }
+
+    @Override
+    public void showRecords(ArrayList<Challenge> challenges) {
+        adapter.setData(challenges);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
     }
 }
