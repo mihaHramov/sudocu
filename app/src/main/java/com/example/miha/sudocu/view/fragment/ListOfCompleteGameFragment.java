@@ -4,14 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.ContextMenu;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -25,8 +23,13 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ListOfCompleteGameFragment extends Fragment implements IListOfCompleteGameFragment {
-    private ProgressBar progressBar;
+    @BindView(R.id.progressBar) ProgressBar progressBar;
+    @BindView(R.id.recycler_view_grid) RecyclerView recyclerView;
+
     private IPresenterOfCompleteGame presenter;
     private IDialogManager activityCallback;
     private Integer lastIdRecords = null;
@@ -35,7 +38,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
-            adapter.setData(gridList);
+        adapter.setData(gridList);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
     @Override
     public void onAfterAuthUser() {
         if (this.lastIdRecords != null) {
-            presenter.sendGame((Grid) adapter.getItem(lastIdRecords));
+            presenter.sendGame(adapter.getItem(lastIdRecords));
         }
     }
 
@@ -71,7 +74,25 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         super.onCreate(savedInstanceState);
         presenter = DP.get().getPresenterListOfCompleteGameFragment();
         presenter.setView(this);
-        adapter = new AdapterGrid(getContext());
+        adapter = new AdapterGrid();
+        adapter.setOnLongClickListener(v -> {
+            PopupMenu popup = new PopupMenu(getActivity(), v);
+            popup.inflate(R.menu.list_of_complete_game);
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.challenge:
+                        lastIdRecords = adapter.getIdChoseItem();
+                        presenter.sendGame(adapter.getItem(adapter.getIdChoseItem()));
+                        break;
+                    case R.id.delete:
+                        lastIdRecordsDelete = adapter.getIdChoseItem();
+                        presenter.deleteGame(adapter.getItem(adapter.getIdChoseItem()));
+                        break;
+                }
+                return false;
+            });
+            popup.show();
+        });
         presenter.init(savedInstanceState);
     }
 
@@ -107,35 +128,11 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView =
-                inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
-        progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
-        ListView listView = (ListView) rootView.findViewById(R.id.listViewGrid);
-        listView.setAdapter(adapter);
-        registerForContextMenu(listView);
+        View rootView = inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
+        ButterKnife.bind(this,rootView);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
         return rootView;
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.list_of_complete_game, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.challenge:
-                lastIdRecords = info.position;
-                presenter.sendGame((Grid) adapter.getItem(info.position));
-                break;
-            case R.id.delete:
-                lastIdRecordsDelete = info.position;
-                presenter.deleteGame((Grid) adapter.getItem(info.position));
-                break;
-        }
-        return super.onContextItemSelected(item);
     }
 }

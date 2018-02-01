@@ -50,7 +50,10 @@ public class RecordsListFragment extends Fragment implements IRecordsList {
 
     @Override
     public void showRecords(ArrayList<Challenge> challenges)  {
-        adapter = new AdapterChallenge(challenges, challenge ->presenter.choiceChallenge(challenge) );
+        adapter = new AdapterChallenge(challenges, () -> {
+            Challenge challenge = adapter.getItem(adapter.getIdChoseItem());
+            presenter.choiceChallenge(challenge);
+        });
         listOfRecords.setAdapter(adapter);
     }
 

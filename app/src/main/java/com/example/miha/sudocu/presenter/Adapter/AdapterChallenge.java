@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.utils.ConverterTime;
-import com.example.miha.sudocu.view.intf.ChallengeItemClickListener;
+import com.example.miha.sudocu.view.intf.ItemClickListener;
 
 import java.util.ArrayList;
 
@@ -21,34 +21,43 @@ import butterknife.ButterKnife;
 
 
 public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.ViewHolder> {
-    private final ChallengeItemClickListener onClickListener;
-    ArrayList<Challenge> arrayChallenges = new ArrayList<>();
+    private final ItemClickListener onClickListener;
+    private ArrayList<Challenge> arrayChallenges = new ArrayList<>();
+    private Integer idRecord = null;
 
-    public AdapterChallenge(ArrayList<Challenge> arrayChallenges, ChallengeItemClickListener onClickListener) {
+    public AdapterChallenge(ArrayList<Challenge> arrayChallenges, ItemClickListener onClickListener) {
         this.onClickListener = onClickListener;
         this.arrayChallenges = arrayChallenges;
+    }
+
+    public Integer getIdChoseItem() {
+        return this.idRecord;
+    }
+
+    public Challenge getItem(int position) {
+        return arrayChallenges.get(position);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        LayoutInflater inflater =  LayoutInflater.from(context);
-        View view =  inflater.inflate(R.layout.item_challenge,parent,false);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.item_challenge, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-       Challenge challenge =  arrayChallenges.get(position);
-       ConverterTime converter =  ConverterTime.getInstance();
-       Long time = challenge.getGrid().getGameTime();
-       String minute =  Long.toString(converter.converterLongToMinutes(time));
-       String seconds =  Long.toString(converter.converterLongToSeconds(time));
-       holder.login.setText(challenge.getLogin());
-       holder.gameName.setText(challenge.getGrid().getName());
-       holder.gameTimeMinute.setText(minute);
-       holder.gameTimeSeconds.setText(seconds);
-       holder.cardView.setOnClickListener(v -> onClickListener.onItemClick(challenge));
+        Challenge challenge = arrayChallenges.get(position);
+        ConverterTime converter = ConverterTime.getInstance();
+        Long time = challenge.getGrid().getGameTime();
+        String minute = Long.toString(converter.converterLongToMinutes(time));
+        String seconds = Long.toString(converter.converterLongToSeconds(time));
+        holder.login.setText(challenge.getLogin());
+        holder.gameName.setText(challenge.getGrid().getName());
+        holder.gameTimeMinute.setText(minute);
+        holder.gameTimeSeconds.setText(seconds);
+        holder.cardView.setOnClickListener(v ->{idRecord = holder.getAdapterPosition();onClickListener.onItemClick();});
     }
 
     @Override
@@ -62,9 +71,10 @@ public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.View
         @BindView(R.id.gameName) TextView gameName;
         @BindView(R.id.gameTimeSecond) TextView gameTimeSeconds;
         @BindView(R.id.cardViewItemChallenge) CardView cardView;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
