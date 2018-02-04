@@ -1,18 +1,16 @@
 package com.example.miha.sudocu.presenter.Adapter;
 
-import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.TextView;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.utils.ConverterTime;
-import com.example.miha.sudocu.view.intf.ItemClickListener;
+
 
 import java.util.ArrayList;
 
@@ -20,35 +18,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.ViewHolder> {
-    private final ItemClickListener onClickListener;
-    private ArrayList<Challenge> arrayChallenges = new ArrayList<>();
-    private Integer idRecord = null;
-
-    public AdapterChallenge(ArrayList<Challenge> arrayChallenges, ItemClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-        this.arrayChallenges = arrayChallenges;
-    }
-
-    public Integer getIdChoseItem() {
-        return this.idRecord;
-    }
-
-    public Challenge getItem(int position) {
-        return arrayChallenges.get(position);
-    }
-
+public class AdapterChallenge extends BaseRecyclerViewAdapter<AdapterChallenge.ViewHolder,Challenge>
+{
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_challenge, parent, false);
+    protected ViewHolder getMyHolder(View view) {
         return new ViewHolder(view);
+    }
+
+    public AdapterChallenge(@LayoutRes int res) {
+        super(res,null,null,null);
+    }
+
+    public AdapterChallenge(@LayoutRes int res, ArrayList<Challenge> challenges) {
+        super(res,challenges,null,null);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Challenge challenge = arrayChallenges.get(position);
+        Challenge challenge = objects.get(position);
         ConverterTime converter = ConverterTime.getInstance();
         Long time = challenge.getGrid().getGameTime();
         String minute = Long.toString(converter.converterLongToMinutes(time));
@@ -57,12 +44,7 @@ public class AdapterChallenge extends RecyclerView.Adapter<AdapterChallenge.View
         holder.gameName.setText(challenge.getGrid().getName());
         holder.gameTimeMinute.setText(minute);
         holder.gameTimeSeconds.setText(seconds);
-        holder.cardView.setOnClickListener(v ->{idRecord = holder.getAdapterPosition();onClickListener.onItemClick();});
-    }
-
-    @Override
-    public int getItemCount() {
-        return arrayChallenges.size();
+        holder.cardView.setOnClickListener(v ->{lastShownItem = holder.getAdapterPosition();onClickListener.onItemClick();});
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

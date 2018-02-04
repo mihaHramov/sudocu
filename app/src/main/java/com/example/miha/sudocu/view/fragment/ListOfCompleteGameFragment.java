@@ -38,7 +38,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
-        adapter.setData(gridList);
+        adapter.setValueList(gridList);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
 
     @Override
     public void deleteGameFromList() {
-        adapter.deleteItemById(lastIdRecordsDelete);
+        adapter.removeObjectAtPosition(lastIdRecordsDelete);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         super.onCreate(savedInstanceState);
         presenter = DP.get().getPresenterListOfCompleteGameFragment();
         presenter.setView(this);
-        adapter = new AdapterGrid();
+        adapter = new AdapterGrid(R.layout.item);
         adapter.setOnLongClickListener(v -> {
             PopupMenu popup = new PopupMenu(getActivity(), v);
             popup.inflate(R.menu.list_of_complete_game);

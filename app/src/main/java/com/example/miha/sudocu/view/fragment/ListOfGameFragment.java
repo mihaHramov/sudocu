@@ -38,7 +38,8 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
         presenter = DP.get().getPresenterListOfGameFragment();
         presenter.init(savedInstanceState);
         presenter.setView(this);
-        adapter = new AdapterGrid(() -> {
+        adapter = new AdapterGrid(R.layout.item);
+        adapter.setOnClickListener(() -> {
             Intent i = new Intent(getActivity(), MainActivity.class);
             i.putExtra(Grid.KEY, adapter.getItem(adapter.getIdChoseItem()));
             getActivity().startActivity(i);
@@ -79,6 +80,6 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
-        adapter.setData(gridList);
+        adapter.setValueList(gridList);//.setData(gridList);
     }
 }
