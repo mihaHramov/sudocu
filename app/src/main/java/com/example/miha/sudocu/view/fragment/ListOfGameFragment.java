@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.utils.SerializableGame;
 import com.example.miha.sudocu.view.activity.MainActivity;
 import com.example.miha.sudocu.view.intf.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
@@ -41,7 +42,7 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
         adapter = new AdapterGrid(R.layout.item);
         adapter.setOnClickListener(() -> {
             Intent i = new Intent(getActivity(), MainActivity.class);
-            i.putExtra(Grid.KEY, adapter.getItem(adapter.getIdChoseItem()));
+            i.putExtra(Grid.KEY, SerializableGame.serializable(adapter.getItem(adapter.getIdChoseItem())));
             getActivity().startActivity(i);
         });
     }
@@ -80,6 +81,6 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
-        adapter.setValueList(gridList);//.setData(gridList);
+        adapter.setValueList(gridList);
     }
 }

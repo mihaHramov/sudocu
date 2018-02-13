@@ -1,15 +1,9 @@
 package com.example.miha.sudocu.view.fragment;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
 import com.example.miha.sudocu.view.events.OnAnswerDeleteEvent;
 import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
@@ -20,11 +14,10 @@ import com.squareup.otto.Subscribe;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class KeyBoardFragment extends Fragment {
+public class KeyBoardFragment extends BaseMvpFragment {
     @BindView(R.id.button1)
     Button button1;
     @BindView(R.id.button2)
@@ -45,17 +38,13 @@ public class KeyBoardFragment extends Fragment {
     Button button9;
 
     @OnClick(R.id.delete_answer)
-    void clickOnButtonDeleteAnswer(){
-        BusProvider.getInstance().post(new OnAnswerDeleteEvent());
+    void clickOnButtonDeleteAnswer() {
+        bus.post(new OnAnswerDeleteEvent());
     }
 
-    @OnClick({R.id.history_back,R.id.history_forward})
-    void clickOnButtonHistory(View view){
-        if(view.getId()==R.id.history_forward){
-            BusProvider.getInstance().post(new OnChangeHistoryGame(true));
-        }else {
-            BusProvider.getInstance().post(new OnChangeHistoryGame(false));
-        }
+    @OnClick({R.id.history_back, R.id.history_forward})
+    void clickOnButtonHistory(View view) {
+        bus.post(new OnChangeHistoryGame(view.getId() == R.id.history_forward));
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
@@ -90,23 +79,14 @@ public class KeyBoardFragment extends Fragment {
                 answer = "9";
                 break;
         }
-        BusProvider.getInstance().post(new OnAnswerChangeEvent(answer));
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        BusProvider.getInstance().register(this);
-        View rootView = inflater.inflate(R.layout.keyboard_fragment, container, false);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+        bus.post(new OnAnswerChangeEvent(answer));
     }
 
     @Override
-    public void onDestroy() {
-        BusProvider.getInstance().unregister(this);
-        super.onDestroy();
+    public int getLayoutId() {
+        return R.layout.keyboard_fragment;
     }
+
 
     @Subscribe
     public void onChangeShowCountAnswerMode(OnChangeShowCountAnswerMode changeMode) {

@@ -2,7 +2,6 @@ package com.example.miha.sudocu.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,9 @@ import com.example.miha.sudocu.presenter.PresenterSettings;
 import com.example.miha.sudocu.view.intf.ISettingsFragment;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
-public class SettingsFragment extends Fragment implements ISettingsFragment {
+public class SettingsFragment extends BaseMvpFragment implements ISettingsFragment {
     private PresenterSettings presenterSettings;
 
     @BindView(R.id.switch_keyboard_mode)
@@ -56,18 +54,22 @@ public class SettingsFragment extends Fragment implements ISettingsFragment {
         switchShowError.setChecked(errorMode);
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.settings_fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root = super.onCreateView(inflater, container, savedInstanceState);
         presenterSettings = DP.get().getPresenterSettings();
-        View v = inflater.inflate(R.layout.settings_fragment, container, false);
-        ButterKnife.bind(this, v);
         switchKeyboard.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeKeyboardMode(isChecked));
         switchShowError.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeShowErrorMode(isChecked));
         switchShowKnowAnswer.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeShowKnowAnswerMode(isChecked));
         switchShowSameAnswer.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeShowSameAnswerMode(isChecked));
         switchShowCountNumberOnButton.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeShowCountNumberOnButtonMode(isChecked));
         presenterSettings.init(this);
-        return v;
+        return root;
     }
 }

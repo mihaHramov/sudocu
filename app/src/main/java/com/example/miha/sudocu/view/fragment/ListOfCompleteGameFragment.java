@@ -3,7 +3,6 @@ package com.example.miha.sudocu.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -24,11 +23,12 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class ListOfCompleteGameFragment extends Fragment implements IListOfCompleteGameFragment {
-    @BindView(R.id.progressBar) ProgressBar progressBar;
-    @BindView(R.id.recycler_view_grid) RecyclerView recyclerView;
+public class ListOfCompleteGameFragment extends BaseMvpFragment implements IListOfCompleteGameFragment {
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+    @BindView(R.id.recycler_view_grid)
+    RecyclerView recyclerView;
 
     private IPresenterOfCompleteGame presenter;
     private IDialogManager activityCallback;
@@ -48,7 +48,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
 
     @Override
     public void onSendGame() {
-        Toast.makeText(getContext(),getContext().getString(R.string.send_game_to_challenge),Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.send_game_to_challenge), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
 
     @Override
     public void onErrorSendGame() {
-        Toast.makeText(getContext(),getContext().getString(R.string.error),Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.error), Toast.LENGTH_LONG).show();
     }
 
 
@@ -106,15 +106,15 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof IDialogManager) {
-            this.activityCallback = (IDialogManager)context ;
+            this.activityCallback = (IDialogManager) context;
         }
     }
 
     @Override
     public void showLoad(boolean flag) {
-        if(flag){
+        if (flag) {
             progressBar.setVisibility(ProgressBar.VISIBLE);
-        }else {
+        } else {
             progressBar.setVisibility(ProgressBar.GONE);
         }
     }
@@ -125,14 +125,18 @@ public class ListOfCompleteGameFragment extends Fragment implements IListOfCompl
         presenter.savePresenterData(outState);
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.list_of_game_saves_fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.list_of_game_saves_fragment, container, false);
-        ButterKnife.bind(this,rootView);
+        View root =  super.onCreateView(inflater,container,savedInstanceState);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-        return rootView;
+        return root;
     }
 }
