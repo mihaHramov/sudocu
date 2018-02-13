@@ -40,7 +40,7 @@
     <string name="show_cout_number_title">Показывать число ответов</string>
     <string name="history_forward">Шаг вперед</string>
     <string name="history_back">Шаг назад</string>
-    <string name="delete_answer">Удалить отет</string>
+    <string name="delete_answer">Удалить ответ</string>
     <string name="double_point">:</string>
     <string name="temp_time_minute">03</string>
     <string name="temp_time_second">02</string>
