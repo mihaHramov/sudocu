@@ -1,12 +1,12 @@
 package com.example.miha.sudocu.view.intf;
 
+import com.arellomobile.mvp.MvpView;
 import com.example.miha.sudocu.data.model.Answer;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-public interface IGridView {
-    void showErrorFocus(int id);
+public interface IGridView extends MvpView {
 
     void showGrid(Answer[][] ar);
 
@@ -26,7 +26,7 @@ public interface IGridView {
 
     void setGameTime(long time);
 
-    void setFocus(Integer id);
+    void setFocus(Integer id,Boolean isError);
 
     void removeFocus(Integer id);
 

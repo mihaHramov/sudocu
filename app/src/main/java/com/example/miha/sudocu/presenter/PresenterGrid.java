@@ -1,14 +1,12 @@
 package com.example.miha.sudocu.presenter;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.example.miha.sudocu.data.DP.GenerateGame;
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.data.model.HistoryAnswer;
-import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.example.miha.sudocu.view.intf.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.DP.intf.IRepository;
@@ -24,10 +22,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class PresenterGrid implements IPresenterGrid {
+@InjectViewState
+public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenterGrid {
     private Subscription subscription;
-    private ViewGridState viewState;
-    private boolean saveData;
     private IRepository repository;
     private IRepositorySettings settings;
     private Grid model;
@@ -35,9 +32,8 @@ public class PresenterGrid implements IPresenterGrid {
 
     @Override
     public void replayGame() {
-        viewState.clearError();
         model.replayGame();
-        viewState.showGameGrid();
+        getViewState().showGrid(model.getGameGrid());
     }
 
     private void history(HistoryAnswer incre) {
@@ -63,152 +59,113 @@ public class PresenterGrid implements IPresenterGrid {
         repository.saveGame(model)
                 .subscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aVoid -> {
-                }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {
-                });
+                .subscribe(aVoid -> {}, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
         subscription.unsubscribe();
     }
 
     @Override
     public void onResume() {
+        Boolean modeError = !settings.getErrorMode();
+        ArrayList<Integer> knowOpt = new ArrayList<>();
+        ArrayList<Integer> sameAnswers = new ArrayList<>();
+        ArrayList<Integer> errors = new ArrayList<>();
+        Integer lastInputId = model.getLastChoiseField();
+
+        if (settings.getKnowAnswerMode()) {
+            knowOpt = model.getKnowOptions(lastInputId);
+        }
+
+        if (settings.getShowSameAnswerMode()) {
+            if (lastInputId != null && !isEmptyString(model.getAnswer(lastInputId))) {
+                sameAnswers = model.getTheSameAnswers(lastInputId);
+            }
+        }
+
+        if (!modeError) {
+            errors = model.getErrors();
+            knowOpt.removeAll(errors);
+            sameAnswers.removeAll(errors);
+        }
+
+        getViewState().showGrid(model.getGameGrid());
+        getViewState().clearError(errors);//возможно убрать
+        getViewState().showError(errors);
+        getViewState().showTheSameAnswers(sameAnswers);
+        getViewState().showKnownOptions(knowOpt);
+        getViewState().setGameName(model.getName());
+
+        if (settings.getShowCountNumberOnButtonMode()) {
+            getViewState().showCountOfAnswer(model.getCountOfAnswers());
+        } else {
+            getViewState().clearCountOfAnswer();
+        }
+
+        if (lastInputId != null) {
+            getViewState().setFocus(lastInputId, errors.contains(lastInputId));
+        }
         if (subscription == null || subscription.isUnsubscribed()) {
             subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.newThread()).subscribe(aLong -> {
-                        viewState.showGameTime(model.getGameTime());
+                        getViewState().setGameTime(model.getGameTime());
                         model.setGameTime(model.getGameTime() + 1);
                     });
         }
     }
 
-    public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
+    public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings, Grid gr) {
+        this.model = gr;
         this.settings = repositorySettings;
-        this.viewState = new ViewGridState();
         this.repository = repository;
     }
 
-
     @Override
     public void reloadGame() {
-        int complex = model.getComplexity();
-        model = new Grid()
-                .setComplexity(complex)
-                .setUndefined(complex)
-                .init(new GenerateGame());
-        viewState.showGameGrid();
-    }
-
-    private void initModel(int complex) {
-        model = new Grid().setComplexity(complex).setUndefined(complex).init(new GenerateGame());
-    }
-
-    public void init(Intent intent) {
-        if (intent.getSerializableExtra(Grid.KEY) != null && model == null) {
-            model = (Grid) intent.getSerializableExtra(Grid.KEY);
-        }
-        if (model == null) {//если новая игра
-            int complex = intent.getIntExtra(AlertDialog.SETTINGS, 1);
-            initModel(complex);
-        }
-        saveData = false;
-    }
-
-
-    public void setView(IGridView view) {
-        Boolean modeError = !settings.getErrorMode();
-        ArrayList<Integer> errors = new ArrayList<>();
-        if (model.getLastChoiseField() != null) {
-            viewState.setLastId(model.getLastChoiseField());
-        }
-        if (!modeError) {
-            errors = model.getErrors();
-        }
-        viewState.setErrors(errors);
-
-        ArrayList<Integer> knowOpt = new ArrayList<>();
-        if (settings.getKnowAnswerMode()) {
-            knowOpt = model.getKnowOptions(viewState.getLastId());
-        }
-        if (!modeError) {
-            knowOpt.removeAll(errors);
-        }
-        viewState.setKnowOption(knowOpt);
-
-        ArrayList<Integer> sameAnswers = new ArrayList<>();
-        if (settings.getShowSameAnswerMode()) {
-            if (viewState.getLastId() != null && !model.getAnswer(viewState.getLastId()).trim().isEmpty()) {
-                sameAnswers = model.getTheSameAnswers(viewState.getLastId());
-            }
-
-        }
-        if (!modeError) {
-            sameAnswers.removeAll(errors);
-        }
-        viewState.setSameAnswer(sameAnswers);
-        viewState.attachView(view);
-        viewState.showGameName(model.getName());
-        if (settings.getShowCountNumberOnButtonMode()) {
-            viewState.showCountAnswer(model.getCountOfAnswers());
-        } else {
-            viewState.clearCountAnswer();
-        }
-    }
-    public void onSaveInstanceState(Bundle outState) {
-        saveData = true;
-        viewState.detachView();
-    }
-
-    @Override
-    public void unSubscription() {
-        if (!saveData) {
-            model = null;
-            viewState.clearHistory();
-        }
+        model.reloadGame().getGameGrid();
+        getViewState().showGrid(model.getGameGrid());
     }
 
     private void addAnswer(String answer, Integer lastChoseInputId) {
 
         ArrayList<Integer> clearAnswer = model.getTheSameAnswers(lastChoseInputId);
-        viewState.clearTheSameAnswer(clearAnswer);
-        viewState.clearError();//очистил ошибки
-
+        getViewState().clearTheSameAnswer(clearAnswer);
+        getViewState().clearError(model.getErrors());
         model.setAnswer(lastChoseInputId, answer);//установил новый ответ
-
         ArrayList<Integer> error = new ArrayList<>();
         if (settings.getErrorMode()) {
             error = model.getErrors();
-            viewState.showErrorInput(error);
+            getViewState().showError(error);
         }
-        viewState.showAnswer(lastChoseInputId, answer);
+        getViewState().setTextToAnswer(lastChoseInputId, answer);
 
         if (settings.getKnowAnswerMode()) {
             ArrayList<Integer> knowOption = model.getKnowOptions(lastChoseInputId);
             knowOption.removeAll(error);
-            viewState.showKnownOptions(knowOption);
+            getViewState().showKnownOptions(knowOption);
         }
         if (settings.getShowSameAnswerMode()) {
             ArrayList<Integer> sameAnswers = model.getTheSameAnswers(lastChoseInputId);
             sameAnswers.removeAll(error);
-            viewState.showTheSameAnswers(sameAnswers);
+            getViewState().showTheSameAnswers(sameAnswers);
         }
 
         if (settings.getShowCountNumberOnButtonMode()) {
             Map<String, Integer> count = model.getCountOfAnswers();
-            viewState.showCountAnswer(count);
+            getViewState().showCountOfAnswer(count);
         }
         if (model.isGameOver()) {//проверка на конец игры
-            viewState.showGameOver();
+            getViewState().gameOver();
         }
-        if (error.contains(lastChoseInputId)) {
-            viewState.showErrorFocus(lastChoseInputId);
-        } else {
-            viewState.focus(lastChoseInputId);
-        }
+        getViewState().setFocus(lastChoseInputId, error.contains(lastChoseInputId));
+    }
+
+    private Boolean isEmptyString(String str) {
+        return str.trim().isEmpty();
     }
 
     public void answer(String answer) {
         Integer lastChoseInputId = model.getLastChoiseField();
-        if (answer.trim().isEmpty() || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
+        if (isEmptyString(answer) || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
             return;
         }
 
@@ -224,19 +181,20 @@ public class PresenterGrid implements IPresenterGrid {
         Answer answerForDelete = new Answer("", isAnswer);
         answerForDelete.setId(idAnswer);
         if (isAnswer) {
-            viewState.clearError();
-            viewState.clearTheSameAnswer(model.getTheSameAnswers(idAnswer));
+            getViewState().clearError(model.getErrors());//viewState.clearError();
+            getViewState().clearTheSameAnswer(model.getTheSameAnswers(idAnswer));//viewState.clearTheSameAnswer(model.getTheSameAnswers(idAnswer));
             model.deleteAnswer(answerForDelete);
-            viewState.showAnswer(idAnswer, answerForDelete.getNumber());
-            viewState.showKnownOptions(model.getKnowOptions(answerForDelete.getId()));
-            viewState.focus(answerForDelete.getId());
-            viewState.showErrorInput(model.getErrors());
+            getViewState().setTextToAnswer(idAnswer, answerForDelete.getNumber());// viewState.showAnswer(idAnswer, answerForDelete.getNumber());
+            getViewState().showKnownOptions(model.getKnowOptions(answerForDelete.getId()));
+            getViewState().setFocus(answerForDelete.getId(), false);// viewState.focus(answerForDelete.getId());
+            getViewState().showError(model.getErrors());
         }
     }
 
     public void choseInput(int id) {
         Integer lastInputId = model.getLastChoiseField();
-        if (lastInputId != null && lastInputId == id) {//проверка на повторный клик по одному и тому же полю
+        //проверка на повторный клик по одному и тому же полю
+        if (lastInputId != null && lastInputId == id) {
             return;
         }
         ArrayList<Integer> error = new ArrayList<>();
@@ -246,218 +204,34 @@ public class PresenterGrid implements IPresenterGrid {
         if (lastInputId != null) {
             ArrayList<Integer> clearKnowOption = model.getKnowOptions(lastInputId);
             clearKnowOption.removeAll(error);
-            viewState.clearKnownOptions(clearKnowOption);//убрал старые ответы
-            viewState.removeFocus(lastInputId);      //убрал старый фокус
+            getViewState().clearTheSameAnswer(clearKnowOption);
+            getViewState().removeFocus(lastInputId);
 
             ArrayList<Integer> clearSameAnswer = model.getTheSameAnswers(lastInputId);
             clearSameAnswer.removeAll(error);
-            viewState.clearTheSameAnswer(clearSameAnswer);//убрал такие же ответы
+            getViewState().clearTheSameAnswer(clearSameAnswer);
         }
 
+        getViewState().showError(error);
 
-        if (settings.getErrorMode()) {
-            viewState.showErrorInput(error);//отобразил ошибки
-        }
-
-        if (!model.getAnswer(id).trim().isEmpty()) {
-            ArrayList<Integer> sameAnswer = model.getTheSameAnswers(id);
-            if (settings.getErrorMode()) {
-                sameAnswer.removeAll(error);
-            }
+        if (!isEmptyString(model.getAnswer(id))) {
             if (settings.getShowSameAnswerMode()) {
-                viewState.showTheSameAnswers(sameAnswer);
+                ArrayList<Integer> sameAnswer = model.getTheSameAnswers(id);
+                sameAnswer.removeAll(error);
+                getViewState().showTheSameAnswers(sameAnswer);
             }
         }
-
 
         if (settings.getKnowAnswerMode()) {
             ArrayList<Integer> knowOptions = model.getKnowOptions(id);
-            if (settings.getErrorMode()) {
-                knowOptions.removeAll(error);
-            }
-            viewState.showKnownOptions(knowOptions);//показать известные варианты
+            knowOptions.removeAll(error);
+            getViewState().showKnownOptions(knowOptions);
         }
-
-        if (error.contains(id)) {
-            viewState.showErrorFocus(id);
-        } else {
-            viewState.focus(id);
-        }
+        getViewState().setFocus(id, error.contains(id));
         model.setLastChoiseField(id);
     }
 
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
-
-    //нужен для отслеживания состояния активити
-    private class ViewGridState {
-        private IGridView view;
-        private Integer lastId;
-        private ArrayList<Integer> sameAnswer;
-        private ArrayList<Integer> knowOption;
-        private ArrayList<Integer> errors;
-        private Long gameTime;
-        private Map<String, Integer> countAnswer;
-
-        public Integer getLastId() {
-            return lastId;
-        }
-
-        public void setLastId(Integer lastid) {
-            this.lastId = lastid;
-        }
-
-        public ViewGridState() {
-            sameAnswer = new ArrayList<>();
-            knowOption = new ArrayList<>();
-            errors = new ArrayList<>();
-        }
-
-        public void setSameAnswer(ArrayList<Integer> sameAnswer) {
-            this.sameAnswer = sameAnswer;
-        }
-
-        public void setKnowOption(ArrayList<Integer> knowOption) {
-            this.knowOption = knowOption;
-        }
-
-        public void setErrors(ArrayList<Integer> errors) {
-            this.errors = errors;
-        }
-
-        public void showGameTime(Long l) {
-            gameTime = l;
-            if (isViewAttach() && gameTime != null) {
-                view.setGameTime(gameTime);
-            }
-        }
-
-        private void attachView(IGridView view) {
-            this.view = view;
-            showGameGrid();
-            clearError();
-            showErrorInput(errors);
-            focus(lastId);
-            showErrorFocus(lastId);
-            showTheSameAnswers(sameAnswer);
-            showKnownOptions(knowOption);
-            showGameTime(gameTime);
-        }
-
-
-        private boolean isViewAttach() {
-            return view != null;
-        }
-
-
-        private void removeFocus(Integer id) {
-            if (isViewAttach()) {
-                view.removeFocus(id);
-            }
-        }
-
-        private void showAnswer(Integer id, String answer) {
-            if (isViewAttach()) {
-                view.setTextToAnswer(id, answer);
-            }
-        }
-
-        private void showKnownOptions(ArrayList<Integer> ar) {
-            knowOption = ar;
-            if (isViewAttach()) {
-                view.showKnownOptions(ar);
-            }
-        }
-
-        private void showErrorInput(ArrayList<Integer> er) {
-            errors = er;
-            if (isViewAttach()) {
-                view.showError(errors);
-            }
-
-        }
-
-        private void clearHistory() {
-            errors = null;
-            sameAnswer = null;
-            lastId = null;
-            knowOption = null;
-        }
-
-        private void showTheSameAnswers(ArrayList<Integer> ar) {
-            sameAnswer = ar;
-            if (isViewAttach()) {
-                view.showTheSameAnswers(ar);
-            }
-        }
-
-        private void focus(Integer id) {
-            if (id == null) return;
-            lastId = id;
-            if (isViewAttach()) {
-                view.setFocus(id);
-            }
-        }
-
-        private void showGameOver() {
-            if (isViewAttach()) {
-                view.gameOver();
-            }
-        }
-
-        //показать игровое поле
-        private void showGameGrid() {
-            if (isViewAttach()) {
-                view.showGrid(model.getGameGrid());
-            }
-        }
-
-        private void detachView() {
-            this.view = null;
-        }
-
-        private void clearTheSameAnswer(ArrayList<Integer> arr) {
-            if (isViewAttach()) {
-                view.clearTheSameAnswer(arr);
-            }
-        }
-
-        private void clearKnownOptions(ArrayList<Integer> arr) {
-            if (isViewAttach()) {
-                view.clearKnownOptions(arr);
-            }
-        }
-
-        private void clearError() {
-            if (isViewAttach()) {
-                view.clearError(model.getErrors());
-            }
-        }
-
-        private void showErrorFocus(Integer id) {
-            if (isViewAttach() && settings.getErrorMode()) {
-                if (model.getErrors().contains(id)) {
-                    view.showErrorFocus(id);
-                }
-            }
-        }
-
-        public void showGameName(String name) {
-            view.setGameName(name);
-        }
-
-        public void showCountAnswer(Map<String, Integer> count) {
-            countAnswer = count;
-            if (isViewAttach()) {
-                view.showCountOfAnswer(countAnswer);
-            }
-        }
-
-        public void clearCountAnswer() {
-            if (isViewAttach()) {
-                view.clearCountOfAnswer();
-            }
-        }
-    }//end viewState
 }

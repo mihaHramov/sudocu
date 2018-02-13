@@ -2,7 +2,6 @@ package com.example.miha.sudocu.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,21 +10,25 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.miha.sudocu.DP;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.data.DP.RepositoryImplBD;
+import com.example.miha.sudocu.data.DP.RepositorySettings;
 import com.example.miha.sudocu.data.model.Answer;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
+import com.example.miha.sudocu.data.model.Grid;
+import com.example.miha.sudocu.presenter.PresenterGrid;
 import com.example.miha.sudocu.utils.ConverterTime;
+import com.example.miha.sudocu.utils.SerializableGame;
 import com.example.miha.sudocu.view.intf.IGridView;
 import com.example.miha.sudocu.view.intf.IMainActivity;
-import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnAnswerDeleteEvent;
 import com.example.miha.sudocu.view.events.OnChangeCountOfAnswer;
 import com.example.miha.sudocu.view.events.OnChangeHistoryGame;
 import com.example.miha.sudocu.view.events.OnChangeShowCountAnswerMode;
 import com.example.miha.sudocu.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.view.events.OnAnswerChangeEvent;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -33,21 +36,30 @@ import java.util.Hashtable;
 import java.util.Map;
 
 
-public class PlayingFieldFragment extends Fragment implements IGridView {
-    private Bus bus;
-    private IPresenterGrid presenterGrid;
+public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     private TextView[] textViewsGrid;
     private Map<Integer, Integer> textBackgroundResource = new Hashtable<>();
     private Map<Integer, TableLayout> tableLayouts = new Hashtable<>();
     private int arrIntIdGrid[] = new int[]{R.id.top_left, R.id.top_center, R.id.top_right, R.id.middle_left, R.id.middle_center, R.id.middle_right, R.id.bottom_left, R.id.bottom_center, R.id.bottom_right};
 
+    @InjectPresenter
+    PresenterGrid presenterGrid;
+
+    @ProvidePresenter
+    PresenterGrid providePresenter(){
+        Grid model = SerializableGame.unSerializable(getActivity().getIntent());
+        return new PresenterGrid(new RepositoryImplBD(getContext()),new RepositorySettings(getActivity()),model);
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.playing_fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        presenterGrid = DP.get().getPresenterOfGrid();
-        bus = BusProvider.getInstance();
-        bus.register(this);
-        View rootView = inflater.inflate(R.layout.playing_fragment, container, false);
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
         for (int anArrIntIdGrid : arrIntIdGrid) {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) rootView.findViewById(anArrIntIdGrid));
         }
@@ -66,8 +78,7 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
 
     @Override
     public void onResume() {
-        presenterGrid.init(getActivity().getIntent());
-        presenterGrid.setView(this);
+        presenterGrid.setScheduler(App.getDBsheduler());
         presenterGrid.onResume();
         super.onResume();
     }
@@ -83,11 +94,6 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         super.onPause();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        presenterGrid.onSaveInstanceState(outState);
-        super.onSaveInstanceState(outState);
-    }
 
     @Subscribe
     public void clickOnButtonDeleteAnswer(OnAnswerDeleteEvent event){
@@ -106,13 +112,6 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
         } else {
             presenterGrid.historyBack();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        bus.unregister(this);
-        presenterGrid.unSubscription();
-        super.onDestroy();
     }
 
     @Override
@@ -148,14 +147,13 @@ public class PlayingFieldFragment extends Fragment implements IGridView {
     }
 
     @Override
-    public void showErrorFocus(int id) {
-        textViewsGrid[id].setBackgroundResource(R.drawable.focus_error);
-        textViewsGrid[id].setTextColor(getResources().getColor(R.color.colorAccent));
-    }
-
-    @Override
-    public void setFocus(Integer id) {
-        textViewsGrid[id].setBackgroundResource(R.drawable.focus);
+    public void setFocus(Integer id,Boolean isError) {
+        if(isError){
+            textViewsGrid[id].setBackgroundResource(R.drawable.focus_error);
+            textViewsGrid[id].setTextColor(getResources().getColor(R.color.colorAccent));
+        }else {
+            textViewsGrid[id].setBackgroundResource(R.drawable.focus);
+        }
     }
 
     @Override
