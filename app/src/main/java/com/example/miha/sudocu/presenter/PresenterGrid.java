@@ -113,10 +113,13 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
     }
 
-    public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings, Grid gr) {
-        this.model = gr;
+    public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
         this.repository = repository;
+    }
+    public PresenterGrid setModel(Grid grid){
+        this.model = grid;
+        return this;
     }
 
     @Override
@@ -136,7 +139,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
             error = model.getErrors();
             getViewState().showError(error);
         }
-        getViewState().setTextToAnswer(lastChoseInputId, answer);
+        getViewState().setTextToAnswer(new Answer( answer,null,lastChoseInputId));
 
         if (settings.getKnowAnswerMode()) {
             ArrayList<Integer> knowOption = model.getKnowOptions(lastChoseInputId);
@@ -178,15 +181,14 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     public void deleteAnswer() {
         Integer idAnswer = model.getLastChoiseField();
         Boolean isAnswer = model.isAnswer(idAnswer);
-        Answer answerForDelete = new Answer("", isAnswer);
-        answerForDelete.setId(idAnswer);
         if (isAnswer) {
-            getViewState().clearError(model.getErrors());//viewState.clearError();
-            getViewState().clearTheSameAnswer(model.getTheSameAnswers(idAnswer));//viewState.clearTheSameAnswer(model.getTheSameAnswers(idAnswer));
+            Answer answerForDelete = new Answer("", isAnswer,idAnswer);
+            getViewState().clearError(model.getErrors());
+            getViewState().clearTheSameAnswer(model.getTheSameAnswers(idAnswer));
             model.deleteAnswer(answerForDelete);
-            getViewState().setTextToAnswer(idAnswer, answerForDelete.getNumber());// viewState.showAnswer(idAnswer, answerForDelete.getNumber());
-            getViewState().showKnownOptions(model.getKnowOptions(answerForDelete.getId()));
-            getViewState().setFocus(answerForDelete.getId(), false);// viewState.focus(answerForDelete.getId());
+            getViewState().setTextToAnswer(answerForDelete);
+            getViewState().showKnownOptions(model.getKnowOptions(idAnswer));
+            getViewState().setFocus(idAnswer, false);
             getViewState().showError(model.getErrors());
         }
     }
@@ -199,7 +201,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
         ArrayList<Integer> error = new ArrayList<>();
         if (settings.getErrorMode()) {
-            error = model.getErrors();//получил ошибки
+            error = model.getErrors();
         }
         if (lastInputId != null) {
             ArrayList<Integer> clearKnowOption = model.getKnowOptions(lastInputId);

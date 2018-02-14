@@ -12,10 +12,8 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.example.miha.sudocu.App;
+import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.data.DP.RepositoryImplBD;
-import com.example.miha.sudocu.data.DP.RepositorySettings;
 import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.PresenterGrid;
@@ -48,7 +46,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     @ProvidePresenter
     PresenterGrid providePresenter(){
         Grid model = SerializableGame.unSerializable(getActivity().getIntent());
-        return new PresenterGrid(new RepositoryImplBD(getContext()),new RepositorySettings(getActivity()),model);
+        return DP.get().getPresenterOfGrid().setModel(model);
     }
 
     @Override
@@ -78,7 +76,6 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
 
     @Override
     public void onResume() {
-        presenterGrid.setScheduler(App.getDBsheduler());
         presenterGrid.onResume();
         super.onResume();
     }
@@ -209,8 +206,8 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void setTextToAnswer(Integer id, String answer) {
-        textViewsGrid[id].setText(answer);
+    public void setTextToAnswer(Answer answer) {
+        textViewsGrid[answer.getId()].setText(answer.getNumber());
     }
 
     @Override

@@ -30,7 +30,7 @@ public interface IGridView extends MvpView {
 
     void removeFocus(Integer id);
 
-    void setTextToAnswer(Integer id, String answer);
+    void setTextToAnswer(Answer answer);
 
     void setGameName(String name);
 
