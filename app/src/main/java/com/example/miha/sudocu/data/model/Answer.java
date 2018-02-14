@@ -3,11 +3,11 @@ package com.example.miha.sudocu.data.model;
 
 public class Answer {
 
-    private boolean answer;
+    private Boolean answer;
     private String number;
     private Integer id;
 
-    public boolean isAnswer() {
+    public Boolean isAnswer() {
         return answer;
     }
 
@@ -15,13 +15,19 @@ public class Answer {
         return number;
     }
 
-    public Answer(String number, boolean answer) {
+    public Integer getId() {
+        return id;
+    }
+
+    public Answer(String number, Boolean answer) {
         this.answer = answer;
         this.number = number;
     }
 
-    public Integer getId() {
-        return id;
+    public Answer(String number, Boolean answer,Integer id) {
+        this.answer = answer;
+        this.id = id;
+        this.number = number;
     }
 
     public void setId(Integer id) {
