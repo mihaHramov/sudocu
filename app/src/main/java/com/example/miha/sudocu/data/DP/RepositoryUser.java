@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 
 public class RepositoryUser implements IRepositoryUser {
     private static final String MY_SETTINGS = "my_settings";
-    private Context ctx;
     private SharedPreferences sp;
 
     @Override
@@ -27,7 +26,6 @@ public class RepositoryUser implements IRepositoryUser {
 
 
     public RepositoryUser(Context ctx) {
-        this.ctx = ctx;
         sp = ctx.getSharedPreferences(MY_SETTINGS,
                 Context.MODE_PRIVATE);
     }
