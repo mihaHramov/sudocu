@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.presenter.Adapter;
+package com.example.miha.sudocu.view.Adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;

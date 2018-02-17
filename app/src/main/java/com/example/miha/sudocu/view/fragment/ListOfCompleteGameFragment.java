@@ -18,7 +18,7 @@ import com.example.miha.sudocu.presenter.PresenterListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.intf.IDialogManager;
 import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
+import com.example.miha.sudocu.view.Adapter.AdapterGrid;
 
 import java.util.ArrayList;
 

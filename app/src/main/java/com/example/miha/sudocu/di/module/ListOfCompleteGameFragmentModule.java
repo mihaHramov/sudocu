@@ -4,7 +4,7 @@ import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.api.ChallengeApi;
 import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
-import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
+import com.example.miha.sudocu.view.Adapter.AdapterGrid;
 
 import javax.inject.Singleton;
 

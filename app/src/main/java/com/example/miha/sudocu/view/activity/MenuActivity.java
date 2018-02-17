@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
+import com.example.miha.sudocu.view.Adapter.AlertDialog;
 
 import butterknife.OnClick;
 

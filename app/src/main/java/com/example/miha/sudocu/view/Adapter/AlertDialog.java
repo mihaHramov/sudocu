@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.presenter.Adapter;
+package com.example.miha.sudocu.view.Adapter;
 
 import android.app.Dialog;
 import android.content.Context;

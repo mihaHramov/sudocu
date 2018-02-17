@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.presenter.Adapter;
+package com.example.miha.sudocu.view.Adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.CardView;
@@ -9,8 +9,6 @@ import android.widget.TextView;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.utils.ConverterTime;
-import com.example.miha.sudocu.view.intf.ItemClickListener;
-import com.example.miha.sudocu.view.intf.ItemContextMenuListener;
 
 import java.util.ArrayList;
 

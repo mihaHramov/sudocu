@@ -17,8 +17,8 @@ import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.fragment.ListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.fragment.ListOfGameFragment;
 import com.example.miha.sudocu.view.fragment.RegistrationFragment;
-import com.example.miha.sudocu.presenter.Adapter.AdapterLocalGameList;
-import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
+import com.example.miha.sudocu.view.Adapter.AdapterLocalGameList;
+import com.example.miha.sudocu.view.Adapter.AlertDialog;
 import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;

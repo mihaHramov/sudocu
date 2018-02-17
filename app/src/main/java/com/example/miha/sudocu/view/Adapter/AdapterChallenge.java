@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.presenter.Adapter;
+package com.example.miha.sudocu.view.Adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.CardView;

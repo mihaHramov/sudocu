@@ -13,7 +13,7 @@ import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.presenter.Adapter.AdapterChallenge;
+import com.example.miha.sudocu.view.Adapter.AdapterChallenge;
 import com.example.miha.sudocu.presenter.PresenterRecordsListFragment;
 import com.example.miha.sudocu.view.activity.MainActivity;
 import com.example.miha.sudocu.view.intf.IRecordsList;

@@ -4,7 +4,7 @@ import android.content.Intent;
 
 import com.example.miha.sudocu.data.DP.GenerateGame;
 import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
+import com.example.miha.sudocu.view.Adapter.AlertDialog;
 import com.google.gson.Gson;
 
 

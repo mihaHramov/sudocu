@@ -18,7 +18,7 @@ import com.example.miha.sudocu.utils.SerializableGame;
 import com.example.miha.sudocu.view.activity.MainActivity;
 import com.example.miha.sudocu.view.intf.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
+import com.example.miha.sudocu.view.Adapter.AdapterGrid;
 
 import java.util.ArrayList;
 
