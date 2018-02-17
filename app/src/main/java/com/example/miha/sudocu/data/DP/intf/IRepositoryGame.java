@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import rx.Observable;
 
-public interface IRepository {
+public interface IRepositoryGame {
     Observable<Integer> saveGame(Grid g);
 
     Observable<Void> deleteGame(Grid id);

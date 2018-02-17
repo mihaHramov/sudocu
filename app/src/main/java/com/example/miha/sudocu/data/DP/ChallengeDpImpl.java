@@ -1,6 +1,6 @@
 package com.example.miha.sudocu.data.DP;
 
-import com.example.miha.sudocu.data.DP.intf.ChallengeApi;
+import com.example.miha.sudocu.api.ChallengeApi;
 import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.Grid;

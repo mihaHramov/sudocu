@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryGame;
 import com.example.miha.sudocu.data.model.Grid;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 import rx.Observable;
 
-public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
+public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositoryGame {
 
     private static final String nameBD = "myBD";
     private static final String lastChoiceField = "lastChoiceField";
@@ -32,7 +32,7 @@ public class RepositoryImplBD extends SQLiteOpenHelper implements IRepository {
     private static final int dbVersion = 5;
     private SQLiteDatabase db;
 
-    public RepositoryImplBD(Context context) {
+    public RepositoryGameImplBD(Context context) {
         super(context, nameBD, null, dbVersion);
         db = this.getWritableDatabase();
     }

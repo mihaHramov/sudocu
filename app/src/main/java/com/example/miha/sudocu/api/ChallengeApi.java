@@ -1,4 +1,4 @@
-package com.example.miha.sudocu.data.DP.intf;
+package com.example.miha.sudocu.api;
 
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.User;
