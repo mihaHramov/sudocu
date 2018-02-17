@@ -2,12 +2,12 @@ package com.example.miha.sudocu.di.module;
 
 import android.content.Context;
 
-import com.example.miha.sudocu.data.DP.RepositoryGameImplBD;
-import com.example.miha.sudocu.data.DP.RepositorySettings;
-import com.example.miha.sudocu.data.DP.RepositoryUser;
-import com.example.miha.sudocu.data.DP.intf.IRepositoryGame;
-import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
-import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
+import com.example.miha.sudocu.mvp.data.DP.RepositoryGameImplBD;
+import com.example.miha.sudocu.mvp.data.DP.RepositorySettings;
+import com.example.miha.sudocu.mvp.data.DP.RepositoryUser;
+import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
+import com.example.miha.sudocu.mvp.data.DP.intf.IRepositorySettings;
+import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryUser;
 
 import javax.inject.Singleton;
 

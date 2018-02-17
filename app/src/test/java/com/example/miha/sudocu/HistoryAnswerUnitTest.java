@@ -1,7 +1,7 @@
 package com.example.miha.sudocu;
 
-import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.data.model.HistoryAnswer;
+import com.example.miha.sudocu.mvp.data.model.Grid;
+import com.example.miha.sudocu.mvp.data.model.HistoryAnswer;
 
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 package com.example.miha.sudocu.api;
 
-import com.example.miha.sudocu.data.model.Challenge;
-import com.example.miha.sudocu.data.model.User;
+import com.example.miha.sudocu.mvp.data.model.Challenge;
+import com.example.miha.sudocu.mvp.data.model.User;
 
 import java.util.ArrayList;
 import java.util.Map;

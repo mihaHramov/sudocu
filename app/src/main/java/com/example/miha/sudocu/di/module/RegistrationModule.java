@@ -1,8 +1,8 @@
 package com.example.miha.sudocu.di.module;
 
 import com.example.miha.sudocu.api.ChallengeApi;
-import com.example.miha.sudocu.data.DP.Login;
-import com.example.miha.sudocu.data.DP.intf.ILogin;
+import com.example.miha.sudocu.mvp.data.DP.Login;
+import com.example.miha.sudocu.mvp.data.DP.intf.ILogin;
 
 import javax.inject.Singleton;
 

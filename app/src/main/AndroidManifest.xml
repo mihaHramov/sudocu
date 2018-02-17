@@ -11,25 +11,25 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyTheme">
-        <activity android:name=".view.activity.MainActivity" />
-        <activity android:name=".view.activity.OnlineRating" />
-        <activity android:name=".view.activity.MenuActivity">
+        <activity android:name=".mvp.view.activity.MainActivity" />
+        <activity android:name=".mvp.view.activity.OnlineRating" />
+        <activity android:name=".mvp.view.activity.MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.ListOfGameSavesActivity" />
+        <activity android:name=".mvp.view.activity.ListOfGameSavesActivity" />
 
-        <service android:name=".presenter.Service.MyMediaPlayerService" />
+        <service android:name=".service.MyMediaPlayerService" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="d5bb48c3b3bcd77d59d9bc3efc5462682df98f18" />
 
         <activity
-            android:name=".view.activity.SettingsActivity"
+            android:name=".mvp.view.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/MyTheme"/>
     </application>
