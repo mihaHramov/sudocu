@@ -2,13 +2,10 @@ package com.example.miha.sudocu.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnUserLogin;
 import com.example.miha.sudocu.view.fragment.RecordsListFragment;
 import com.example.miha.sudocu.view.fragment.RegistrationFragment;
@@ -16,21 +13,18 @@ import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
 import com.example.miha.sudocu.data.DP.RepositoryUser;
 import com.squareup.otto.Subscribe;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class OnlineRating extends AppCompatActivity  {
+public class OnlineRating extends BaseMvpActivity {
     private Fragment fragment;
     private IRepositoryUser userRepository = null;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.online_rating;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.online_rating);
-        ButterKnife.bind(this);
-        BusProvider.getInstance().register(this);
-        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -41,7 +35,6 @@ public class OnlineRating extends AppCompatActivity  {
         } else {
             fragment = new RecordsListFragment();
         }
-
         changeFragment(R.id.fragment_container, fragment);
     }
 
@@ -56,7 +49,7 @@ public class OnlineRating extends AppCompatActivity  {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.reiting_menu, menu);
-        if(userRepository.getUser()==null){
+        if (userRepository.getUser() == null) {
             showMenuItemById(R.id.reload_login, false);
         }
         return true;
@@ -74,18 +67,11 @@ public class OnlineRating extends AppCompatActivity  {
         return false;
     }
 
-
     @Subscribe
     public void onLogin(OnUserLogin onUserLogin) {
         fragment = new RecordsListFragment();
         changeFragment(R.id.fragment_container, fragment);
         showMenuItemById(R.id.reload_login, true);
         this.userRepository.setUser(onUserLogin.getUser());
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BusProvider.getInstance().unregister(this);
     }
 }

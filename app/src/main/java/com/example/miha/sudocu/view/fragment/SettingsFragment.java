@@ -7,16 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 
-import com.example.miha.sudocu.DP;
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.presenter.PresenterSettings;
 import com.example.miha.sudocu.view.intf.ISettingsFragment;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
 
 public class SettingsFragment extends BaseMvpFragment implements ISettingsFragment {
-    private PresenterSettings presenterSettings;
+
+    @Inject PresenterSettings presenterSettings;
 
     @BindView(R.id.switch_keyboard_mode)
     Switch switchKeyboard;
@@ -63,7 +66,7 @@ public class SettingsFragment extends BaseMvpFragment implements ISettingsFragme
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
-        presenterSettings = DP.get().getPresenterSettings();
+        App.getComponent().settingsComponent().inject(this);
         switchKeyboard.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeKeyboardMode(isChecked));
         switchShowError.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeShowErrorMode(isChecked));
         switchShowKnowAnswer.setOnCheckedChangeListener((buttonView, isChecked) -> presenterSettings.changeShowKnowAnswerMode(isChecked));

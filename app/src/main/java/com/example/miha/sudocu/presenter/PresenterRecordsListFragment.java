@@ -3,13 +3,13 @@ package com.example.miha.sudocu.presenter;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.miha.sudocu.data.DP.intf.ChallengeApi;
 import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
-import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfRecordsList;
 import com.example.miha.sudocu.view.intf.IRecordsList;
 
+
+import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -20,9 +20,14 @@ public class PresenterRecordsListFragment implements IPresenterOfRecordsList {
 
     private IRecordsList view;
 
-    public PresenterRecordsListFragment(ChallengeApi api, IRecordsList view) {
-        this.view = view;
-        this.challengeDP = new ChallengeDpImpl(api);
+    @Inject
+    public PresenterRecordsListFragment(ChallengeDP dp) {
+        this.challengeDP =  dp;
+    }
+
+    @Override
+    public void setView(IRecordsList recordsList) {
+        view = recordsList;
     }
 
     @Override

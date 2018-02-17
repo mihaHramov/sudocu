@@ -9,26 +9,29 @@ import com.example.miha.sudocu.data.model.Answer;
 import com.example.miha.sudocu.data.model.HistoryAnswer;
 import com.example.miha.sudocu.view.intf.IGridView;
 import com.example.miha.sudocu.data.model.Grid;
-import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryGame;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterGrid;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 @InjectViewState
 public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenterGrid {
     private Subscription subscription;
-    private IRepository repository;
+    private IRepositoryGame repository;
     private IRepositorySettings settings;
     private Grid model;
-    private Scheduler scheduler;
+    @Inject @Named("db")  Scheduler dbScheduler;
+    @Inject Scheduler newScheduler;
+    @Inject @Named("main") Scheduler mainScheduler;
 
     @Override
     public void replayGame() {
@@ -57,8 +60,8 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     @Override
     public void onPause() {
         repository.saveGame(model)
-                .subscribeOn(scheduler)
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(dbScheduler)
+                .observeOn(mainScheduler)
                 .subscribe(aVoid -> {}, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
         subscription.unsubscribe();
     }
@@ -105,15 +108,15 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
         if (subscription == null || subscription.isUnsubscribed()) {
             subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.newThread()).subscribe(aLong -> {
+                    .observeOn(mainScheduler)
+                    .subscribeOn(newScheduler).subscribe(aLong -> {
                         getViewState().setGameTime(model.getGameTime());
                         model.setGameTime(model.getGameTime() + 1);
                     });
         }
     }
 
-    public PresenterGrid(IRepository repository, IRepositorySettings repositorySettings) {
+    public PresenterGrid(IRepositoryGame repository, IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
         this.repository = repository;
     }
@@ -231,9 +234,5 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
         getViewState().setFocus(id, error.contains(id));
         model.setLastChoiseField(id);
-    }
-
-    public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
     }
 }

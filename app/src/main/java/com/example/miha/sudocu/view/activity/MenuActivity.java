@@ -1,27 +1,29 @@
 package com.example.miha.sudocu.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MenuActivity extends Activity {
+public class MenuActivity extends BaseMvpActivity {
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_menu;
+    }
 
     private AlertDialog dialog;
 
     @OnClick(R.id.restore)
     void onClickRestore(){
-        openNewActivity(new Intent(this, ListOfGameSavesActivity.class));
+        openNewActivity(ListOfGameSavesActivity.class);
     }
-
     @OnClick(R.id.rating)
     void onClickRating(){
-        openNewActivity(new Intent(this, OnlineRating.class));
+        openNewActivity(OnlineRating.class);
     }
 
     @OnClick(R.id.newGame)
@@ -30,24 +32,22 @@ public class MenuActivity extends Activity {
     }
     @OnClick(R.id.open_setting)
     void onClickOpenSettings(){
-        openNewActivity(new Intent(this,SettingsActivity.class));
+        openNewActivity(SettingsActivity.class);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
         dialog = new AlertDialog(this);
-        ButterKnife.bind(this);
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         dialog.dismissDialog();
         super.onDestroy();
     }
 
-    private void openNewActivity(Intent i) {
-        startActivity(i);
+    private void openNewActivity(Class<?> classId ) {
+        startActivity(new Intent(this,classId));
     }
 }

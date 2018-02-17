@@ -11,16 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.example.miha.sudocu.DP;
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.presenter.PresenterListOfGameFragment;
 import com.example.miha.sudocu.utils.SerializableGame;
 import com.example.miha.sudocu.view.activity.MainActivity;
 import com.example.miha.sudocu.view.intf.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfNonCompleteGame;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +30,8 @@ import butterknife.ButterKnife;
 public class ListOfGameFragment extends Fragment implements IListOfNotCompletedGameFragment {
     @BindView(R.id.recycler_view_grid)
     RecyclerView recyclerView;
-    private IPresenterOfNonCompleteGame presenter;
+    @Inject
+    public PresenterListOfGameFragment presenter;
     private AdapterGrid adapter;
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
@@ -36,8 +39,9 @@ public class ListOfGameFragment extends Fragment implements IListOfNotCompletedG
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = DP.get().getPresenterListOfGameFragment();
+        App.getComponent().inject(this);
         presenter.init(savedInstanceState);
+
         presenter.setView(this);
         adapter = new AdapterGrid(R.layout.item);
         adapter.setOnClickListener(() -> {

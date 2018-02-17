@@ -8,6 +8,8 @@ import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -16,6 +18,7 @@ public class PresenterRegistrationFragment implements IPresenterRegistration {
     private IRepositoryUser repositoryUser;
     private IFragmentRegistration view;
 
+    @Inject
     public PresenterRegistrationFragment( ILogin loginAPI, IRepositoryUser repositoryUser) {
         this.repositoryUser = repositoryUser;
         loginInSystem = loginAPI;
@@ -33,12 +36,9 @@ public class PresenterRegistrationFragment implements IPresenterRegistration {
         loginInSystem.login(loginParams)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        user -> {
+                .subscribe(user -> {
                             repositoryUser.setUser(user);
                             view.onLogin(user);
-                        },
-                        e -> view.onFailAuth(e.getMessage())
-                );
+                        }, e -> view.onFailAuth(e.getMessage()));
     }
 }

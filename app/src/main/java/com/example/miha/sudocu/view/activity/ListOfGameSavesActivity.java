@@ -6,14 +6,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnUserLogin;
 import com.example.miha.sudocu.view.intf.IDialogManager;
 import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
@@ -25,12 +22,14 @@ import com.example.miha.sudocu.presenter.Adapter.AlertDialog;
 import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
-public class ListOfGameSavesActivity extends AppCompatActivity implements  IDialogManager {
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+public class ListOfGameSavesActivity extends BaseMvpActivity implements IDialogManager {
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
+    @BindView(R.id.tableLayout)
+    TabLayout tabLayout;
+
     private AlertDialog dialog;
     private DialogFragment dialogFragment;
     private AdapterLocalGameList adapterLocalGameList;
@@ -41,31 +40,28 @@ public class ListOfGameSavesActivity extends AppCompatActivity implements  IDial
     }
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_list_of_game_saves;
+    }
+
+    @Override
     public void closeAuthDialog() {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        BusProvider.getInstance().unregister(this);
-        super.onDestroy();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_of_game_saves);
-        ButterKnife.bind(this);
-        BusProvider.getInstance().register(this);
         dialogFragment = new RegistrationFragment();
         initTabLayout();
-        setSupportActionBar(toolbar);
-        if(getSupportActionBar()!=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
         dialog = new AlertDialog(this);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.list_game, menu);
@@ -86,21 +82,18 @@ public class ListOfGameSavesActivity extends AppCompatActivity implements  IDial
         adapterLocalGameList = new AdapterLocalGameList(getSupportFragmentManager());
         adapterLocalGameList.addFragment(new ListOfGameFragment(), getString(R.string.un_complete_game));
         adapterLocalGameList.addFragment(new ListOfCompleteGameFragment(), getString(R.string.complete_game));
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(adapterLocalGameList);
-        ((TabLayout) findViewById(R.id.tableLayout)).setupWithViewPager(viewPager);
-
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Subscribe
     public void onLogin(OnUserLogin onUserLogin) {
-        if (onUserLogin.getUser() != null) {
-            dialogFragment.dismiss();//закрыл диалог
-            int i = ((TabLayout) findViewById(R.id.tableLayout)).getSelectedTabPosition();
-            Fragment fr = adapterLocalGameList.getItem(i);
-            if (fr instanceof IListOfCompleteGameFragment){
-                ((IListOfCompleteGameFragment)fr).onAfterAuthUser();
-            }
+        if (onUserLogin.getUser() == null) return;
+        dialogFragment.dismiss();//закрыл диалог
+        int i = tabLayout.getSelectedTabPosition();
+        Fragment fr = adapterLocalGameList.getItem(i);
+        if (fr instanceof IListOfCompleteGameFragment) {
+            ((IListOfCompleteGameFragment) fr).onAfterAuthUser();
         }
     }
 }

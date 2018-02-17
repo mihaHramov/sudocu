@@ -10,9 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.miha.sudocu.DP;
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterMainActivity;
+import com.example.miha.sudocu.presenter.PresenterMainActivity;
 import com.example.miha.sudocu.presenter.Service.MyMediaPlayerService;
 import com.example.miha.sudocu.view.intf.IMainActivity;
 import com.example.miha.sudocu.view.events.BusProvider;
@@ -23,6 +23,8 @@ import com.example.miha.sudocu.view.fragment.PlayingFieldFragment;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     private KeyBoardFragment keyBoardFragment;
     private PlayingFieldFragment playingField;
     private Bus bus;
-    private IPresenterMainActivity presenter;
+
+    @Inject PresenterMainActivity presenter;
     public static String myMediaPlayer = "myMediaPlayer";
     private boolean isPortrait;
 
@@ -58,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
         bus = BusProvider.getInstance();
         bus.register(this);
         ButterKnife.bind(this);
-        presenter = DP.get().getPresenterMainActivity();
+        App.getComponent().inject(this);
+      //  presenter = DP.get().getPresenterMainActivity();
         presenter.setView(this);
         isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
         if (savedInstanceState != null) {

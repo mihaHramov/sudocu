@@ -2,25 +2,29 @@ package com.example.miha.sudocu.presenter;
 
 import android.os.Bundle;
 
-import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryGame;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfNonCompleteGame;
 import com.example.miha.sudocu.view.intf.IListOfNotCompletedGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 
 
 public class PresenterListOfGameFragment implements IPresenterOfNonCompleteGame {
-    private IRepository repository;
+    private IRepositoryGame repository;
     private static final String GAMES = "PRESENTER_SAVE_GAMES_IN_NON_COMPLETE_GAME";
     private IListOfNotCompletedGameFragment view;
     private ArrayList<Grid> games;
-    private Scheduler scheduler;
+    @Inject @Named("db") Scheduler scheduler;
 
-    public PresenterListOfGameFragment(IRepository repository) {
+    @Inject
+    public PresenterListOfGameFragment(IRepositoryGame repository) {
         this.repository = repository;
     }
 
@@ -50,9 +54,5 @@ public class PresenterListOfGameFragment implements IPresenterOfNonCompleteGame 
     @Override
     public void setView(IListOfNotCompletedGameFragment view) {
         this.view = view;
-    }
-
-    public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
     }
 }

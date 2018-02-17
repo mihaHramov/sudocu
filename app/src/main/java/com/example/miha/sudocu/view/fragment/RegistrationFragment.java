@@ -11,13 +11,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.DP;
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.presenter.PresenterRegistrationFragment;
 import com.example.miha.sudocu.view.events.BusProvider;
 import com.example.miha.sudocu.view.events.OnUserLogin;
 import com.example.miha.sudocu.view.intf.IFragmentRegistration;
 import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterRegistration;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +31,7 @@ public class RegistrationFragment extends DialogFragment implements IFragmentReg
     @BindView(R.id.auth) Button auth;
     @BindView(R.id.login) EditText login;
     @BindView(R.id.password)EditText password;
-    private IPresenterRegistration presenter;
+    @Inject PresenterRegistrationFragment presenter;
 
     @Override
     public void onLogin(User user) {
@@ -50,7 +54,7 @@ public class RegistrationFragment extends DialogFragment implements IFragmentReg
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        presenter = DP.get().getPresenterRegistrationFragment();
+        App.getComponent().inject(this);
         presenter.setView(this);
     }
 

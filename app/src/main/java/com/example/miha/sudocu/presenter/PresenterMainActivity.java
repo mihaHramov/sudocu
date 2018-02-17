@@ -4,10 +4,13 @@ import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterMainActivity;
 import com.example.miha.sudocu.view.intf.IMainActivity;
 
+import javax.inject.Inject;
+
 
 public class PresenterMainActivity implements IPresenterMainActivity {
     private IMainActivity view;
     private IRepositorySettings settings;
+    @Inject
     public PresenterMainActivity(IRepositorySettings repositorySettings) {
         settings = repositorySettings;
     }

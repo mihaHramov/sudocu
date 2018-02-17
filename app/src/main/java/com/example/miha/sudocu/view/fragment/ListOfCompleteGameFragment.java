@@ -12,15 +12,17 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.miha.sudocu.DP;
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.presenter.PresenterListOfCompleteGameFragment;
 import com.example.miha.sudocu.view.intf.IDialogManager;
 import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterGrid;
-import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
@@ -30,11 +32,11 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     @BindView(R.id.recycler_view_grid)
     RecyclerView recyclerView;
 
-    private IPresenterOfCompleteGame presenter;
+    @Inject  PresenterListOfCompleteGameFragment presenter;
     private IDialogManager activityCallback;
     private Integer lastIdRecords = null;
     private Integer lastIdRecordsDelete = null;
-    private AdapterGrid adapter;
+    @Inject AdapterGrid adapter;
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
@@ -72,9 +74,8 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = DP.get().getPresenterListOfCompleteGameFragment();
+        App.getComponent().inject(this);
         presenter.setView(this);
-        adapter = new AdapterGrid(R.layout.item);
         adapter.setOnLongClickListener(v -> {
             PopupMenu popup = new PopupMenu(getActivity(), v);
             popup.inflate(R.menu.list_of_complete_game);

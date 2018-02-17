@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
-import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.Challenge;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.presenter.Adapter.AdapterChallenge;
@@ -20,6 +20,8 @@ import com.example.miha.sudocu.view.intf.IRecordsList;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 
 
@@ -27,7 +29,7 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     @BindView(R.id.recycler_list_records)
     RecyclerView listOfRecords;
     private AdapterChallenge adapter;
-    private PresenterRecordsListFragment presenter;
+    @Inject public PresenterRecordsListFragment presenter;
 
     @Override
     public int getLayoutId() {
@@ -37,15 +39,17 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater,container,savedInstanceState);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this.getContext());
         listOfRecords.setLayoutManager(manager);
-        return super.onCreateView(inflater,container,savedInstanceState);
+        return v;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new PresenterRecordsListFragment(RetroClient.getInstance(), this);
+        App.getComponent().inject(this);
+        presenter.setView(this);//presenter = new PresenterRecordsListFragment(RetroClient.getInstance(), this);
         presenter.init(savedInstanceState);
     }
 

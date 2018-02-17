@@ -4,10 +4,12 @@ package com.example.miha.sudocu.presenter;
 import com.example.miha.sudocu.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.view.intf.ISettingsFragment;
 
+import javax.inject.Inject;
+
 public class PresenterSettings {
-    private ISettingsFragment view;
     private IRepositorySettings settings;
 
+    @Inject
     public PresenterSettings(IRepositorySettings repositorySettings) {
         settings = repositorySettings;
     }
@@ -17,7 +19,6 @@ public class PresenterSettings {
     }
 
     public void init(ISettingsFragment fr) {
-        view = fr;
         fr.setKeyboardMod(settings.getKeyboardMode());
         fr.setShowSameAnswerMode(settings.getShowSameAnswerMode());
         fr.setShowCountNumberOnButtonMode(settings.getShowCountNumberOnButtonMode());

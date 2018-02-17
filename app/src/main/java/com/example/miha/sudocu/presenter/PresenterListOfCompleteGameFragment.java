@@ -2,29 +2,29 @@ package com.example.miha.sudocu.presenter;
 
 import android.os.Bundle;
 
-import com.example.miha.sudocu.data.DP.intf.IRepository;
+import com.example.miha.sudocu.data.DP.intf.IRepositoryGame;
 import com.example.miha.sudocu.view.intf.IListOfCompleteGameFragment;
 import com.example.miha.sudocu.data.DP.intf.ChallengeDP;
-import com.example.miha.sudocu.data.DP.ChallengeDpImpl;
 import com.example.miha.sudocu.data.DP.intf.IRepositoryUser;
-import com.example.miha.sudocu.data.DP.RetroClient;
 import com.example.miha.sudocu.data.model.Grid;
 import com.example.miha.sudocu.data.model.User;
 import com.example.miha.sudocu.presenter.IPresenter.IPresenterOfCompleteGame;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
 public class PresenterListOfCompleteGameFragment implements IPresenterOfCompleteGame {
-    private IRepository repository;
+    private IRepositoryGame repository;
     private boolean isRetain = false;
     private ArrayList<Grid> games;
     private static final String SAVE_GAME = "SAVE_GAME_LIST_ON_COMPLETE_GAME_FRAGMENT";
     private static final String IS_RETAIN = "SAVE_IS_RETAIN_FRAGMENT_ON_COMPLETE_GAME_FRAGMENT";
-    private ChallengeDP challengeDP = new ChallengeDpImpl(RetroClient.getInstance());
+    private ChallengeDP challengeDP ;
     private IRepositoryUser repositoryUser;
     private IListOfCompleteGameFragment view;
 
@@ -75,7 +75,9 @@ public class PresenterListOfCompleteGameFragment implements IPresenterOfComplete
         this.view = view;
     }
 
-    public PresenterListOfCompleteGameFragment(IRepository repository,IRepositoryUser repositoryUser) {
+    @Inject
+    public PresenterListOfCompleteGameFragment(IRepositoryGame repository, IRepositoryUser repositoryUser,ChallengeDP dp) {
+        this.challengeDP = dp;
         this.repository = repository;
         this.repositoryUser = repositoryUser;
     }
