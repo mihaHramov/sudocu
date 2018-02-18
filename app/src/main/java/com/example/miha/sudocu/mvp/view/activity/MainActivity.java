@@ -3,8 +3,6 @@ package com.example.miha.sudocu.mvp.view.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,31 +13,25 @@ import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.presenter.PresenterMainActivity;
 import com.example.miha.sudocu.service.MyMediaPlayerService;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
-import com.example.miha.sudocu.mvp.view.events.BusProvider;
 import com.example.miha.sudocu.mvp.view.events.OnStopMusicEvent;
 import com.example.miha.sudocu.mvp.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.mvp.view.fragment.KeyBoardFragment;
 import com.example.miha.sudocu.mvp.view.fragment.PlayingFieldFragment;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements IMainActivity {
+public class MainActivity extends BaseMvpActivity implements IMainActivity {
 
-    private KeyBoardFragment keyBoardFragment;
     private PlayingFieldFragment playingField;
-    private Bus bus;
 
     @Inject PresenterMainActivity presenter;
     public static String myMediaPlayer = "myMediaPlayer";
     private boolean isPortrait;
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.container_fragments) LinearLayout layoutContainer;
     @BindView(R.id.keyboard) View keyboard;
     @BindView(R.id.tableLayout1) View play;
@@ -55,16 +47,25 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     }
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        bus = BusProvider.getInstance();
-        bus.register(this);
-        ButterKnife.bind(this);
-        App.getComponent().inject(this);
-      //  presenter = DP.get().getPresenterMainActivity();
+        App.getComponent().playingComponent().inject(this);
         presenter.setView(this);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
         isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        initFragments(savedInstanceState);
+    }
+
+    private void initFragments(Bundle savedInstanceState){
+        KeyBoardFragment keyBoardFragment;
         if (savedInstanceState != null) {
             keyBoardFragment = (KeyBoardFragment) getSupportFragmentManager().findFragmentById(R.id.keyboard);
             playingField = (PlayingFieldFragment) getSupportFragmentManager().findFragmentById(R.id.tableLayout1);
@@ -76,13 +77,7 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
                 .replace(R.id.keyboard, keyBoardFragment)
                 .replace(R.id.tableLayout1, playingField)
                 .commit();
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationOnClickListener(v -> onBackPressed());
-        }
     }
-
     @Override
     protected void onResume() {
         presenter.isPortrait(isPortrait);
@@ -92,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bus.unregister(this);
         presenter.unSubscription();
         stopService(new Intent(this, MyMediaPlayerService.class));
     }
