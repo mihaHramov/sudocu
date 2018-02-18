@@ -2,6 +2,8 @@ package com.example.miha.sudocu.di.module;
 
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.miha.sudocu.App;
 
@@ -23,4 +25,8 @@ public class AppModule {
        return aplication.getApplicationContext();
     }
 
+    @Provides
+    RecyclerView.LayoutManager provideLayoutManager(Context context) {
+        return new LinearLayoutManager(context);
+    }
 }
