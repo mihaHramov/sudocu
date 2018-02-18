@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import rx.Observable;
 import rx.Scheduler;
@@ -29,9 +27,9 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     private IRepositoryGame repository;
     private IRepositorySettings settings;
     private Grid model;
-    @Inject @Named("db")  Scheduler dbScheduler;
-    @Inject Scheduler newScheduler;
-    @Inject @Named("main") Scheduler mainScheduler;
+    private Scheduler dbScheduler;
+    private Scheduler newScheduler;
+    private Scheduler mainScheduler;
 
     @Override
     public void replayGame() {
@@ -91,7 +89,6 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
 
         getViewState().showGrid(model.getGameGrid());
-        getViewState().clearError(errors);//возможно убрать
         getViewState().showError(errors);
         getViewState().showTheSameAnswers(sameAnswers);
         getViewState().showKnownOptions(knowOpt);
@@ -108,8 +105,9 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
         if (subscription == null || subscription.isUnsubscribed()) {
             subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
+                    .subscribeOn(newScheduler)
                     .observeOn(mainScheduler)
-                    .subscribeOn(newScheduler).subscribe(aLong -> {
+                    .subscribe(aLong -> {
                         getViewState().setGameTime(model.getGameTime());
                         model.setGameTime(model.getGameTime() + 1);
                     });
@@ -119,6 +117,11 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     public PresenterGrid(IRepositoryGame repository, IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
         this.repository = repository;
+    }
+    public void setScheduler(Scheduler db, Scheduler main,Scheduler all){
+        mainScheduler = main;
+        dbScheduler = db;
+        newScheduler = all;
     }
     public void setModel(Grid grid){
         this.model = grid;

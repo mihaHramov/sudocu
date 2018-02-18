@@ -20,8 +20,8 @@ public interface AppComponent {
     SettingsComponent settingsComponent();
     PlayingComponent playingFragment();
     GameListComponent gameListComponent();
+    PlayingActivityComponent playingComponent();
 
     void inject(RecordsListFragment fragment);
-    void inject(MainActivity activity);
     void inject(RegistrationFragment fragment);
 }
