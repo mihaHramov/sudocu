@@ -3,7 +3,6 @@ package com.example.miha.sudocu.mvp.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +27,12 @@ import butterknife.BindView;
 public class RecordsListFragment extends BaseMvpFragment implements IRecordsList {
     @BindView(R.id.recycler_list_records)
     RecyclerView listOfRecords;
-    private AdapterChallenge adapter;
-    @Inject public PresenterRecordsListFragment presenter;
+    @Inject
+    AdapterChallenge adapter;
+    @Inject
+    PresenterRecordsListFragment presenter;
+    @Inject
+    RecyclerView.LayoutManager manager;
 
     @Override
     public int getLayoutId() {
@@ -39,34 +42,28 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = super.onCreateView(inflater,container,savedInstanceState);
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this.getContext());
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        App.getComponent().ratingComponent().inject(this);
         listOfRecords.setLayoutManager(manager);
+        presenter.setView(this);
+        presenter.init(savedInstanceState);
+        listOfRecords.setAdapter(adapter);
         return v;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        App.getComponent().inject(this);
-        presenter.setView(this);
-        presenter.init(savedInstanceState);
-    }
-
-    @Override
-    public void showRecords(ArrayList<Challenge> challenges)  {
-        adapter = new AdapterChallenge(R.layout.item_challenge,challenges);
-        adapter.setOnClickListener(()->{
+    public void showRecords(ArrayList<Challenge> challenges) {
+        adapter.setValueList(challenges);
+        adapter.setOnClickListener(() -> {
             Challenge challenge = adapter.getItem(adapter.getIdChoseItem());
             presenter.choiceChallenge(challenge);
         });
-        listOfRecords.setAdapter(adapter);
     }
 
     @Override
     public void choiceChallenge(Challenge challenge) {
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra(Grid.KEY,challenge.getGrid());
+        intent.putExtra(Grid.KEY, challenge.getGrid());
         startActivity(intent);
     }
 

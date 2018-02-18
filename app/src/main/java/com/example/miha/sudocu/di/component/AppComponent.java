@@ -21,7 +21,6 @@ public interface AppComponent {
     PlayingComponent playingFragment();
     GameListComponent gameListComponent();
     PlayingActivityComponent playingComponent();
-
-    void inject(RecordsListFragment fragment);
+    RatingComponent ratingComponent();
     void inject(RegistrationFragment fragment);
 }
