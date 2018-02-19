@@ -17,6 +17,7 @@ public class GenerateGame implements IGenerateGame {
 
     @Override
     public Map<Integer, String> initAnswer(int undefined) {
+        answers.clear();
         do {
             int temp = random.nextInt((razmer - 1) * (razmer - 1));
             if (answers.get(temp) != null) continue;
