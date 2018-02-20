@@ -3,9 +3,9 @@ package com.example.miha.sudocu.mvp.view.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.view.events.BusProvider;
 import com.squareup.otto.Bus;
@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public abstract class BaseMvpActivity extends AppCompatActivity{
+public abstract class BaseMvpActivity extends MvpAppCompatActivity{
     protected Bus bus;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
