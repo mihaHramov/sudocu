@@ -2,6 +2,7 @@ package com.example.miha.sudocu.mvp.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.data.model.Answer;
-import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.mvp.presenter.PresenterGrid;
+import com.example.miha.sudocu.mvp.view.intf.IGetGame;
 import com.example.miha.sudocu.utils.ConverterTime;
-import com.example.miha.sudocu.utils.SerializableGame;
 import com.example.miha.sudocu.mvp.view.intf.IGridView;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
 import com.example.miha.sudocu.mvp.view.events.OnAnswerDeleteEvent;
@@ -46,9 +46,10 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
 
     @ProvidePresenter
     PresenterGrid providePresenter(){
-        Grid model = SerializableGame.unSerializable(getActivity().getIntent());
         IPresenterGrid presenterGrid = App.getComponent().playingFragment().getPresenter();
-        presenterGrid.setModel(model);
+        if(getActivity() instanceof IGetGame){
+            presenterGrid.setModel(((IGetGame) getActivity()).getGame());
+        }
         return (PresenterGrid) presenterGrid;
     }
 
@@ -64,6 +65,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         for (int anArrIntIdGrid : arrIntIdGrid) {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) rootView.findViewById(anArrIntIdGrid));
         }
+        Log.d("mihaHramov","onCreateView_do_inject");
         App.getComponent().playingFragment().inject(this);
         return rootView;
     }

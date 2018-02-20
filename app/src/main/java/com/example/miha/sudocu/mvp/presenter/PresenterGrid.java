@@ -14,22 +14,18 @@ import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterGrid;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
-import rx.Observable;
 import rx.Scheduler;
-import rx.Subscription;
 
 @InjectViewState
 public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenterGrid {
-    private Subscription subscription;
     private IRepositoryGame repository;
     private IRepositorySettings settings;
     private Grid model;
     private Scheduler dbScheduler;
-    private Scheduler newScheduler;
     private Scheduler mainScheduler;
+    private Scheduler newScheduler;
     private IPresenterGridInteractor interactor;
 
     @Override
@@ -62,24 +58,14 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
                 .subscribeOn(dbScheduler)
                 .observeOn(mainScheduler)
                 .subscribe(aVoid -> {}, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
-        subscription.unsubscribe();
     }
 
     @Override
     public void onResume() {
         Integer lastInputId = model.getLastChoiseField();
-        getViewState().setGameName(model.getName());
         getViewState().showGrid(model.getGameGrid());
         showCounterOfAnswer();
-        if (subscription == null || subscription.isUnsubscribed()) {
-            subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
-                    .subscribeOn(newScheduler)
-                    .observeOn(mainScheduler)
-                    .subscribe(aLong -> {
-                        getViewState().setGameTime(model.getGameTime());
-                        model.setGameTime(model.getGameTime() + 1);
-                    });
-        }
+
         if (lastInputId == null) return;
 
         ArrayList<Integer> errors = interactor.getError();
