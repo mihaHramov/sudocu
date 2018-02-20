@@ -1,9 +1,13 @@
 package com.example.miha.sudocu.mvp.presenter.IPresenter;
 
-import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
+import com.example.miha.sudocu.mvp.data.model.Grid;
+
+import rx.Scheduler;
 
 public interface IPresenterMainActivity {
    void isPortrait(Boolean isPortrait);
-   void setView(IMainActivity activity);
-   void unSubscription();
+   void onPause();
+   void setSchedulers(Scheduler db, Scheduler main);
+   Grid getModel();
+   void setModel(Grid grid);
 }

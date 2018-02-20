@@ -8,33 +8,55 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
+import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.PresenterMainActivity;
+import com.example.miha.sudocu.mvp.view.intf.IGetGame;
 import com.example.miha.sudocu.service.MyMediaPlayerService;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
 import com.example.miha.sudocu.mvp.view.events.OnStopMusicEvent;
 import com.example.miha.sudocu.mvp.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.mvp.view.fragment.KeyBoardFragment;
 import com.example.miha.sudocu.mvp.view.fragment.PlayingFieldFragment;
+import com.example.miha.sudocu.utils.SerializableGame;
 import com.squareup.otto.Subscribe;
 
-import javax.inject.Inject;
 
 import butterknife.BindView;
 
 
-public class MainActivity extends BaseMvpActivity implements IMainActivity {
+public class MainActivity extends BaseMvpActivity implements IMainActivity,IGetGame {
 
     private PlayingFieldFragment playingField;
 
-    @Inject PresenterMainActivity presenter;
-    public static String myMediaPlayer = "myMediaPlayer";
+    @InjectPresenter
+    PresenterMainActivity presenter;
+
+    @Override
+    protected void onPause() {
+        presenter.onPause();
+        super.onPause();
+    }
+
+    @ProvidePresenter
+    PresenterMainActivity providePresenter() {
+        Grid model = SerializableGame.unSerializable(getIntent());
+        presenter = App.getComponent().playingComponent().providePresenterMainActivity();
+        presenter.setModel(model);
+        return presenter;
+    }
+
     private boolean isPortrait;
 
-    @BindView(R.id.container_fragments) LinearLayout layoutContainer;
-    @BindView(R.id.keyboard) View keyboard;
-    @BindView(R.id.tableLayout1) View play;
+    @BindView(R.id.container_fragments)
+    LinearLayout layoutContainer;
+    @BindView(R.id.keyboard)
+    View keyboard;
+    @BindView(R.id.tableLayout1)
+    View play;
 
     @Override
     public void changeTitleToolbar(String str) {
@@ -55,7 +77,6 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.getComponent().playingComponent().inject(this);
-        presenter.setView(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -64,7 +85,7 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity {
         initFragments(savedInstanceState);
     }
 
-    private void initFragments(Bundle savedInstanceState){
+    private void initFragments(Bundle savedInstanceState) {
         KeyBoardFragment keyBoardFragment;
         if (savedInstanceState != null) {
             keyBoardFragment = (KeyBoardFragment) getSupportFragmentManager().findFragmentById(R.id.keyboard);
@@ -78,16 +99,16 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity {
                 .replace(R.id.tableLayout1, playingField)
                 .commit();
     }
+
     @Override
     protected void onResume() {
-        presenter.isPortrait(isPortrait);
         super.onResume();
+        presenter.isPortrait(isPortrait);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.unSubscription();
         stopService(new Intent(this, MyMediaPlayerService.class));
     }
 
@@ -141,7 +162,12 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity {
     @Subscribe
     public void playMusic(PlayMusicEvent event) {
         Intent intent = new Intent(this, MyMediaPlayerService.class)
-                .putExtra(myMediaPlayer, event.getResMusic());
+                .putExtra(MyMediaPlayerService.name, event.getResMusic());
         startService(intent);
+    }
+
+    @Override
+    public Grid getGame() {
+        return presenter.getModel();
     }
 }
