@@ -7,6 +7,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.mvp.data.model.Answer;
 import com.example.miha.sudocu.mvp.data.model.HistoryAnswer;
+import com.example.miha.sudocu.mvp.presenter.interactor.intf.IPresenterGridInteractor;
 import com.example.miha.sudocu.mvp.view.intf.IGridView;
 import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
@@ -19,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscription;
-import rx.functions.Action1;
 
 @InjectViewState
 public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenterGrid {
@@ -30,6 +30,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     private Scheduler dbScheduler;
     private Scheduler newScheduler;
     private Scheduler mainScheduler;
+    private IPresenterGridInteractor interactor;
 
     @Override
     public void replayGame() {
@@ -81,15 +82,16 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         }
         if (lastInputId == null) return;
 
-        ArrayList<Integer> errors = getError();
-        sameAnswerMode(lastInputId, errors, integers -> getViewState().showTheSameAnswers(integers));
-        knowAnswerMode(lastInputId, errors, integers -> getViewState().showKnownOptions(integers));
+        ArrayList<Integer> errors = interactor.getError();
+        interactor.sameAnswerMode(lastInputId, errors, integers -> getViewState().showTheSameAnswers(integers));
+        interactor.knowAnswerMode(lastInputId, errors, integers -> getViewState().showKnownOptions(integers));
         getViewState().showError(errors);
         getViewState().setFocus(lastInputId, errors.contains(lastInputId));
     }
 
-    public PresenterGrid(IRepositoryGame repository, IRepositorySettings repositorySettings) {
+    public PresenterGrid(IRepositoryGame repository,IPresenterGridInteractor interactor,IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
+        this.interactor = interactor;
         this.repository = repository;
     }
 
@@ -101,6 +103,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
 
     public void setModel(Grid grid) {
         this.model = grid;
+        interactor.setModel(grid);
     }
 
     @Override
@@ -110,15 +113,15 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     }
 
     private void addAnswer(String answer, Integer lastChoseInputId) {
-        knowAnswerMode(lastChoseInputId, new ArrayList<>(), integers -> getViewState().clearTheSameAnswer(integers));
-        getViewState().clearError(getError());
+        interactor.sameAnswerMode(lastChoseInputId, new ArrayList<>(), integers -> getViewState().clearTheSameAnswer(integers));
+        getViewState().clearError(interactor.getError());
         model.setAnswer(lastChoseInputId, answer);//установил новый ответ
-        ArrayList<Integer> error = getError();
+        ArrayList<Integer> error = interactor.getError();//getError();
         getViewState().showError(error);
         getViewState().setTextToAnswer(new Answer(answer, null, lastChoseInputId));
 
-        knowAnswerMode(lastChoseInputId, error, integers -> getViewState().showKnownOptions(integers));
-        sameAnswerMode(lastChoseInputId, error, integers -> getViewState().showTheSameAnswers(integers));
+        interactor.knowAnswerMode(lastChoseInputId, error, integers -> getViewState().showKnownOptions(integers));
+        interactor.sameAnswerMode(lastChoseInputId, error, integers -> getViewState().showTheSameAnswers(integers));
         showCounterOfAnswer();
         if (model.isGameOver()) {//проверка на конец игры
             getViewState().gameOver();
@@ -147,13 +150,13 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         Boolean isAnswer = model.isAnswer(idAnswer);
         Answer answerForDelete = new Answer("", isAnswer, idAnswer);
         if (isAnswer) {
-            getViewState().clearError(getError());
-            sameAnswerMode(idAnswer, new ArrayList<>(), integers -> getViewState().clearTheSameAnswer(integers));
+            getViewState().clearError(interactor.getError());
+            interactor.sameAnswerMode(idAnswer, new ArrayList<>(), integers -> getViewState().clearTheSameAnswer(integers));
             model.deleteAnswer(answerForDelete);
-            knowAnswerMode(idAnswer, new ArrayList<>(), integers -> getViewState().showKnownOptions(integers));
+            interactor.knowAnswerMode(idAnswer, new ArrayList<>(), integers -> getViewState().showKnownOptions(integers));
             getViewState().setTextToAnswer(answerForDelete);
             getViewState().setFocus(idAnswer, false);
-            getViewState().showError(getError());
+            getViewState().showError(interactor.getError());
         }
     }
 
@@ -163,33 +166,17 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         if (lastInputId != null && lastInputId == id) {
             return;
         }
-        ArrayList<Integer> error = getError();
+        ArrayList<Integer> error = interactor.getError();
         if (lastInputId != null) {
             getViewState().removeFocus(lastInputId);
-            knowAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
-            sameAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
+            interactor.knowAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
+            interactor.sameAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
         }
-        sameAnswerMode(id, error, integers -> getViewState().showTheSameAnswers(integers));
-        knowAnswerMode(id, error, integers -> getViewState().showKnownOptions(integers));
+        interactor.sameAnswerMode(id, error, integers -> getViewState().showTheSameAnswers(integers));
+        interactor.knowAnswerMode(id, error, integers -> getViewState().showKnownOptions(integers));
         getViewState().showError(error);
         getViewState().setFocus(id, error.contains(id));
         model.setLastChoiseField(id);
-    }
-
-    private void sameAnswerMode(int id, ArrayList<Integer> error, Action1<ArrayList<Integer>> action1) {
-        if (settings.getShowSameAnswerMode() && !isEmptyString(model.getAnswer(id))) {
-            ArrayList<Integer> sameAnswer = model.getTheSameAnswers(id);
-            sameAnswer.removeAll(error);
-            action1.call(sameAnswer);
-        }
-    }
-
-    private void knowAnswerMode(Integer id, ArrayList<Integer> error, Action1<ArrayList<Integer>> action1) {
-        if (settings.getKnowAnswerMode()) {
-            ArrayList<Integer> knowOptions = model.getKnowOptions(id);
-            knowOptions.removeAll(error);
-            action1.call(knowOptions);
-        }
     }
 
     private void showCounterOfAnswer() {
@@ -198,8 +185,5 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         } else {
             getViewState().clearCountOfAnswer();
         }
-    }
-    private ArrayList<Integer> getError(){
-        return  settings.getErrorMode() ? model.getErrors() : new ArrayList<>();
     }
 }
