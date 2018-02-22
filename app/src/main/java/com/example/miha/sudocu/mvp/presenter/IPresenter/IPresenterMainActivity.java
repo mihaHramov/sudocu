@@ -6,6 +6,7 @@ import rx.Scheduler;
 
 public interface IPresenterMainActivity {
    void isPortrait(Boolean isPortrait);
+   void isGameOver();
    void onPause();
    void setSchedulers(Scheduler db, Scheduler main);
    Grid getModel();

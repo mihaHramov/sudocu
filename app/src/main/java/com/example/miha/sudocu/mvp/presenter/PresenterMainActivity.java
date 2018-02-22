@@ -6,6 +6,7 @@ import com.example.miha.sudocu.mvp.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterMainActivity;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
+import com.example.miha.sudocu.utils.ConverterTime;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +22,13 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
     private Grid model;
     private Scheduler newScheduler;
     private Scheduler mainScheduler;
+
+    @Override
+    public void isGameOver() {
+        if (model.isGameOver()) {
+            getViewState().gameOver();
+        }
+    }
 
     @Override
     public void setSchedulers(Scheduler db, Scheduler main) {
@@ -60,7 +68,10 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
                     .subscribeOn(newScheduler)
                     .observeOn(mainScheduler)
                     .subscribe(aLong -> {
-                        getViewState().changeSubTitleToolbar(Long.toString(model.getGameTime()));
+                        ConverterTime converterTime = ConverterTime.getInstance();
+                        Long minutes = converterTime.converterLongToMinutes(model.getGameTime());
+                        Long second = converterTime.converterLongToSeconds(model.getGameTime());
+                        getViewState().changeSubTitleToolbar(minutes+":"+second);
                         model.setGameTime(model.getGameTime() + 1);
                     });
         }
