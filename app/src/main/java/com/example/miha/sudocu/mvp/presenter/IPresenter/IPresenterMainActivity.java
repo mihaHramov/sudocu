@@ -6,9 +6,11 @@ import rx.Scheduler;
 
 public interface IPresenterMainActivity {
    void isPortrait(Boolean isPortrait);
+   void replayGame();
    void isGameOver();
    void onPause();
-   void setSchedulers(Scheduler db, Scheduler main);
+   void setSchedulers(Scheduler db, Scheduler main,Scheduler newSche);
    Grid getModel();
    void setModel(Grid grid);
+   void reloadGame();
 }

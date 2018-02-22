@@ -1,7 +1,10 @@
 package com.example.miha.sudocu.mvp.presenter;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositorySettings;
 import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterMainActivity;
@@ -18,10 +21,17 @@ import rx.Subscription;
 @InjectViewState
 public class PresenterMainActivity extends MvpPresenter<IMainActivity> implements IPresenterMainActivity {
     private IRepositorySettings settings;
+    private IRepositoryGame repository;
+    private Scheduler dbScheduler;
     private Subscription subscription;
     private Grid model;
     private Scheduler newScheduler;
     private Scheduler mainScheduler;
+
+    @Override
+    public void reloadGame() {
+        model.reloadGame();
+    }
 
     @Override
     public void isGameOver() {
@@ -31,17 +41,31 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
     }
 
     @Override
-    public void setSchedulers(Scheduler db, Scheduler main) {
-        newScheduler = db;
-        mainScheduler = main;
-    }
-
-    public PresenterMainActivity(IRepositorySettings repositorySettings) {
-        settings = repositorySettings;
+    public void replayGame() {
+        model.replayGame();
+        getViewState().updateGameUI();
     }
 
     @Override
+    public void setSchedulers(Scheduler db, Scheduler main,Scheduler newSche) {
+        newScheduler = newSche;
+        dbScheduler = db;
+        mainScheduler = main;
+    }
+
+    public PresenterMainActivity(IRepositorySettings repositorySettings,IRepositoryGame game) {
+        settings = repositorySettings;
+        repository = game;
+    }
+
+
+    @Override
     public void onPause() {
+        repository.saveGame(model)
+                .subscribeOn(dbScheduler)
+                .observeOn(mainScheduler)
+                .subscribe(aVoid -> {
+                }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
         subscription.unsubscribe();
     }
 
@@ -58,9 +82,9 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
     @Override
     public void isPortrait(Boolean isPortrait) {
         Boolean showKeyOnTheRight = !settings.getKeyboardMode();
-        if ((!isPortrait && showKeyOnTheRight)||isPortrait) {
+        if ((!isPortrait && showKeyOnTheRight) || isPortrait) {
             getViewState().showTheKeyboardOnTheRightSide();
-        }else {
+        } else {
             getViewState().showTheKeyboardOnTheLeftSide();
         }
         if (subscription == null || subscription.isUnsubscribed()) {
@@ -71,7 +95,7 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
                         ConverterTime converterTime = ConverterTime.getInstance();
                         Long minutes = converterTime.converterLongToMinutes(model.getGameTime());
                         Long second = converterTime.converterLongToSeconds(model.getGameTime());
-                        getViewState().changeSubTitleToolbar(minutes+":"+second);
+                        getViewState().changeSubTitleToolbar(minutes + ":" + second);
                         model.setGameTime(model.getGameTime() + 1);
                     });
         }

@@ -6,15 +6,11 @@ import com.example.miha.sudocu.mvp.data.model.Grid;
 public interface IPresenterGrid {
     void setModel(Grid gr);
 
-    void historyForward();
+    void clearError();
 
-    void historyBack();
+    void updateUI();
 
-    void reloadGame();
-
-    void replayGame();
-
-    void answer(String answer);
+    void answer();
 
     void choseInput(int id);
 

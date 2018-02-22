@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -14,6 +15,8 @@ import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.PresenterMainActivity;
+import com.example.miha.sudocu.mvp.view.events.OnAfterGameChangeEvent;
+import com.example.miha.sudocu.mvp.view.events.OnAnswerChangeEvent;
 import com.example.miha.sudocu.mvp.view.intf.IGetGame;
 import com.example.miha.sudocu.service.MyMediaPlayerService;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
@@ -28,7 +31,7 @@ import com.squareup.otto.Subscribe;
 import butterknife.BindView;
 
 
-public class MainActivity extends BaseMvpActivity implements IMainActivity,IGetGame {
+public class MainActivity extends BaseMvpActivity implements IMainActivity, IGetGame {
 
     private PlayingFieldFragment playingField;
 
@@ -39,6 +42,17 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity,IGetG
     protected void onPause() {
         presenter.onPause();
         super.onPause();
+    }
+
+    @Override
+    public void updateGameUI() {
+        bus.post(new OnAfterGameChangeEvent());
+    }
+
+    @Override
+    public void gameOver() {
+        Toast.makeText(this, "game over", Toast.LENGTH_SHORT).show();
+        bus.post(new PlayMusicEvent(R.raw.success));
     }
 
     @ProvidePresenter
@@ -81,6 +95,7 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity,IGetG
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
+
         isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
         initFragments(savedInstanceState);
     }
@@ -123,14 +138,14 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity,IGetG
         int id = item.getItemId();
         switch (id) {
             case R.id.reload_game:
-                playingField.reloadGame();
+                presenter.reloadGame();
                 break;
             case R.id.open_setting:
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
                 break;
             case R.id.replay_game:
-                playingField.replayGame();
+                presenter.replayGame();
                 break;
         }
         return false;
@@ -164,6 +179,11 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity,IGetG
         Intent intent = new Intent(this, MyMediaPlayerService.class)
                 .putExtra(MyMediaPlayerService.name, event.getResMusic());
         startService(intent);
+    }
+
+    @Subscribe
+    public void OnAnswerChangeEvent(OnAnswerChangeEvent event) {
+        presenter.isGameOver();
     }
 
     @Override

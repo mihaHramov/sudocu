@@ -2,14 +2,12 @@ package com.example.miha.sudocu.mvp.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -18,15 +16,11 @@ import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.data.model.Answer;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.mvp.presenter.PresenterGrid;
+import com.example.miha.sudocu.mvp.view.events.OnAfterAnswerDeleteEvent;
+import com.example.miha.sudocu.mvp.view.events.OnAfterGameChangeEvent;
 import com.example.miha.sudocu.mvp.view.intf.IGetGame;
-import com.example.miha.sudocu.utils.ConverterTime;
 import com.example.miha.sudocu.mvp.view.intf.IGridView;
-import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
 import com.example.miha.sudocu.mvp.view.events.OnAnswerDeleteEvent;
-import com.example.miha.sudocu.mvp.view.events.OnChangeCountOfAnswer;
-import com.example.miha.sudocu.mvp.view.events.OnChangeHistoryGame;
-import com.example.miha.sudocu.mvp.view.events.OnChangeShowCountAnswerMode;
-import com.example.miha.sudocu.mvp.view.events.PlayMusicEvent;
 import com.example.miha.sudocu.mvp.view.events.OnAnswerChangeEvent;
 import com.squareup.otto.Subscribe;
 
@@ -45,9 +39,9 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     PresenterGrid presenterGrid;
 
     @ProvidePresenter
-    PresenterGrid providePresenter(){
+    PresenterGrid providePresenter() {
         IPresenterGrid presenterGrid = App.getComponent().playingFragment().getPresenter();
-        if(getActivity() instanceof IGetGame){
+        if (getActivity() instanceof IGetGame) {
             presenterGrid.setModel(((IGetGame) getActivity()).getGame());
         }
         return (PresenterGrid) presenterGrid;
@@ -65,19 +59,8 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         for (int anArrIntIdGrid : arrIntIdGrid) {
             tableLayouts.put(anArrIntIdGrid, (TableLayout) rootView.findViewById(anArrIntIdGrid));
         }
-        Log.d("mihaHramov","onCreateView_do_inject");
         App.getComponent().playingFragment().inject(this);
         return rootView;
-    }
-
-    @Override
-    public void clearCountOfAnswer() {
-        bus.post(new OnChangeShowCountAnswerMode());
-    }
-
-    @Override
-    public void showCountOfAnswer(Map<String, Integer> count) {
-        bus.post(new OnChangeCountOfAnswer(count));
     }
 
     @Override
@@ -86,10 +69,6 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         super.onResume();
     }
 
-    @Override
-    public void setGameName(String name) {
-        ((IMainActivity) getActivity()).changeTitleToolbar(name);
-    }
 
     @Override
     public void onPause() {
@@ -97,24 +76,19 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         super.onPause();
     }
 
-
     @Subscribe
-    public void clickOnButtonDeleteAnswer(OnAnswerDeleteEvent event){
+    public void afterDeleteEvent(OnAfterAnswerDeleteEvent event) {
         presenterGrid.deleteAnswer();
     }
 
     @Subscribe
-    public void clickOnButton(OnAnswerChangeEvent answer) {
-        presenterGrid.answer(answer.getAnswer());
+    public void clickOnButtonDeleteAnswer(OnAnswerDeleteEvent event) {
+        presenterGrid.clearError();
     }
 
     @Subscribe
-    public void changeHistory(OnChangeHistoryGame change) {
-        if (change.getForward()) {
-            presenterGrid.historyForward();
-        } else {
-            presenterGrid.historyBack();
-        }
+    public void clickOnButton(OnAnswerChangeEvent answer) {
+        presenterGrid.answer();
     }
 
     @Override
@@ -150,11 +124,11 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void setFocus(Integer id,Boolean isError) {
-        if(isError){
+    public void setFocus(Integer id, Boolean isError) {
+        if (isError) {
             textViewsGrid[id].setBackgroundResource(R.drawable.focus_error);
             textViewsGrid[id].setTextColor(getResources().getColor(R.color.colorAccent));
-        }else {
+        } else {
             textViewsGrid[id].setBackgroundResource(R.drawable.focus);
         }
     }
@@ -202,6 +176,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
                 TextView textView = (TextView) row.getChildAt(j % 3);
                 textView.setText(grid[i][j].getNumber());
                 textView.setId(i * countOfRowsAndCols + j);
+                textView.setTextColor(getResources().getColor(R.color.black));
                 textViewsGrid[i * countOfRowsAndCols + j] = textView;
                 textView.setOnClickListener(v -> presenterGrid.choseInput(v.getId()));
                 int backgroundResource = grid[i][j].isAnswer() ? R.drawable.background_grey : R.drawable.back;
@@ -216,25 +191,8 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         textViewsGrid[answer.getId()].setText(answer.getNumber());
     }
 
-    @Override
-    public void setGameTime(long time) {
-        ConverterTime converterTime = ConverterTime.getInstance();
-        Long minutes = converterTime.converterLongToMinutes(time);
-        Long second = converterTime.converterLongToSeconds(time);
-        ((IMainActivity) getActivity()).changeSubTitleToolbar(Long.toString(minutes) + ":" + Long.toString(second));
-    }
-
-    @Override
-    public void gameOver() {
-        Toast.makeText(getActivity(), "game over", Toast.LENGTH_SHORT).show();
-        bus.post(new PlayMusicEvent(R.raw.success));
-    }
-
-    public void reloadGame() {
-        presenterGrid.reloadGame();
-    }
-
-    public void replayGame() {
-        presenterGrid.replayGame();
+    @Subscribe
+    public void replayGame(OnAfterGameChangeEvent event){
+        presenterGrid.updateUI();
     }
 }

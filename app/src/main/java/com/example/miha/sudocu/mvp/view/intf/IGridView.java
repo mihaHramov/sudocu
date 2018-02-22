@@ -22,19 +22,10 @@ public interface IGridView extends MvpView {
 
     void clearKnownOptions(ArrayList<Integer> list);
 
-    void gameOver();
-
-    void setGameTime(long time);
-
     void setFocus(Integer id,Boolean isError);
 
     void removeFocus(Integer id);
 
     void setTextToAnswer(Answer answer);
 
-    void setGameName(String name);
-
-    void showCountOfAnswer(Map<String, Integer> count);
-
-    void clearCountOfAnswer();
 }
