@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.data.model.Challenge;
@@ -29,8 +31,14 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     RecyclerView listOfRecords;
     @Inject
     AdapterChallenge adapter;
-    @Inject
+
+    @InjectPresenter
     PresenterRecordsListFragment presenter;
+
+    @ProvidePresenter
+    PresenterRecordsListFragment providePresenter(){
+        return App.getComponent().ratingComponent().getPresenter();
+    }
     @Inject
     RecyclerView.LayoutManager manager;
 
@@ -45,8 +53,6 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
         View v = super.onCreateView(inflater, container, savedInstanceState);
         App.getComponent().ratingComponent().inject(this);
         listOfRecords.setLayoutManager(manager);
-        presenter.setView(this);
-        presenter.init(savedInstanceState);
         listOfRecords.setAdapter(adapter);
         return v;
     }
