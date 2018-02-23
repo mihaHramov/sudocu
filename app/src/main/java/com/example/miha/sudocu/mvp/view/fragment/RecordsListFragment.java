@@ -18,6 +18,7 @@ import com.example.miha.sudocu.mvp.view.adapter.AdapterChallenge;
 import com.example.miha.sudocu.mvp.presenter.PresenterRecordsListFragment;
 import com.example.miha.sudocu.mvp.view.activity.MainActivity;
 import com.example.miha.sudocu.mvp.view.intf.IRecordsList;
+import com.example.miha.sudocu.utils.SerializableGame;
 
 import java.util.ArrayList;
 
@@ -69,7 +70,7 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     @Override
     public void choiceChallenge(Challenge challenge) {
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra(Grid.KEY, challenge.getGrid());
+        intent.putExtra(Grid.KEY, SerializableGame.serializable(challenge.getGrid()));
         startActivity(intent);
     }
 
