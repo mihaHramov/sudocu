@@ -9,6 +9,8 @@ import rx.Observable;
 public interface IRepositoryGame {
     Observable<Integer> saveGame(Grid g);
 
+    Observable<Integer> saveChallenge(String name, Integer idGame);
+
     Observable<Void> deleteGame(Grid id);
 
     Observable<ArrayList<Grid>> getListGames();

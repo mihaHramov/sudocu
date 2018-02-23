@@ -25,16 +25,32 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
     private static final String complexity = "complexity";
     private static final String name = "name";
     private static final String answer = "answer";
+    private static final String challengeTableName = "name";
     private static final String gameTime = "gameTime";
     private static final String grid = "grid";
+    private static final String challengeName = "grid";
+    private static final String gridId = "gridId";
     private static final String undefined = "undefined";
     private static final String tableName = "myRepository";
-    private static final int dbVersion = 5;
+    private static final int dbVersion = 6;
     private SQLiteDatabase db;
 
     public RepositoryGameImplBD(Context context) {
         super(context, nameBD, null, dbVersion);
         db = this.getWritableDatabase();
+    }
+
+    @Override
+    public Observable<Integer> saveChallenge(String nameChallenge, Integer idGame) {
+       return Observable.create(subscriber -> {
+           ContentValues cv = new ContentValues();
+           cv.put(challengeName, nameChallenge);
+           cv.put(gridId, idGame);
+           Long d = db.insert(challengeTableName, null, cv);
+           subscriber.onNext(d.intValue());
+           subscriber.onCompleted();
+       });
+
     }
 
     @Override
@@ -105,7 +121,7 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
             int lastChoiceCollId = c.getColumnIndex(lastChoiceField);
             int idColId = c.getColumnIndex("id");
             Gson parser = new Gson();
-            Type type = new TypeToken<Map<Integer, String>>(){}.getType();
+            Type type = new TypeToken<Map<Integer, String>>() {}.getType();
             do {
                 Grid g = new Grid();
                 g.setComplexity(c.getInt(complexityColId));
@@ -132,24 +148,27 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
                 + grid + " text,"
                 + complexity + " integer,"
                 + undefined + " integer,"
-                + lastChoiceField+" integer,"
+                + lastChoiceField + " integer,"
                 + answer + " text,"
                 + gameTime + " integer,"
                 + "name text" + ");");
+        db.execSQL("create table " + challengeTableName
+                + " ("
+                + "id integer primary key autoincrement,"
+                + gridId + " integer,"
+                + challengeName + " text"
+                + ");");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table " + tableName + ";");
-        db.execSQL("create table " + tableName + " ("
+        db.execSQL("create table "
+                + challengeTableName
+                + " ("
                 + "id integer primary key autoincrement,"
-                + grid + " text,"
-                + complexity + " integer,"
-                + undefined + " integer,"
-                + answer + " text,"
-                + lastChoiceField +" integer,"
-                + gameTime + " integer,"
-                + "name text" + ");");
+                + gridId + " integer,"
+                + challengeName + " text"
+                + ");");
     }
 
 }
