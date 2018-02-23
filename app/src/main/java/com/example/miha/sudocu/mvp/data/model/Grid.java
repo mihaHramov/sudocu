@@ -328,6 +328,7 @@ public class Grid implements Serializable {
         for (Map.Entry<Integer, String> entry : answers.entrySet()) {
             pole[entry.getKey() / length][entry.getKey() % length] = "";
         }
+        setUndefined(1);
         setGameTime(0);
         setLastChoiseField(null);
     }
