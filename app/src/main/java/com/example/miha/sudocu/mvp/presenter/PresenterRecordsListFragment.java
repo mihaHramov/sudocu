@@ -28,23 +28,15 @@ public class PresenterRecordsListFragment extends MvpPresenter<IRecordsList> imp
     @Override
     public void choiceChallenge(Challenge challenge) {
         challenge.getGrid().setId(0);
-        challenge.getGrid().setUndefined(1);
         challenge.getGrid().replayGame();
-
-        repositoryGame.saveGame(challenge.getGrid())
+        repositoryGame
+                .saveGame(challenge.getGrid())
+                .flatMap(integer -> repositoryGame.saveChallenge(challenge.getLogin(), integer))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(integer ->saveChallenge(challenge.getLogin(),integer));
-        /*
-        добавить вызов в Бд
-        добавить вызов в таблицу сформировать запис имя + id записи игры
-        * */
-        getViewState().choiceChallenge(challenge);
+                .subscribe(integer -> getViewState().choiceChallenge(challenge));
     }
 
-    private void saveChallenge(String login, Integer id) {
-//        repositoryGame.saveChallenge(login, id);
-    }
 
     @Override
     public void onResume() {
