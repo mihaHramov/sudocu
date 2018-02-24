@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
+import com.example.miha.sudocu.mvp.data.model.Challenge;
 import com.example.miha.sudocu.mvp.data.model.Grid;
+import com.example.miha.sudocu.mvp.data.model.LocalChallenge;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -41,15 +43,53 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
     }
 
     @Override
+    public Observable<LocalChallenge> getLocalChallenge(Challenge challenge) {
+        String SQL = "SELECT * " +
+                "FROM " + challengeTableName + " inner join " + tableName + " " + "on " + challengeTableName + "." + gridId + " =" + tableName + ".id "
+                + "WHERE "
+                + challengeTableName + "." + challengeName + "='" + challenge.getLogin() + "'"
+                + " AND " + tableName + "." + name + "='" + challenge.getGrid().getName() + "'"
+                + ";";
+        LocalChallenge localChallenge = new LocalChallenge(challenge);
+        Cursor c = db.rawQuery(SQL, null);
+        if (c.moveToFirst()) {
+            int gridColId = c.getColumnIndex(grid);
+            int complexityColId = c.getColumnIndex(complexity);
+            int answerColId = c.getColumnIndex(answer);
+            int gameTimeColId = c.getColumnIndex(gameTime);
+            int undefinedColId = c.getColumnIndex(undefined);
+            int lastChoiceCollId = c.getColumnIndex(lastChoiceField);
+            int idColId = c.getColumnIndex( gridId);
+            Gson parser = new Gson();
+            Type type = new TypeToken<Map<Integer, String>>() {}.getType();
+            do {
+                Grid g = new Grid();
+                g.setComplexity(c.getInt(complexityColId));
+                g.setGameTime(c.getInt(gameTimeColId));
+                g.setUndefined(c.getInt(undefinedColId));
+                g.setId(c.getInt(idColId));
+                g.setLastChoiseField(c.getInt(lastChoiceCollId));
+                String pole = c.getString(gridColId);
+                g.setPole(parser.fromJson(pole, String[][].class));
+                g.setAnswers(parser.fromJson(c.getString(answerColId), type));
+                localChallenge.setLocalGame(g);
+                break;
+            } while (c.moveToNext());
+        }
+        c.close();
+        return Observable.just(localChallenge);
+    }
+
+    @Override
     public Observable<Integer> saveChallenge(String nameChallenge, Integer idGame) {
-       return Observable.create(subscriber -> {
-           ContentValues cv = new ContentValues();
-           cv.put(challengeName, nameChallenge);
-           cv.put(gridId, idGame);
-           Long d = db.insert(challengeTableName, null, cv);
-           subscriber.onNext(d.intValue());
-           subscriber.onCompleted();
-       });
+        return Observable.create(subscriber -> {
+            ContentValues cv = new ContentValues();
+            cv.put(challengeName, nameChallenge);
+            cv.put(gridId, idGame);
+            Long d = db.insert(challengeTableName, null, cv);
+            subscriber.onNext(d.intValue());
+            subscriber.onCompleted();
+        });
 
     }
 
@@ -121,7 +161,8 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
             int lastChoiceCollId = c.getColumnIndex(lastChoiceField);
             int idColId = c.getColumnIndex("id");
             Gson parser = new Gson();
-            Type type = new TypeToken<Map<Integer, String>>() {}.getType();
+            Type type = new TypeToken<Map<Integer, String>>() {
+            }.getType();
             do {
                 Grid g = new Grid();
                 g.setComplexity(c.getInt(complexityColId));
