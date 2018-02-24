@@ -1,5 +1,7 @@
 package com.example.miha.sudocu.di.module;
 
+import android.content.Context;
+
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.data.DP.intf.ChallengeDP;
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
@@ -17,7 +19,7 @@ public class RatingModule {
     }
 
     @Provides
-    public AdapterChallenge provideAdapterChallenge() {
-        return new AdapterChallenge(R.layout.item_challenge);
+    public AdapterChallenge provideAdapterChallenge(Context context) {
+        return new AdapterChallenge(R.layout.item_challenge,context);
     }
 }

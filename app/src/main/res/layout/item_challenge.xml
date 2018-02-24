@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="2dp"
     android:id="@+id/cardViewItemChallenge"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@android:color/darker_gray"
-    app:cardCornerRadius="2dp">
+    app:cardCornerRadius="4dp">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:padding="3dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/login"
@@ -20,35 +20,71 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            style="@style/challengeGameName"
             android:id="@+id/gameName"
+            style="@style/challengeGameName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <LinearLayout
+            android:baselineAligned="false"
+            android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/textTime"
-                android:hint="@string/temp_time_minute"
-                android:id="@+id/gameTimeMinute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                style="@style/textTime"
+            <LinearLayout
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/double_point"/>
-            <TextView
-                android:hint="@string/temp_time_second"
-                style="@style/textTime"
-                android:id="@+id/gameTimeSecond"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/challenge_game_time" />
+
+                <TextView
+                    android:layout_weight="3"
+                    android:id="@+id/gameTime"
+                    style="@style/textTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="invisible"
+                android:id="@+id/localGame"
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/local_challenge_game_time" />
+
+                <TextView
+                    android:layout_weight="3"
+                    android:id="@+id/localGameTime"
+                    style="@style/textTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
+
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

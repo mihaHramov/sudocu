@@ -1,9 +1,9 @@
 package com.example.miha.sudocu.mvp.presenter.IPresenter;
 
 
-import com.example.miha.sudocu.mvp.data.model.Challenge;
+import com.example.miha.sudocu.mvp.data.model.LocalChallenge;
 
 public interface IPresenterOfRecordsList {
     void onResume();
-    void choiceChallenge(Challenge challenge);
+    void choiceChallenge(LocalChallenge challenge);
 }

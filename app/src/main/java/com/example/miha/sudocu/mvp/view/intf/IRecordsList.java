@@ -2,11 +2,13 @@ package com.example.miha.sudocu.mvp.view.intf;
 
 
 import com.arellomobile.mvp.MvpView;
-import com.example.miha.sudocu.mvp.data.model.Challenge;
+import com.example.miha.sudocu.mvp.data.model.Grid;
+import com.example.miha.sudocu.mvp.data.model.LocalChallenge;
 
-import java.util.ArrayList;
 
 public interface IRecordsList extends MvpView {
-    void choiceChallenge(Challenge challenge);
-    void showRecords(ArrayList<Challenge> challenges);
+    void choiceChallenge(Grid challenge);
+    void showRecords(LocalChallenge challenges);
+
+    void dontStartCompleteGame();
 }
