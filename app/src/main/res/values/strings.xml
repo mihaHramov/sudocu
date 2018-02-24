@@ -44,4 +44,6 @@
     <string name="double_point">:</string>
     <string name="temp_time_minute">03</string>
     <string name="temp_time_second">02</string>
+    <string name="local_challenge_game_time">Время за которое, вы прошли игру</string>
+    <string name="challenge_game_time">Время за которое прошли игру</string>
 </resources>
