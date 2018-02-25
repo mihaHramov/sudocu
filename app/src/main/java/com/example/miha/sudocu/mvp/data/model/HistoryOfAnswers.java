@@ -27,37 +27,49 @@ public class HistoryOfAnswers implements Serializable {
         return history.get(history_id);
     }
 
-    private Boolean isEmptyHistory() {
-        return history.size() == 0;
-    }
-
     public HistoryAnswer decrementHistory() {
-        if (isEmptyHistory() || history_id == 0){
+        if (history_id == 0) {
             isTopStack = true;
-            return null;
+        } else {
+            history_id--;
         }
-        history_id--;
         return getLastAnswerFromHistory();
     }
 
-    public HistoryAnswer incrementHistory() {
-        HistoryAnswer temp = null;
-        if (!isEmptyHistory()) {
-
-            if (isTopStack && history_id < history.size() - 1) {//если первый элемент и не последний
-                temp = getLastAnswerFromHistory();
-                isTopStack = false;
-            }else if(history_id < history.size() - 1){//если не первый и не последний
-                history_id++;
-                temp = getLastAnswerFromHistory();
-            }
+    public Boolean isHead() {
+        if((history.size() - 1) == history_id||history.size()==0){
+            return true;
         }
-        return temp;
+        return false;
+    }
+
+    public Boolean isBottom() {
+        return isTopStack;
+    }
+
+    public HistoryAnswer incrementHistory() {
+        if (history.isEmpty()) {
+            return null;
+        }
+        Integer lastId = history.size() - 1;
+        if (isTopStack) {
+            isTopStack = false;//теперь не первый элемент
+            return getLastAnswerFromHistory();
+        }
+        if (lastId == history_id) {
+            return getLastAnswerFromHistory();
+        }
+        if (lastId > history_id) {
+            history_id++;
+            return getLastAnswerFromHistory();
+        }
+        return null;
     }
 
     public void addAnswerToHistory(HistoryAnswer answer) {
         if (history.size() != 0) {
-            history.subList(history_id + 1, history.size()).clear();
+            isTopStack = false;
+            history.subList(history_id + 1, history.size()).clear();//добавил нвый ответ в голову  и убрал все после него
             history_id++;
         }
         history.add(answer);
