@@ -75,6 +75,12 @@ public class Grid implements Serializable {
         return history.decrementHistory();
     }
 
+    public Boolean isLastAnswerOfHistory(){
+        return history.isHead();
+    }
+    public Boolean isFirstAnswerOfHistory(){
+        return history.isBottom();
+    }
     public long getGameTime() {
         return gameTime;
     }
