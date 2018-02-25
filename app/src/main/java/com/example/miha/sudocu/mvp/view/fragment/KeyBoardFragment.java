@@ -23,12 +23,16 @@ import com.squareup.otto.Subscribe;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
 public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
     private Map<Button, String> map = new HashMap<>();
-
+    @BindView(R.id.history_forward)
+    Button historyForwardButton;
+    @BindView(R.id.history_back)
+    Button historyBackButton;
     @InjectPresenter
     PresenterKeyboard presenter;
 
@@ -89,14 +93,13 @@ public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
     }
 
     @OnClick(R.id.history_forward)
-    void clickOnButtonHistoryForward(){
+    void clickOnButtonHistoryForward() {
         presenter.historyForward();
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
     void clickOnButton(View v) {
-        String answer = map.get(v);
-        presenter.answer(answer);
+        presenter.answer(map.get(v));
     }
 
     @Subscribe
@@ -123,6 +126,16 @@ public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
         map.put((Button) v.findViewById(R.id.button7), "7");
         map.put((Button) v.findViewById(R.id.button8), "8");
         map.put((Button) v.findViewById(R.id.button9), "9");
+    }
+
+    @Override
+    public void disableButtonHistoryForward(Boolean enabled) {
+        historyForwardButton.setEnabled(enabled);
+    }
+
+    @Override
+    public void disableButtonHistoryBack(Boolean enabled) {
+        historyBackButton.setEnabled(enabled);
     }
 
     @Override

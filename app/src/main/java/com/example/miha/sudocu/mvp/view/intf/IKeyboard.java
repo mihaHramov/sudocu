@@ -10,6 +10,7 @@ public interface IKeyboard extends MvpView {
     void clearCountOfAnswer();
     void postEventToClearErrorAndSameAnswerOnUI();
     void postEventToUpdateUIAfterDeleteAnswer();
-
+    void disableButtonHistoryForward(Boolean enabled);
+    void disableButtonHistoryBack(Boolean Enabled);
     void postEventToShowNewAnswer();
 }
