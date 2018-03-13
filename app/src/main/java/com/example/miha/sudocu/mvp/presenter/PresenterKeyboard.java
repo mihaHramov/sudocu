@@ -10,17 +10,16 @@ import com.example.miha.sudocu.mvp.data.model.HistoryAnswer;
 import com.example.miha.sudocu.mvp.view.intf.IKeyboard;
 
 
-
 @InjectViewState
 public class PresenterKeyboard extends MvpPresenter<IKeyboard> {
     private IRepositorySettings settings;
     private Grid model;
 
-    public PresenterKeyboard(IRepositorySettings repositorySettings){
+    public PresenterKeyboard(IRepositorySettings repositorySettings) {
         this.settings = repositorySettings;
     }
 
-    public void setModel(Grid model){
+    public void setModel(Grid model) {
         this.model = model;
     }
 
@@ -31,37 +30,66 @@ public class PresenterKeyboard extends MvpPresenter<IKeyboard> {
             getViewState().clearCountOfAnswer();
         }
     }
-    public void onResume(){
-        showCounterOfAnswer();
+
+    private void disabledHistoryButton() {
+        getViewState().disableButtonHistoryBack(!model.isFirstAnswerOfHistory());
+        getViewState().disableButtonHistoryForward(!model.isLastAnswerOfHistory());
     }
 
-    public void deleteAnswer(){
+    public void onResume() {
+        this.showCounterOfAnswer();
+        this.disabledHistoryButton();
+    }
+
+    public void deleteAnswer() {
         Integer idAnswer = model.getLastChoiseField();
-        Boolean isAnswer = model.isAnswer(idAnswer);
-        if (isAnswer) {
-            Answer answerForDelete = new Answer("", true, idAnswer);
-            getViewState().postEventToClearErrorAndSameAnswerOnUI();
-            model.deleteAnswer(answerForDelete);
-            getViewState().postEventToUpdateUIAfterDeleteAnswer();
+        String emptyAnswer = "";
+        if (!lastChoiseFieldIsNotAnswer(idAnswer,emptyAnswer)) {
+            model.addAnswerToHistory(new HistoryAnswer(idAnswer, emptyAnswer));
+            this.deleteAnswerVisoutAddToHistory(emptyAnswer, idAnswer);
         }
     }
+
+    private Boolean lastChoiseFieldIsNotAnswer(Integer lastChoseInputId,String str) {
+        return lastChoseInputId == null || !model.isAnswer(lastChoseInputId)||model.getAnswer(lastChoseInputId).equals(str);
+    }
+
     public void answer(String answer) {
         Integer lastChoseInputId = model.getLastChoiseField();
-        if (answer.trim().isEmpty() || lastChoseInputId == null || !model.isAnswer(lastChoseInputId)) {
-            return;
+        if (!lastChoiseFieldIsNotAnswer(lastChoseInputId,answer)){
+            model.addAnswerToHistory(new HistoryAnswer(lastChoseInputId, answer));
+            answerVisoutAddToHistory(answer, lastChoseInputId);
         }
+    }
+
+    private void deleteAnswerVisoutAddToHistory(String emptyAnswer, Integer idAnswer) {
+        Answer answerForDelete = new Answer(emptyAnswer, true, idAnswer);
+        getViewState().postEventToClearErrorAndSameAnswerOnUI();
+        model.deleteAnswer(answerForDelete);
+        getViewState().postEventToUpdateUIAfterDeleteAnswer();
+        this.disabledHistoryButton();
+    }
+
+    private void answerVisoutAddToHistory(String answer, Integer lastChoseInputId) {
         getViewState().postEventToClearErrorAndSameAnswerOnUI();
         model.setAnswer(lastChoseInputId, answer);//установил новый ответ
+        this.disabledHistoryButton();
         getViewState().postEventToShowNewAnswer();
         this.showCounterOfAnswer();
     }
 
+    private void historyUtil(HistoryAnswer historyAnswer) {
+        this.disabledHistoryButton();
+        model.setLastChoiseField(historyAnswer.getAnswerId());
+        answerVisoutAddToHistory(historyAnswer.getAnswer(), historyAnswer.getAnswerId());
+    }
+
     public void historyForward() {
-//        model.incrementHistory();
+        this.historyUtil(model.incrementHistory());
     }
 
     public void historyBack() {
-//        this.deleteAnswer();
-//        history(model.decrementHistory());
+        this.deleteAnswerVisoutAddToHistory("", model.getLastChoiseField());
+        historyUtil(model.decrementHistory());
     }
 }
