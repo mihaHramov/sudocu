@@ -11,12 +11,18 @@ import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
 public class HistoryOfAnswers implements Serializable {
+
     @SerializedName("id")
     @Expose
     private Integer history_id;
+
     @SerializedName("history")
     @Expose
     private ArrayList<HistoryAnswer> history;
+
+    @SerializedName("countOfAnswer")
+    @Expose
+    private Integer countOfAnswer = 0;
 
     private HistoryAnswer getLastAnswerFromHistory() {
         return history.get(history_id);
@@ -37,7 +43,7 @@ public class HistoryOfAnswers implements Serializable {
         return (history_id == 0) || (history.size() == 0);
     }
 
-    public Integer getCountAnswer() {
+    public Integer getCountOfHistory() {
         return history.size() - 1;
     }
 
@@ -56,10 +62,14 @@ public class HistoryOfAnswers implements Serializable {
         }
         history.subList(history_id, history.size()).clear();//добавил нвый ответ в голову  и убрал все после него
         history.add(answer);
+        countOfAnswer++;
     }
 
     public HistoryOfAnswers() {
         history = new ArrayList<>();
         history_id = 0;
+    }
+    public Integer getCountOfAnswers(){
+        return countOfAnswer;
     }
 }
