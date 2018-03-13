@@ -31,6 +31,7 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
     @Override
     public void reloadGame() {
         model.reloadGame();
+        getViewState().updateGameUI();
     }
 
     @Override
