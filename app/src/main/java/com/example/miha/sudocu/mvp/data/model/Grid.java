@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Generated("org.jsonschema2pojo")
 public class Grid implements Serializable {
-    private int razmer;
+    private int razmer = 9;
 
     @SerializedName("lastChoiseField")
     @Expose
@@ -167,7 +167,6 @@ public class Grid implements Serializable {
     }
 
     public Answer[][] getGameGrid() {
-        razmer = pole.length;
         Answer[][] answer = new Answer[razmer][razmer];
         for (int i = 0; i < razmer; i++) {
             for (int j = 0; j < razmer; j++) {
@@ -188,7 +187,6 @@ public class Grid implements Serializable {
     public ArrayList<Integer> getTheSameAnswers(Integer id) {
         ArrayList<Integer> sameAnswers = new ArrayList<>();
         if (id == null) return sameAnswers;
-        razmer = pole.length;
         int k = id / razmer, l = id % razmer;
         for (int i = 0; i < razmer; i++) {
             for (int j = 0; j < razmer; j++) {
@@ -215,7 +213,6 @@ public class Grid implements Serializable {
 
         ArrayList<Integer> sameErrors = new ArrayList<>();
         if (id == null) return sameErrors;
-        razmer = pole.length;
         int k = id / razmer, l = id % razmer;
         if (pole[k][l].isEmpty()) return sameErrors;
         for (int i = 0; i < razmer; i++) {//
@@ -257,7 +254,6 @@ public class Grid implements Serializable {
     public ArrayList<Integer> getKnowOptions(Integer id) {
         ArrayList<Integer> knowOption = new ArrayList<>();
         if (id == null) return knowOption;
-        razmer = pole.length;
         int k = id / razmer, l = id % razmer;
         for (int i = 0; i < razmer; i++) {//
             if (i == k) continue;
@@ -300,7 +296,6 @@ public class Grid implements Serializable {
     public Grid init(IGenerateGame generateGame) {
         mGenerateGame  = generateGame;
         pole = generateGame.generateGame();
-        razmer = pole.length;
         answers = generateGame.initAnswer(getUndefined());
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MMM MM dd, yyyy h:mm a");
@@ -309,6 +304,7 @@ public class Grid implements Serializable {
     }
 
     public Grid reloadGame(){
+        setGameTime(0);
         init(mGenerateGame);
         return this;
     }
@@ -334,7 +330,6 @@ public class Grid implements Serializable {
         for (Map.Entry<Integer, String> entry : answers.entrySet()) {
             pole[entry.getKey() / length][entry.getKey() % length] = "";
         }
-        setUndefined(1);
         setGameTime(0);
         setLastChoiseField(null);
     }
