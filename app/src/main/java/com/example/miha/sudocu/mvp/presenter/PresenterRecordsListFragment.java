@@ -49,10 +49,12 @@ public class PresenterRecordsListFragment extends MvpPresenter<IRecordsList> imp
 
     @Override
     public void onResume() {
-        challengeDP.getAllScore()
+        challengeDP
+                .getAllScore()
+                .subscribeOn(Schedulers.io())
                 .flatMap(Observable::from)
+                .observeOn(Schedulers.newThread())//переключил поток(все что ниже выплняется в другом потоке)
                 .flatMap(challenges -> repositoryGame.getLocalChallenge(challenges))
-                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(challenges -> getViewState().showRecords(challenges), throwable -> Log.d("mihaHramov", throwable.getMessage()));
     }
