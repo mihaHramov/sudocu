@@ -11,14 +11,9 @@ import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
 public class HistoryOfAnswers implements Serializable {
-    @SerializedName("isTopStack")
-    @Expose
-    private Boolean isTopStack;
-
     @SerializedName("id")
     @Expose
     private Integer history_id;
-
     @SerializedName("history")
     @Expose
     private ArrayList<HistoryAnswer> history;
@@ -28,56 +23,43 @@ public class HistoryOfAnswers implements Serializable {
     }
 
     public HistoryAnswer decrementHistory() {
-        if (history_id == 0) {
-            isTopStack = true;
-        } else {
+        if (history_id > 0) {
             history_id--;
         }
         return getLastAnswerFromHistory();
     }
 
     public Boolean isHead() {
-        if((history.size() - 1) == history_id||history.size()==0){
-            return true;
-        }
-        return false;
+        return (history_id == history.size() - 1) || (history.size() == 0);
     }
 
     public Boolean isBottom() {
-        return isTopStack;
+        return (history_id == 0) || (history.size() == 0);
+    }
+
+    public Integer getCountAnswer() {
+        return history.size() - 1;
     }
 
     public HistoryAnswer incrementHistory() {
-        if (history.isEmpty()) {
-            return null;
-        }
         Integer lastId = history.size() - 1;
-        if (isTopStack) {
-            isTopStack = false;//теперь не первый элемент
-            return getLastAnswerFromHistory();
-        }
-        if (lastId == history_id) {
-            return getLastAnswerFromHistory();
-        }
-        if (lastId > history_id) {
+        if (lastId != history_id) {
             history_id++;
-            return getLastAnswerFromHistory();
         }
-        return null;
+        return getLastAnswerFromHistory();
     }
 
     public void addAnswerToHistory(HistoryAnswer answer) {
-        if (history.size() != 0) {
-            isTopStack = false;
-            history.subList(history_id + 1, history.size()).clear();//добавил нвый ответ в голову  и убрал все после него
-            history_id++;
+        history_id++;
+        if (history.size() == 0) {
+            history.add(new HistoryAnswer(answer.getAnswerId(), ""));
         }
+        history.subList(history_id, history.size()).clear();//добавил нвый ответ в голову  и убрал все после него
         history.add(answer);
     }
 
     public HistoryOfAnswers() {
         history = new ArrayList<>();
         history_id = 0;
-        isTopStack = true;
     }
 }
