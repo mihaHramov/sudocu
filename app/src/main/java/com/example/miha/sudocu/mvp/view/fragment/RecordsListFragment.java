@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -21,6 +22,8 @@ import com.example.miha.sudocu.mvp.view.activity.MainActivity;
 import com.example.miha.sudocu.mvp.view.intf.IRecordsList;
 import com.example.miha.sudocu.utils.SerializableGame;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -29,6 +32,9 @@ import butterknife.BindView;
 public class RecordsListFragment extends BaseMvpFragment implements IRecordsList {
     @BindView(R.id.recycler_list_records)
     RecyclerView listOfRecords;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     @Inject
     AdapterChallenge adapter;
 
@@ -59,8 +65,8 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     }
 
     @Override
-    public void showRecords(LocalChallenge challenges) {
-        adapter.addValue(challenges);
+    public void showRecords(List<LocalChallenge> challenges) {
+        adapter.setValueList(challenges);
     }
 
     @Override
@@ -79,5 +85,14 @@ public class RecordsListFragment extends BaseMvpFragment implements IRecordsList
     @Override
     public void dontStartCompleteGame() {
         Toast.makeText(getActivity(),"dont start complete game",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showLoading(Boolean flag) {
+        if(flag){
+            progressBar.setVisibility(View.VISIBLE);
+        }else{
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

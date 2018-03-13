@@ -56,6 +56,9 @@ public class PresenterRecordsListFragment extends MvpPresenter<IRecordsList> imp
                 .observeOn(Schedulers.newThread())//переключил поток(все что ниже выплняется в другом потоке)
                 .flatMap(challenges -> repositoryGame.getLocalChallenge(challenges))
                 .observeOn(AndroidSchedulers.mainThread())
+                .toList()
+                .doOnCompleted(() -> getViewState().showLoading(false))
+                .doOnSubscribe(() -> getViewState().showLoading(true))
                 .subscribe(challenges -> getViewState().showRecords(challenges), throwable -> Log.d("mihaHramov", throwable.getMessage()));
     }
 }
