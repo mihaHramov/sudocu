@@ -33,7 +33,11 @@ public class OnlineRating extends BaseMvpActivity {
         if (userRepository.getUser() == null) {
             fragment = new RegistrationFragment();
         } else {
-            fragment = new RecordsListFragment();
+            if(savedInstanceState!=null){
+                fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            }else {
+                fragment = new RecordsListFragment();
+            }
         }
         changeFragment(R.id.fragment_container, fragment);
     }
