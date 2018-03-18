@@ -146,11 +146,17 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void showError(ArrayList<Integer> list) {
+    public void showError(ArrayList<Answer> list) {
         if (list != null && !list.isEmpty()) {
-            for (Integer i : list) {
-                textViewsGrid[i].setBackgroundResource(R.drawable.show_error_answer);
-                textViewsGrid[i].setTextColor(getResources().getColor(R.color.colorAccent));
+            for (Answer answer : list) {
+                Integer resDrawable;
+                if(answer.isAnswer()) {
+                    resDrawable = R.drawable.show_error_answer;
+                } else{
+                    resDrawable = R.drawable.show_error_field;
+                }
+                textViewsGrid[answer.getId()].setBackgroundResource(resDrawable);
+                textViewsGrid[answer.getId()].setTextColor(getResources().getColor(R.color.colorAccent));
             }
         }
     }

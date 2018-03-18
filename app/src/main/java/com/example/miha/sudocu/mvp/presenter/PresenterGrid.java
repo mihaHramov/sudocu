@@ -39,8 +39,18 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
 
         ArrayList<Integer> errors = interactor.getError();
         showKnowAnswerAndSameAnswer(lastInputId, errors);
-        getViewState().showError(errors);
+        showError(errors);
         getViewState().setFocus(lastInputId, errors.contains(lastInputId));
+    }
+
+    private void showError(ArrayList<Integer> errors) {
+        ArrayList<Answer> errorsToUi = new ArrayList<>();
+        for (Integer error : errors) {
+            Answer answer = new Answer(model.getAnswer(error), model.isAnswer(error));
+            answer.setId(error);
+            errorsToUi.add(answer);
+        }
+        getViewState().showError(errorsToUi);
     }
 
     public PresenterGrid(IPresenterGridInteractor interactor) {
@@ -57,7 +67,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         Integer lastChoseInputId = model.getLastChoiseField();
         ArrayList<Integer> error = interactor.getError();
         this.showKnowAnswerAndSameAnswer(lastChoseInputId, error);
-        getViewState().showError(error);
+        showError(error);
         getViewState().setTextToAnswer(new Answer(answer, null, lastChoseInputId));
         getViewState().setFocus(lastChoseInputId, error.contains(lastChoseInputId));
     }
@@ -68,7 +78,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         interactor.knowAnswerMode(model.getLastChoiseField(), new ArrayList<>(), integers -> getViewState().showKnownOptions(integers));
         getViewState().setTextToAnswer(answerForDelete);
         getViewState().setFocus(model.getLastChoiseField(), false);
-        getViewState().showError(interactor.getError());
+        showError(interactor.getError());
     }
 
     public void choseInput(int id) {
@@ -84,7 +94,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
             interactor.sameAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
         }
         showKnowAnswerAndSameAnswer(id, error);
-        getViewState().showError(error);
+        showError(error);
         getViewState().setFocus(id, error.contains(id));
         model.setLastChoiseField(id);
     }

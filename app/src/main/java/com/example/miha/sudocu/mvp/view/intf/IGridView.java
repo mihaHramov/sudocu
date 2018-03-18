@@ -12,7 +12,7 @@ public interface IGridView extends MvpView {
 
     void showTheSameAnswers(ArrayList<Integer> listId);
 
-    void showError(ArrayList<Integer> list);
+    void showError(ArrayList<Answer> list);
 
     void clearError(ArrayList<Integer> list);
 
