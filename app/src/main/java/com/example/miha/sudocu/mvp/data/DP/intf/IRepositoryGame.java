@@ -20,4 +20,6 @@ public interface IRepositoryGame {
     Observable<ArrayList<Grid>> getListGames();
 
     Observable<ArrayList<Grid>> getListCompleteGames();
+
+    Observable<ArrayList<LocalChallenge>> getAllLocalChallenge();
 }

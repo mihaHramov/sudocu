@@ -27,19 +27,58 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
     private static final String complexity = "complexity";
     private static final String name = "name";
     private static final String answer = "answer";
-    private static final String challengeTableName = "name";
+    private static final String challengeTableName = "challengeTable";
     private static final String gameTime = "gameTime";
     private static final String grid = "grid";
-    private static final String challengeName = "grid";
+    private static final String challengeName = "challengeName";
     private static final String gridId = "gridId";
     private static final String undefined = "undefined";
     private static final String tableName = "myRepository";
-    private static final int dbVersion = 6;
+    private static final int dbVersion = 7;
     private SQLiteDatabase db;
 
     public RepositoryGameImplBD(Context context) {
         super(context, nameBD, null, dbVersion);
         db = this.getWritableDatabase();
+    }
+
+    @Override
+    public Observable<ArrayList<LocalChallenge>> getAllLocalChallenge() {
+        String SQL = "SELECT * " + "FROM " + challengeTableName + " inner join " + tableName + " " + "on " + challengeTableName + "." + gridId + " =" + tableName + ".id " + ";";
+        ArrayList<LocalChallenge> listOfLocalChallenge = new ArrayList<>();
+        Cursor c = db.rawQuery(SQL, null);
+        if (c.moveToFirst()) {
+            int gridColId = c.getColumnIndex(grid);
+            int complexityColId = c.getColumnIndex(complexity);
+            int answerColId = c.getColumnIndex(answer);
+            int gameTimeColId = c.getColumnIndex(gameTime);
+            int undefinedColId = c.getColumnIndex(undefined);
+            int lastChoiceCollId = c.getColumnIndex(lastChoiceField);
+            int idColId = c.getColumnIndex(gridId);
+            int challengeNameColId = c.getColumnIndex("'" + challengeTableName + "'." + challengeName);
+
+            Gson parser = new Gson();
+            Type type = new TypeToken<Map<Integer, String>>() {
+            }.getType();
+            do {
+                Grid g = new Grid();
+                g.setComplexity(c.getInt(complexityColId));
+                g.setGameTime(c.getInt(gameTimeColId));
+                g.setUndefined(c.getInt(undefinedColId));
+                g.setId(c.getInt(idColId));
+                g.setLastChoiseField(c.getInt(lastChoiceCollId));
+                String pole = c.getString(gridColId);
+                g.setPole(parser.fromJson(pole, String[][].class));
+                g.setAnswers(parser.fromJson(c.getString(answerColId), type));
+                String name = c.getString(challengeNameColId);
+                Challenge challenge = new Challenge(name, "", g);
+                LocalChallenge localChallenge = new LocalChallenge(challenge);//тут поправить
+                localChallenge.setLocalGame(g);
+                listOfLocalChallenge.add(localChallenge);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return Observable.just(listOfLocalChallenge);
     }
 
     @Override
@@ -59,9 +98,10 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
             int gameTimeColId = c.getColumnIndex(gameTime);
             int undefinedColId = c.getColumnIndex(undefined);
             int lastChoiceCollId = c.getColumnIndex(lastChoiceField);
-            int idColId = c.getColumnIndex( gridId);
+            int idColId = c.getColumnIndex(gridId);
             Gson parser = new Gson();
-            Type type = new TypeToken<Map<Integer, String>>() {}.getType();
+            Type type = new TypeToken<Map<Integer, String>>() {
+            }.getType();
             do {
                 Grid g = new Grid();
                 g.setComplexity(c.getInt(complexityColId));
@@ -82,15 +122,13 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
 
     @Override
     public Observable<Integer> saveChallenge(String nameChallenge, Integer idGame) {
-        return Observable.create(subscriber -> {
+        return Observable.fromCallable(() -> {
             ContentValues cv = new ContentValues();
             cv.put(challengeName, nameChallenge);
             cv.put(gridId, idGame);
             Long d = db.insert(challengeTableName, null, cv);
-            subscriber.onNext(d.intValue());
-            subscriber.onCompleted();
+            return d.intValue();
         });
-
     }
 
     @Override
@@ -116,25 +154,19 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
             subscriber.onNext(db.update(tableName, cv, "id= ?", new String[]{Long.toString(g.getId())}));
             subscriber.onCompleted();
         });
-
     }
 
     @Override
     public Observable<Void> deleteGame(Grid grid) {
-        return Observable.create(subscriber -> {
+        return Observable.fromCallable(() -> {
             String id = Long.toString(grid.getId());
             db.delete(tableName, "id = ?", new String[]{id});
-            subscriber.onCompleted();
+            return null;
         });
     }
 
     private rx.Observable<ArrayList<Grid>> createObserveble(String selection) {
-        return rx.Observable.create(
-                sub -> {
-                    sub.onNext(getAllWithWhere(selection, new String[]{"0"}));
-                    sub.onCompleted();
-                }
-        );
+        return Observable.defer(() -> Observable.just(getAllWithWhere(selection, new String[]{"0"})));
     }
 
     @Override
@@ -203,6 +235,7 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("drop table name ");
         db.execSQL("create table "
                 + challengeTableName
                 + " ("
@@ -211,5 +244,4 @@ public class RepositoryGameImplBD extends SQLiteOpenHelper implements IRepositor
                 + challengeName + " text"
                 + ");");
     }
-
 }
