@@ -11,4 +11,16 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="black_for_title_bar">#202020</color>
+    <color name="subtitle_appBar">#c0c7c0</color>
+    <color name="error_end">#f92420</color>
+    <color name="same_answer">#00fe98</color>
+    <color name="know_answer">#b9e1bc</color>
+    <color name="sub_answer">#83ffcb</color>
+    <color name="border_of_button">#138ba3</color>
+    <color name="start_color_of_background_button">#059bb4</color>
+    <color name="end_color_of_background_button">#8fe6f9</color>
+    <color name="enabled_color_of_background_button">#019bb5</color>
+
+
 </resources>
