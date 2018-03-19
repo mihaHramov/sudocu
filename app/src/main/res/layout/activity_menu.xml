@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/black_for_title_bar"
         android:minHeight="?android:attr/actionBarSize"
         app:title="@string/app_name"
         app:titleTextColor="@color/colorWhite" />
@@ -24,21 +24,25 @@
         android:orientation="vertical">
 
         <Button
+            android:background="@drawable/background_button"
             android:id="@+id/newGame"
             style="@style/menuItem"
             android:text="@string/new_game_menu" />
 
         <Button
+            android:background="@drawable/background_button"
             android:id="@+id/restore"
             style="@style/menuItem"
             android:text="@string/load_game_menu" />
 
         <Button
+            android:background="@drawable/background_button"
             android:id="@+id/rating"
             style="@style/menuItem"
             android:text="@string/rating" />
 
         <Button
+            android:background="@drawable/background_button"
             android:id="@+id/open_setting"
             style="@style/menuItem"
             android:text="@string/title_activity_settings" />

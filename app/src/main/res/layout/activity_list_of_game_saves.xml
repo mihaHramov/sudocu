@@ -11,6 +11,7 @@
         android:id="@+id/appBarLayout"
         android:theme="@style/MyTheme.AppBarOverlay"
         android:layout_width="match_parent"
+        android:background="@color/black_for_title_bar"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
@@ -20,7 +21,6 @@
             app:titleTextColor="@color/colorWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
             android:minHeight="?android:attr/actionBarSize" />
 
         <android.support.design.widget.TabLayout
@@ -29,8 +29,7 @@
             app:tabSelectedTextColor="@color/colorWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:background="?attr/colorPrimary" />
+            android:layout_below="@+id/toolbar" />
 
 
     </android.support.design.widget.AppBarLayout>
