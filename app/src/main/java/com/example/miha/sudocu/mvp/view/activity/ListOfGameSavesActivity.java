@@ -58,6 +58,7 @@ public class ListOfGameSavesActivity extends BaseMvpActivity implements IDialogM
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
+            getSupportActionBar().setTitle(R.string.games);
         }
         dialog = new AlertDialog(this);
     }

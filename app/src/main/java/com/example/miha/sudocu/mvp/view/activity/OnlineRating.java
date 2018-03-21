@@ -28,6 +28,7 @@ public class OnlineRating extends BaseMvpActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
+            getSupportActionBar().setTitle(R.string.rating);
         }
         userRepository = new RepositoryUser(this);
         if (userRepository.getUser() == null) {
