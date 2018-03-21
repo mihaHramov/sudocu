@@ -2,24 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:background="@color/black_for_title_bar"
-        android:layout_height="wrap_content"
-        android:theme="@style/MyTheme.AppBarOverlay">
-        <android.support.v7.widget.Toolbar
-            app:popupTheme="@style/MyTheme.PopupOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?android:attr/actionBarSize"
-            android:id="@+id/toolbar"
-            app:titleTextColor="@color/colorWhite"
-            app:subtitleTextColor="@color/subtitle_appBar"/>
-    </android.support.design.widget.AppBarLayout>
-
+    <include layout="@layout/toolbar"/>
 
     <LinearLayout
         android:id="@+id/container_fragments"
