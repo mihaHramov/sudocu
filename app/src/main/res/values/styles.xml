@@ -8,6 +8,9 @@
     </style>
 
     <style name="menuItem">
+        <item name="android:background">@drawable/background_button</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
         <item name="android:padding">10dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAlignment">center</item>
