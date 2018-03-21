@@ -13,7 +13,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/open_setting"
-        android:icon="@drawable/ic_action_settings"
+        android:icon="@mipmap/ic_action_settings"
         android:orderInCategory="200"
         android:title="@string/settings"
         app:showAsAction="ifRoom" />

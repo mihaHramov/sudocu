@@ -15,5 +15,5 @@
         </shape>
     </item>
     <item
-        android:drawable="@drawable/ic_action_skip_previous"/>
+        android:drawable="@mipmap/ic_action_skip_previous"/>
 </layer-list>

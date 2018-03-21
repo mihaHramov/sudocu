@@ -16,5 +16,5 @@
         </shape>
     </item>
     <item
-        android:drawable="@drawable/ic_action_delete_answer"/>
+        android:drawable="@mipmap/ic_action_delete_answer"/>
 </layer-list>

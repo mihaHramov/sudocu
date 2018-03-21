@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/reload_login"
-        android:icon="@drawable/ic_action_supervisor_account"
+        android:icon="@mipmap/ic_action_supervisor_account"
         android:title="@string/show_login_screen"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
