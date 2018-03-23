@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.presenter.PresenterListOfCompleteGameFragment;
@@ -32,11 +34,16 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     RecyclerView recyclerView;
 
     @Inject RecyclerView.LayoutManager manager;
-    @Inject  PresenterListOfCompleteGameFragment presenter;
+    @Inject AdapterGrid adapter;
+
+    @InjectPresenter  PresenterListOfCompleteGameFragment presenter;
+    @ProvidePresenter
+    PresenterListOfCompleteGameFragment providePresenter(){
+        return App.getComponent().gameListComponent().getPresenterOfCompleteGame();
+    }
+
     private IDialogManager activityCallback;
     private Integer lastIdRecords = null;
-    private Integer lastIdRecordsDelete = null;
-    @Inject AdapterGrid adapter;
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
@@ -62,7 +69,7 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
 
     @Override
     public void deleteGameFromList() {
-        adapter.removeObjectAtPosition(lastIdRecordsDelete);
+        adapter.removeObjectAtPosition(adapter.getIdChoseItem());
     }
 
     @Override
@@ -110,7 +117,6 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root =  super.onCreateView(inflater,container,savedInstanceState);
         App.getComponent().gameListComponent().inject(this);
-        presenter.setView(this);
         adapter.setOnLongClickListener(v -> {
             PopupMenu popup = new PopupMenu(getActivity(), v);
             popup.inflate(R.menu.list_of_complete_game);
@@ -121,7 +127,6 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
                         presenter.sendGame(adapter.getItem(adapter.getIdChoseItem()));
                         break;
                     case R.id.delete:
-                        lastIdRecordsDelete = adapter.getIdChoseItem();
                         presenter.deleteGame(adapter.getItem(adapter.getIdChoseItem()));
                         break;
                 }
