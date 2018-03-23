@@ -54,7 +54,22 @@ public class ListOfGameSavesActivity extends BaseMvpActivity implements IDialogM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dialogFragment = new RegistrationFragment();
-        initTabLayout();
+        adapterLocalGameList = new AdapterLocalGameList(getSupportFragmentManager());
+        Fragment completeGameFragment;
+        Fragment listOfGameFragment;
+        if (savedInstanceState != null) {
+            listOfGameFragment =  getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":" + 0);
+            completeGameFragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":" + 1);
+        }else{
+            listOfGameFragment = new ListOfGameFragment();
+            completeGameFragment = new ListOfCompleteGameFragment();
+        }
+        adapterLocalGameList.addFragment(listOfGameFragment, getString(R.string.un_complete_game));
+        adapterLocalGameList.addFragment(completeGameFragment, getString(R.string.complete_game));
+
+        viewPager.setAdapter(adapterLocalGameList);
+        tabLayout.setupWithViewPager(viewPager);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -77,14 +92,6 @@ public class ListOfGameSavesActivity extends BaseMvpActivity implements IDialogM
                 break;
         }
         return false;
-    }
-
-    public void initTabLayout() {
-        adapterLocalGameList = new AdapterLocalGameList(getSupportFragmentManager());
-        adapterLocalGameList.addFragment(new ListOfGameFragment(), getString(R.string.un_complete_game));
-        adapterLocalGameList.addFragment(new ListOfCompleteGameFragment(), getString(R.string.complete_game));
-        viewPager.setAdapter(adapterLocalGameList);
-        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Subscribe
