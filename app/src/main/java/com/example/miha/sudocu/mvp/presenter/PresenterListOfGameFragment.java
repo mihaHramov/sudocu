@@ -1,25 +1,20 @@
 package com.example.miha.sudocu.mvp.presenter;
 
-import android.os.Bundle;
 
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
-import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterOfNonCompleteGame;
+import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterOfFragment;
 import com.example.miha.sudocu.mvp.view.intf.IListOfNotCompletedGameFragment;
-import com.example.miha.sudocu.mvp.data.model.Grid;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Scheduler;
 
-
-public class PresenterListOfGameFragment implements IPresenterOfNonCompleteGame {
+@InjectViewState
+public class PresenterListOfGameFragment extends MvpPresenter<IListOfNotCompletedGameFragment> implements IPresenterOfFragment {
     private IRepositoryGame repository;
-    private static final String GAMES = "PRESENTER_SAVE_GAMES_IN_NON_COMPLETE_GAME";
-    private IListOfNotCompletedGameFragment view;
-    private ArrayList<Grid> games;
     @Inject
     @Named("main")
     Scheduler mainScheduler;
@@ -32,32 +27,13 @@ public class PresenterListOfGameFragment implements IPresenterOfNonCompleteGame 
         this.repository = repository;
     }
 
-    @Override
-    public void savePresenterData(Bundle bundle) {
-        bundle.putSerializable(GAMES, games);
-    }
-
-    @Override
-    public void init(Bundle bundle) {
-        if (bundle != null) {
-            games = (ArrayList<Grid>) bundle.getSerializable(GAMES);
-        }
-    }
 
     @Override
     public void onResume() {
         repository.getListGames()
                 .subscribeOn(scheduler)
                 .observeOn(mainScheduler)
-                .doOnSubscribe(() -> view.showLoad(true))
-                .doOnCompleted(() -> view.showLoad(false)).subscribe(grids -> {
-            view.refreshListOfCompleteGame(grids);
-            games = grids;
-        });
-    }
-
-    @Override
-    public void setView(IListOfNotCompletedGameFragment view) {
-        this.view = view;
+                .doOnSubscribe(() -> getViewState().showLoad(true))
+                .doOnCompleted(() -> getViewState().showLoad(false)).subscribe(grids -> getViewState().refreshListOfCompleteGame(grids));
     }
 }

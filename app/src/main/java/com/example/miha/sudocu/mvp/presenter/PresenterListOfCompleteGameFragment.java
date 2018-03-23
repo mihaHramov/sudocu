@@ -1,7 +1,5 @@
 package com.example.miha.sudocu.mvp.presenter;
 
-import android.os.Bundle;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.miha.sudocu.mvp.data.DP.intf.IRepositoryGame;
@@ -25,14 +23,8 @@ public class PresenterListOfCompleteGameFragment extends MvpPresenter<IListOfCom
     private ChallengeDP challengeDP;
     private IRepositoryUser repositoryUser;
 
-    @Override
-    public void init(Bundle bundle) {
-    }
 
-    @Override
-    public void savePresenterData(Bundle bundle) {
-    }
-
+    private Grid localSendGame;
     @Override
     public void deleteGame(Grid grid) {
         repository.deleteGame(grid)
@@ -48,11 +40,12 @@ public class PresenterListOfCompleteGameFragment extends MvpPresenter<IListOfCom
     @Override
     public void sendGame(Grid grid) {
         User user = repositoryUser.getUser();
+        localSendGame = grid;
         if (user != null) {
-            challengeDP.sendGame(user, grid)
+            challengeDP.sendGame(user, localSendGame)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aVoid -> getViewState().onSendGame(), throwable -> getViewState().onErrorSendGame());
+                    .subscribe(aVoid -> getViewState().onSendGame(), throwable -> getViewState().onErrorSendGame(),()->localSendGame = null);
         } else {
             getViewState().authUser();
         }

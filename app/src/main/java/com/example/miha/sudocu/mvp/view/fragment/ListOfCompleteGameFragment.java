@@ -33,17 +33,20 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     @BindView(R.id.recycler_view_grid)
     RecyclerView recyclerView;
 
-    @Inject RecyclerView.LayoutManager manager;
-    @Inject AdapterGrid adapter;
+    @Inject
+    RecyclerView.LayoutManager manager;
+    @Inject
+    AdapterGrid adapter;
 
-    @InjectPresenter  PresenterListOfCompleteGameFragment presenter;
+    @InjectPresenter
+    PresenterListOfCompleteGameFragment presenter;
+
     @ProvidePresenter
-    PresenterListOfCompleteGameFragment providePresenter(){
+    PresenterListOfCompleteGameFragment providePresenter() {
         return App.getComponent().gameListComponent().getPresenterOfCompleteGame();
     }
 
     private IDialogManager activityCallback;
-    private Integer lastIdRecords = null;
 
     @Override
     public void refreshListOfCompleteGame(ArrayList<Grid> gridList) {
@@ -62,9 +65,7 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
 
     @Override
     public void onAfterAuthUser() {
-        if (this.lastIdRecords != null) {
-            presenter.sendGame(adapter.getItem(lastIdRecords));
-        }
+        presenter.sendGame(adapter.getItem(adapter.getIdChoseItem()));
     }
 
     @Override
@@ -102,12 +103,6 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        presenter.savePresenterData(outState);
-    }
-
-    @Override
     public int getLayoutId() {
         return R.layout.list_of_game_saves_fragment;
     }
@@ -115,7 +110,7 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root =  super.onCreateView(inflater,container,savedInstanceState);
+        View root = super.onCreateView(inflater, container, savedInstanceState);
         App.getComponent().gameListComponent().inject(this);
         adapter.setOnLongClickListener(v -> {
             PopupMenu popup = new PopupMenu(getActivity(), v);
@@ -123,7 +118,6 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
             popup.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.challenge:
-                        lastIdRecords = adapter.getIdChoseItem();
                         presenter.sendGame(adapter.getItem(adapter.getIdChoseItem()));
                         break;
                     case R.id.delete:
@@ -134,7 +128,6 @@ public class ListOfCompleteGameFragment extends BaseMvpFragment implements IList
             });
             popup.show();
         });
-        presenter.init(savedInstanceState);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         return root;

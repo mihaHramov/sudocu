@@ -50,11 +50,6 @@ public class ListOfGameFragment extends BaseMvpFragment implements IListOfNotCom
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        presenter.savePresenterData(outState);
-    }
 
     @Override
     public void onResume() {
@@ -69,8 +64,6 @@ public class ListOfGameFragment extends BaseMvpFragment implements IListOfNotCom
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
-        presenter.init(savedInstanceState);
-        presenter.setView(this);
         adapter.setOnClickListener(() -> {
             Intent i = new Intent(getActivity(), MainActivity.class);
             i.putExtra(Grid.KEY, SerializableGame.serializable(adapter.getItem(adapter.getIdChoseItem())));
