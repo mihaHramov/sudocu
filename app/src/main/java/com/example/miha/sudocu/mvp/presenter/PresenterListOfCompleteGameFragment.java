@@ -11,20 +11,15 @@ import com.example.miha.sudocu.mvp.data.model.User;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterOfCompleteGame;
 
 
-import java.util.ArrayList;
-
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 @InjectViewState
 public class PresenterListOfCompleteGameFragment extends MvpPresenter<IListOfCompleteGameFragment> implements IPresenterOfCompleteGame {
     private IRepositoryGame repository;
-    private ArrayList<Grid> localGames;
     private ChallengeDP challengeDP;
     private IRepositoryUser repositoryUser;
 
-
-    private Grid localSendGame;
     @Override
     public void deleteGame(Grid grid) {
         repository.deleteGame(grid)
@@ -40,12 +35,11 @@ public class PresenterListOfCompleteGameFragment extends MvpPresenter<IListOfCom
     @Override
     public void sendGame(Grid grid) {
         User user = repositoryUser.getUser();
-        localSendGame = grid;
         if (user != null) {
-            challengeDP.sendGame(user, localSendGame)
+            challengeDP.sendGame(user, grid)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(aVoid -> getViewState().onSendGame(), throwable -> getViewState().onErrorSendGame(),()->localSendGame = null);
+                    .subscribe(aVoid -> getViewState().onSendGame(), throwable -> getViewState().onErrorSendGame());
         } else {
             getViewState().authUser();
         }
@@ -59,17 +53,12 @@ public class PresenterListOfCompleteGameFragment extends MvpPresenter<IListOfCom
 
     @Override
     public void onResume() {
-        if (localGames != null) {
-            return;
-        }
+        //нельзя кешировать, инфа может обновлятся
         repository.getListCompleteGames()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> getViewState().showLoad(true))
                 .doOnCompleted(() -> getViewState().showLoad(false))
-                .subscribe(grids -> {
-                    localGames = grids;
-                    getViewState().refreshListOfCompleteGame(grids);
-                });
+                .subscribe(grids -> getViewState().refreshListOfCompleteGame(grids));
     }
 }
