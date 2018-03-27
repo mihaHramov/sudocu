@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -28,7 +30,7 @@ import butterknife.OnClick;
 
 
 public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
-    private Map<Button, String> map = new HashMap<>();
+    private Map<FrameLayout, String> map = new HashMap<>();
     @BindView(R.id.history_forward)
     Button historyForwardButton;
     @BindView(R.id.history_back)
@@ -47,10 +49,11 @@ public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
 
     @Override
     public void showCountOfAnswer(Map<String, Integer> count) {
-        for (Map.Entry<Button, String> entry : map.entrySet()) {
-            Integer i = count.get(entry.getValue());
-            String string = entry.getValue() + "(" + i + ")";
-            entry.getKey().setText(string);
+        for (Map.Entry<FrameLayout, String> entry : map.entrySet()) {
+            TextView subTextView = (TextView)entry.getKey().getChildAt(1);
+            String sCount = count.get(entry.getValue()).toString();
+            subTextView.setText(sCount);
+            ((TextView)entry.getKey().getChildAt(0)).setText(entry.getValue());
         }
     }
 
@@ -77,8 +80,9 @@ public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
 
     @Override
     public void clearCountOfAnswer() {
-        for (Map.Entry<Button, String> entry : map.entrySet()) {
-            entry.getKey().setText(entry.getValue());
+        for (Map.Entry<FrameLayout, String> entry : map.entrySet()) {
+            ((TextView)entry.getKey().getChildAt(1)).setText("");
+            ((TextView)entry.getKey().getChildAt(0)).setText(entry.getValue());
         }
     }
 
@@ -117,15 +121,15 @@ public class KeyBoardFragment extends BaseMvpFragment implements IKeyboard {
     }
 
     private void initMap(View v) {
-        map.put((Button) v.findViewById(R.id.button1), "1");
-        map.put((Button) v.findViewById(R.id.button2), "2");
-        map.put((Button) v.findViewById(R.id.button3), "3");
-        map.put((Button) v.findViewById(R.id.button4), "4");
-        map.put((Button) v.findViewById(R.id.button5), "5");
-        map.put((Button) v.findViewById(R.id.button6), "6");
-        map.put((Button) v.findViewById(R.id.button7), "7");
-        map.put((Button) v.findViewById(R.id.button8), "8");
-        map.put((Button) v.findViewById(R.id.button9), "9");
+        map.put((FrameLayout) v.findViewById(R.id.button1), "1");
+        map.put((FrameLayout) v.findViewById(R.id.button2), "2");
+        map.put((FrameLayout) v.findViewById(R.id.button3), "3");
+        map.put((FrameLayout) v.findViewById(R.id.button4), "4");
+        map.put((FrameLayout) v.findViewById(R.id.button5), "5");
+        map.put((FrameLayout) v.findViewById(R.id.button6), "6");
+        map.put((FrameLayout) v.findViewById(R.id.button7), "7");
+        map.put((FrameLayout) v.findViewById(R.id.button8), "8");
+        map.put((FrameLayout) v.findViewById(R.id.button9), "9");
     }
 
     @Override
