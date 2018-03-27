@@ -32,17 +32,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
+            <FrameLayout
                 android:id="@+id/button1"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
 
-            <include
+            <FrameLayout
                 android:id="@+id/button2"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
 
-            <include
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/button3"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
+
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
 
         </TableRow>
 
@@ -50,34 +59,53 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
+            <FrameLayout
                 android:id="@+id/button4"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
 
-            <include
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/button5"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
 
-            <include
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/button6"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
+
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
+            <FrameLayout
                 android:id="@+id/button7"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
 
-            <include
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/button8"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
 
-            <include
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/button9"
-                layout="@layout/button_of_answer" />
+                style="@style/ButtonOfAnswer">
+
+                <include layout="@layout/button_of_answer" />
+            </FrameLayout>
 
         </TableRow>
     </TableLayout>
