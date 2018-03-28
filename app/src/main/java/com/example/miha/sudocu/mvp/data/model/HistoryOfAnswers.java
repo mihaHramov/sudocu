@@ -24,7 +24,7 @@ public class HistoryOfAnswers implements Serializable {
     @Expose
     private Integer countOfAnswer = 0;
 
-    private HistoryAnswer getLastAnswerFromHistory() {
+    public HistoryAnswer getLastAnswerFromHistory() {
         return history.get(history_id);
     }
 
