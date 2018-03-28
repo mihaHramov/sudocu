@@ -40,6 +40,7 @@ public class MyMediaPlayerService extends Service {
         player.setOnCompletionListener(mp -> {
             player.release();
             player = null;
+            stopSelf();
             bus.post(new OnStopMusicEvent());
         });
         player.start();
