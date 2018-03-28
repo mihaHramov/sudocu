@@ -63,6 +63,9 @@ public class Grid implements Serializable {
         this.lastChoiseField = lastChoiseField;
     }
 
+    public HistoryAnswer  getLastFromHistory(){
+        return history.getLastAnswerFromHistory();
+    }
     public void addAnswerToHistory(HistoryAnswer answer) {
         history.addAnswerToHistory(answer);
     }
@@ -75,12 +78,14 @@ public class Grid implements Serializable {
         return history.decrementHistory();
     }
 
-    public Boolean isLastAnswerOfHistory(){
+    public Boolean isLastAnswerOfHistory() {
         return history.isHead();
     }
-    public Boolean isFirstAnswerOfHistory(){
+
+    public Boolean isFirstAnswerOfHistory() {
         return history.isBottom();
     }
+
     public long getGameTime() {
         return gameTime;
     }
@@ -294,7 +299,7 @@ public class Grid implements Serializable {
     }
 
     public Grid init(IGenerateGame generateGame) {
-        mGenerateGame  = generateGame;
+        mGenerateGame = generateGame;
         pole = generateGame.generateGame();
         answers = generateGame.initAnswer(getUndefined());
         long date = System.currentTimeMillis();
@@ -303,7 +308,7 @@ public class Grid implements Serializable {
         return this;
     }
 
-    public Grid reloadGame(){
+    public Grid reloadGame() {
         setGameTime(0);
         init(mGenerateGame);
         return this;
