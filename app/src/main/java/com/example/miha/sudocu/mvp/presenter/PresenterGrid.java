@@ -25,6 +25,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     public void clearError() {
         getViewState().clearError(interactor.getError());
         interactor.sameAnswerMode(model.getLastChoiseField(), new ArrayList<>(), integers -> getViewState().clearTheSameAnswer(integers));
+        interactor.knowAnswerMode(model.getLastChoiseField(), new ArrayList<>(), integers -> getViewState().clearKnownOptions(integers));
     }
 
     @Override
@@ -51,14 +52,6 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         interactor.setModel(grid);
     }
 
-    public void deleteAnswerUI() {
-        Answer answerForDelete = new Answer("", true, model.getLastChoiseField());
-        interactor.knowAnswerMode(model.getLastChoiseField(), new ArrayList<>(), integers -> getViewState().showKnownOptions(integers));
-        getViewState().setTextToAnswer(answerForDelete);
-        getViewState().setFocus(model.getLastChoiseField(), false);
-        this.showError(interactor.getError());
-    }
-
     public void choseInput(int id) {
         Integer lastInputId = model.getLastChoiseField();
         //проверка на повторный клик по одному и тому же полю
@@ -78,47 +71,68 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     }
 
     public void historyForward() {
-        this.historyUtil(model.incrementHistory());
-    }
-
-    public void historyBack() {
-        this.deleteAnswerVisoutAddToHistory("", model.getLastChoiseField());
-        historyUtil(model.decrementHistory());
-    }
-
-    private void historyUtil(HistoryAnswer historyAnswer) {
-        this.disabledHistoryButton();
+        HistoryAnswer historyAnswer = model.incrementHistory();
         if (!model.getLastChoiseField().equals(historyAnswer.getAnswerId())) {
+            clearError();
             getViewState().removeFocus(model.getLastChoiseField());
         }
         model.setLastChoiseField(historyAnswer.getAnswerId());
         answerVisoutAddToHistory(historyAnswer.getAnswer(), historyAnswer.getAnswerId());
+        this.disabledHistoryButton();
     }
 
-    private void deleteAnswerVisoutAddToHistory(String emptyAnswer, Integer idAnswer) {
-        Answer answerForDelete = new Answer(emptyAnswer, true, idAnswer);
+    public void historyBack() {
+        if (!model.isAnswer(model.getLastChoiseField())) {//если выбрано не поле для ввода
+            HistoryAnswer historyAnswer = model.getLastFromHistory();
+            this.clearError();
+            this.choseInput(historyAnswer.getAnswerId());//перешел на последний ответ
+            return;
+        }
+
         this.clearError();
-        model.deleteAnswer(answerForDelete);
-        this.deleteAnswerUI();
+        HistoryAnswer historyDecrementAnswer = model.decrementHistory();
+
+        if (model.getLastChoiseField().equals(historyDecrementAnswer.getAnswerId())) {
+            Answer  newAnswer = new Answer(historyDecrementAnswer.getAnswer(), true, model.getLastChoiseField());
+            model.setAnswer(newAnswer.getId(), newAnswer.getNumber());
+            getViewState().setTextToAnswer(newAnswer);
+        } else {
+            Answer newAnswer = new Answer("", true, model.getLastChoiseField());//delete now
+            model.setAnswer(newAnswer.getId(), newAnswer.getNumber());
+            getViewState().setTextToAnswer(newAnswer);
+            this.choseInput(historyDecrementAnswer.getAnswerId());//переключил фокус на нужное поле
+            model.incrementHistory();//small fix after decrement history
+        }
+
+        this.showKnowAnswerAndSameAnswer(model.getLastChoiseField(), interactor.getError());
+        this.showError(interactor.getError());
+        getViewState().setFocus(model.getLastChoiseField(), interactor.getError().contains(model.getLastChoiseField()));
         this.disabledHistoryButton();
     }
 
     public void answer(String answer) {
         Integer lastChoseInputId = model.getLastChoiseField();
-        if (!lastChoiseFieldIsNotAnswer(lastChoseInputId, answer)) {
-            model.addAnswerToHistory(new HistoryAnswer(lastChoseInputId, answer));
-            answerVisoutAddToHistory(answer, lastChoseInputId);
-        }
+        if (lastChoiseFieldIsNotAnswer(lastChoseInputId, answer)) return;
+        model.addAnswerToHistory(new HistoryAnswer(lastChoseInputId, answer));
+        answerVisoutAddToHistory(answer, lastChoseInputId);
     }
 
     @Override
     public void deleteAnswer() {
         Integer idAnswer = model.getLastChoiseField();
         String emptyAnswer = "";
-        if (!lastChoiseFieldIsNotAnswer(idAnswer, emptyAnswer)) {
-            model.addAnswerToHistory(new HistoryAnswer(idAnswer, emptyAnswer));
-            this.deleteAnswerVisoutAddToHistory(emptyAnswer, idAnswer);
-        }
+        if (lastChoiseFieldIsNotAnswer(idAnswer, emptyAnswer)) return;
+
+        model.addAnswerToHistory(new HistoryAnswer(idAnswer, emptyAnswer));
+
+        this.clearError();
+        Answer answerForDelete = new Answer(emptyAnswer, true, idAnswer);
+        model.deleteAnswer(answerForDelete);
+
+        getViewState().setTextToAnswer(answerForDelete);//тут
+        getViewState().setFocus(model.getLastChoiseField(), false);
+        this.disabledHistoryButton();
+        showKnowAnswerAndSameAnswer(idAnswer, interactor.getError());
     }
 
     private Boolean lastChoiseFieldIsNotAnswer(Integer lastChoseInputId, String str) {
