@@ -1,55 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/focus"
-    android:padding="1dp"
-    android:shrinkColumns="*"
-    android:stretchColumns="*">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TableRow>
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/focus"
+        android:padding="1dp"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
 
-        <include
-            android:id="@+id/top_left"
-            layout="@layout/grid_table_layout" />
+        <TableRow>
 
-        <include
-            android:id="@+id/top_center"
-            layout="@layout/grid_table_layout" />
+            <include
+                android:id="@+id/top_left"
+                layout="@layout/grid_table_layout" />
 
-        <include
-            android:id="@+id/top_right"
-            layout="@layout/grid_table_layout" />
-    </TableRow>
+            <include
+                android:id="@+id/top_center"
+                layout="@layout/grid_table_layout" />
 
-    <TableRow>
+            <include
+                android:id="@+id/top_right"
+                layout="@layout/grid_table_layout" />
+        </TableRow>
 
-        <include
-            android:id="@+id/middle_left"
-            layout="@layout/grid_table_layout" />
+        <TableRow>
 
-        <include
-            android:id="@+id/middle_center"
-            layout="@layout/grid_table_layout" />
+            <include
+                android:id="@+id/middle_left"
+                layout="@layout/grid_table_layout" />
 
-        <include
-            android:id="@+id/middle_right"
-            layout="@layout/grid_table_layout" />
-    </TableRow>
+            <include
+                android:id="@+id/middle_center"
+                layout="@layout/grid_table_layout" />
 
-    <TableRow>
+            <include
+                android:id="@+id/middle_right"
+                layout="@layout/grid_table_layout" />
+        </TableRow>
 
-        <include
-            android:id="@+id/bottom_left"
-            layout="@layout/grid_table_layout" />
+        <TableRow>
 
-        <include
-            android:id="@+id/bottom_center"
-            layout="@layout/grid_table_layout" />
+            <include
+                android:id="@+id/bottom_left"
+                layout="@layout/grid_table_layout" />
 
-        <include
-            android:id="@+id/bottom_right"
-            layout="@layout/grid_table_layout" />
-    </TableRow>
+            <include
+                android:id="@+id/bottom_center"
+                layout="@layout/grid_table_layout" />
 
-</TableLayout>
+            <include
+                android:id="@+id/bottom_right"
+                layout="@layout/grid_table_layout" />
+        </TableRow>
+
+    </TableLayout>
+
+    <include
+        android:id="@+id/keyboard"
+        layout="@layout/keyboard_fragment" />
+</LinearLayout>

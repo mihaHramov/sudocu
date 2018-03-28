@@ -22,7 +22,6 @@ import com.example.miha.sudocu.service.MyMediaPlayerService;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
 import com.example.miha.sudocu.mvp.view.events.OnStopMusicEvent;
 import com.example.miha.sudocu.mvp.view.events.PlayMusicEvent;
-import com.example.miha.sudocu.mvp.view.fragment.KeyBoardFragment;
 import com.example.miha.sudocu.mvp.view.fragment.PlayingFieldFragment;
 import com.example.miha.sudocu.utils.SerializableGame;
 import com.squareup.otto.Subscribe;
@@ -67,8 +66,8 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
 
     @BindView(R.id.container_fragments)
     LinearLayout layoutContainer;
-    @BindView(R.id.keyboard)
-    View keyboard;
+//    @BindView(R.id.keyboard)
+//    View keyboard;
     @BindView(R.id.tableLayout1)
     View play;
 
@@ -101,16 +100,12 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     }
 
     private void initFragments(Bundle savedInstanceState) {
-        KeyBoardFragment keyBoardFragment;
         if (savedInstanceState != null) {
-            keyBoardFragment = (KeyBoardFragment) getSupportFragmentManager().findFragmentById(R.id.keyboard);
             playingField = (PlayingFieldFragment) getSupportFragmentManager().findFragmentById(R.id.tableLayout1);
         } else {
-            keyBoardFragment = new KeyBoardFragment();
             playingField = new PlayingFieldFragment();
         }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.keyboard, keyBoardFragment)
                 .replace(R.id.tableLayout1, playingField)
                 .commit();
     }
@@ -159,13 +154,13 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
 
     @Override
     public void showTheKeyboardOnTheLeftSide() {
-        replaceView(keyboard, play);
+//        replaceView(keyboard, play);
     }
 
     @Override
     public void showTheKeyboardOnTheRightSide() {
         if (!isPortrait) {
-            replaceView(play, keyboard);
+//            replaceView(play, keyboard);
         }
     }
 
