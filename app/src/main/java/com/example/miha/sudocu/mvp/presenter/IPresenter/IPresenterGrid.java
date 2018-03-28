@@ -10,13 +10,9 @@ public interface IPresenterGrid {
 
     void updateUI();
 
-    void answer();
-
     void choseInput(int id);
 
     void onResume();
-
-    void onPause();
 
     void deleteAnswer();
 }

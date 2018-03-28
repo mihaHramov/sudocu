@@ -22,10 +22,17 @@ public interface IGridView extends MvpView {
 
     void clearKnownOptions(ArrayList<Integer> list);
 
-    void setFocus(Integer id,Boolean isError);
+    void setFocus(Integer id, Boolean isError);
 
     void removeFocus(Integer id);
 
     void setTextToAnswer(Answer answer);
 
+    void showCountOfAnswer(Map<String, Integer> count);
+
+    void clearCountOfAnswer();
+
+    void disableButtonHistoryForward(Boolean enabled);
+
+    void disableButtonHistoryBack(Boolean Enabled);
 }
