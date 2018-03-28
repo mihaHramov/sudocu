@@ -32,8 +32,6 @@ import butterknife.BindView;
 
 public class MainActivity extends BaseMvpActivity implements IMainActivity, IGetGame {
 
-    private PlayingFieldFragment playingField;
-
     @InjectPresenter
     PresenterMainActivity presenter;
 
@@ -66,7 +64,7 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
 
     @BindView(R.id.container_fragments)
     LinearLayout layoutContainer;
-//    @BindView(R.id.keyboard)
+    //    @BindView(R.id.keyboard)
 //    View keyboard;
     @BindView(R.id.tableLayout1)
     View play;
@@ -96,15 +94,7 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
         }
 
         isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        initFragments(savedInstanceState);
-    }
-
-    private void initFragments(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            playingField = (PlayingFieldFragment) getSupportFragmentManager().findFragmentById(R.id.tableLayout1);
-        } else {
-            playingField = new PlayingFieldFragment();
-        }
+        PlayingFieldFragment  playingField = savedInstanceState != null ? (PlayingFieldFragment) getSupportFragmentManager().findFragmentById(R.id.tableLayout1) : new PlayingFieldFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.tableLayout1, playingField)
                 .commit();
@@ -114,12 +104,6 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     protected void onResume() {
         super.onResume();
         presenter.isPortrait(isPortrait);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopService(new Intent(this, MyMediaPlayerService.class));
     }
 
     @Override
