@@ -3,9 +3,11 @@ package com.example.miha.sudocu.mvp.view.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -62,12 +64,11 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
 
     private boolean isPortrait;
 
-    @BindView(R.id.container_fragments)
-    LinearLayout layoutContainer;
-    //    @BindView(R.id.keyboard)
-//    View keyboard;
-    @BindView(R.id.tableLayout1)
-    View play;
+    @BindView(R.id.game)
+    FrameLayout play;
+
+    View keyboard;
+    View gameGrid;
 
     @Override
     public void changeTitleToolbar(String str) {
@@ -92,11 +93,14 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
-
         isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        PlayingFieldFragment  playingField = savedInstanceState != null ? (PlayingFieldFragment) getSupportFragmentManager().findFragmentById(R.id.tableLayout1) : new PlayingFieldFragment();
+
+        PlayingFieldFragment playingField = savedInstanceState != null ? (PlayingFieldFragment)
+                getSupportFragmentManager().findFragmentById(R.id.game) :
+                new PlayingFieldFragment();
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.tableLayout1, playingField)
+                .replace(R.id.game, playingField)
                 .commit();
     }
 
@@ -131,21 +135,34 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     }
 
     private void replaceView(View first, View second) {
-        layoutContainer.removeAllViews();
-        layoutContainer.addView(first);
-        layoutContainer.addView(second);
+        ((LinearLayout) play.findViewById(R.id.container_game)).removeAllViews();
+        ((LinearLayout) play.findViewById(R.id.container_game)).addView(first);
+        ((LinearLayout) play.findViewById(R.id.container_game)).addView(second);
     }
 
     @Override
     public void showTheKeyboardOnTheLeftSide() {
-//        replaceView(keyboard, play);
+        Log.d("mihaHramov","showTheKeyboardOnTheLeftSide()"+isPortrait);
+        View container = play.findViewById(R.id.container_game);
+        gameGrid = container.findViewById(R.id.game_grid);
+        keyboard = container.findViewById(R.id.keyboard);
+        replaceView(keyboard, gameGrid);
     }
 
     @Override
     public void showTheKeyboardOnTheRightSide() {
-        if (!isPortrait) {
-//            replaceView(play, keyboard);
+        Log.d("mihaHramov","showTheKeyboardOnTheRightSide()"+isPortrait);
+        if (isPortrait) {
+            View container = play.findViewById(R.id.container_game);
+            gameGrid = container.findViewById(R.id.game_grid);
+            keyboard = container.findViewById(R.id.keyboard);
+            replaceView(gameGrid, keyboard);
         }
+    }
+
+    @Override
+    public Grid getGame() {
+        return presenter.getModel();
     }
 
     @Subscribe
@@ -163,10 +180,5 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     @Subscribe
     public void OnAnswerChangeEvent(OnGameOverEvent event) {
         presenter.isGameOver();
-    }
-
-    @Override
-    public Grid getGame() {
-        return presenter.getModel();
     }
 }
