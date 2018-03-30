@@ -3,7 +3,6 @@ package com.example.miha.sudocu.mvp.view.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,14 +33,22 @@ import butterknife.BindView;
 
 public class MainActivity extends BaseMvpActivity implements IMainActivity, IGetGame {
 
+    @BindView(R.id.game)
+    FrameLayout play;
+    View keyboard;
+    View gameGrid;
+
     @InjectPresenter
     PresenterMainActivity presenter;
 
-    @Override
-    protected void onPause() {
-        presenter.onPause();
-        super.onPause();
+    @ProvidePresenter
+    PresenterMainActivity providePresenter() {
+        Grid model = SerializableGame.unSerializable(getIntent());
+        presenter = App.getComponent().playingComponent().providePresenterMainActivity();
+        presenter.setModel(model);
+        return presenter;
     }
+
 
     @Override
     public void updateGameUI() {
@@ -54,20 +61,6 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
         bus.post(new PlayMusicEvent(R.raw.success));
     }
 
-    @ProvidePresenter
-    PresenterMainActivity providePresenter() {
-        Grid model = SerializableGame.unSerializable(getIntent());
-        presenter = App.getComponent().playingComponent().providePresenterMainActivity();
-        presenter.setModel(model);
-        return presenter;
-    }
-
-    @BindView(R.id.game)
-    FrameLayout play;
-
-    View keyboard;
-    View gameGrid;
-
     @Override
     public void changeTitleToolbar(String str) {
         toolbar.setTitle(str);
@@ -76,6 +69,27 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     @Override
     public void changeSubTitleToolbar(String str) {
         toolbar.setSubtitle(str);
+    }
+
+    @Override
+    public void showTheKeyboardOnTheLeftSide(Boolean flag) {
+        LinearLayout container = (LinearLayout) play.findViewById(R.id.container_game);
+        gameGrid = container.findViewById(R.id.game_grid);
+        keyboard = container.findViewById(R.id.keyboard);
+        container.removeAllViews();
+
+        if (flag) {
+            container.addView(keyboard);
+            container.addView(gameGrid);
+        } else {
+            container.addView(gameGrid);
+            container.addView(keyboard);
+        }
+    }
+
+    @Override
+    public Grid getGame() {
+        return presenter.getModel();
     }
 
     @Override
@@ -108,6 +122,13 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     }
 
     @Override
+    protected void onPause() {
+        presenter.onPause();
+        super.onPause();
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -131,31 +152,6 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
         return false;
     }
 
-    private void replaceView(View first, View second) {
-        ((LinearLayout) play.findViewById(R.id.container_game)).removeAllViews();
-        ((LinearLayout) play.findViewById(R.id.container_game)).addView(first);
-        ((LinearLayout) play.findViewById(R.id.container_game)).addView(second);
-    }
-
-    @Override
-    public void showTheKeyboardOnTheLeftSide(Boolean flag) {
-        View container = play.findViewById(R.id.container_game);
-        gameGrid = container.findViewById(R.id.game_grid);
-        keyboard = container.findViewById(R.id.keyboard);
-
-        if(flag){
-            Log.d("mihaHramov","showTheKeyboardOnTheLeftSide()");
-            replaceView(keyboard, gameGrid);
-        }else {
-            Log.d("mihaHramov","showTheKeyboardOnTheRightSide()");
-            replaceView(gameGrid,keyboard);
-        }
-    }
-
-    @Override
-    public Grid getGame() {
-        return presenter.getModel();
-    }
 
     @Subscribe
     public void stopMusic(OnStopMusicEvent event) {
