@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:weightSum="100"
+    android:id="@+id/container_game">
+
+    <TableLayout
+        android:id="@+id/game_grid"
+        android:layout_weight="70"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/focus"
+        android:padding="1dp"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <TableRow>
+
+            <include
+                android:id="@+id/top_left"
+                layout="@layout/grid_table_layout" />
+
+            <include
+                android:id="@+id/top_center"
+                layout="@layout/grid_table_layout" />
+
+            <include
+                android:id="@+id/top_right"
+                layout="@layout/grid_table_layout" />
+        </TableRow>
+
+        <TableRow>
+
+            <include
+                android:id="@+id/middle_left"
+                layout="@layout/grid_table_layout" />
+
+            <include
+                android:id="@+id/middle_center"
+                layout="@layout/grid_table_layout" />
+
+            <include
+                android:id="@+id/middle_right"
+                layout="@layout/grid_table_layout" />
+        </TableRow>
+
+        <TableRow>
+
+            <include
+                android:id="@+id/bottom_left"
+                layout="@layout/grid_table_layout" />
+
+            <include
+                android:id="@+id/bottom_center"
+                layout="@layout/grid_table_layout" />
+
+            <include
+                android:id="@+id/bottom_right"
+                layout="@layout/grid_table_layout" />
+        </TableRow>
+
+    </TableLayout>
+
+    <include
+        android:layout_weight="30"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/keyboard"
+        layout="@layout/keyboard_fragment" />
+</LinearLayout>
