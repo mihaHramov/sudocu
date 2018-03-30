@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.miha.sudocu.App;
 import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.presenter.PresenterListOfGameFragment;
@@ -29,8 +31,13 @@ public class ListOfGameFragment extends BaseMvpFragment implements IListOfNotCom
     RecyclerView recyclerView;
     @Inject
     RecyclerView.LayoutManager manager;
-    @Inject
-    PresenterListOfGameFragment presenter;
+
+    @InjectPresenter PresenterListOfGameFragment presenter;
+
+    @ProvidePresenter  PresenterListOfGameFragment providePresenter(){
+        return App.getComponent().gameListComponent().getPresenterOfListNonCompleteGame();
+    }
+
     @Inject
     AdapterGrid adapter;
     @BindView(R.id.progressBar)
