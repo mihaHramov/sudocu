@@ -62,8 +62,6 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
         return presenter;
     }
 
-    private boolean isPortrait;
-
     @BindView(R.id.game)
     FrameLayout play;
 
@@ -93,7 +91,6 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
-        isPortrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         PlayingFieldFragment playingField = savedInstanceState != null ? (PlayingFieldFragment)
                 getSupportFragmentManager().findFragmentById(R.id.game) :
@@ -107,7 +104,7 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.isPortrait(isPortrait);
+        presenter.isPortrait(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     @Override
@@ -141,22 +138,17 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     }
 
     @Override
-    public void showTheKeyboardOnTheLeftSide() {
-        Log.d("mihaHramov","showTheKeyboardOnTheLeftSide()"+isPortrait);
+    public void showTheKeyboardOnTheLeftSide(Boolean flag) {
         View container = play.findViewById(R.id.container_game);
         gameGrid = container.findViewById(R.id.game_grid);
         keyboard = container.findViewById(R.id.keyboard);
-        replaceView(keyboard, gameGrid);
-    }
 
-    @Override
-    public void showTheKeyboardOnTheRightSide() {
-        Log.d("mihaHramov","showTheKeyboardOnTheRightSide()"+isPortrait);
-        if (isPortrait) {
-            View container = play.findViewById(R.id.container_game);
-            gameGrid = container.findViewById(R.id.game_grid);
-            keyboard = container.findViewById(R.id.keyboard);
-            replaceView(gameGrid, keyboard);
+        if(flag){
+            Log.d("mihaHramov","showTheKeyboardOnTheLeftSide()");
+            replaceView(keyboard, gameGrid);
+        }else {
+            Log.d("mihaHramov","showTheKeyboardOnTheRightSide()");
+            replaceView(gameGrid,keyboard);
         }
     }
 

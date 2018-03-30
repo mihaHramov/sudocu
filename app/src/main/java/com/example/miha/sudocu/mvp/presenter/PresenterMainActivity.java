@@ -1,6 +1,5 @@
 package com.example.miha.sudocu.mvp.presenter;
 
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -48,13 +47,13 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
     }
 
     @Override
-    public void setSchedulers(Scheduler db, Scheduler main,Scheduler newSche) {
+    public void setSchedulers(Scheduler db, Scheduler main, Scheduler newSche) {
         newScheduler = newSche;
         dbScheduler = db;
         mainScheduler = main;
     }
 
-    public PresenterMainActivity(IRepositorySettings repositorySettings,IRepositoryGame game) {
+    public PresenterMainActivity(IRepositorySettings repositorySettings, IRepositoryGame game) {
         settings = repositorySettings;
         repository = game;
     }
@@ -65,8 +64,7 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
         repository.saveGame(model)
                 .subscribeOn(dbScheduler)
                 .observeOn(mainScheduler)
-                .subscribe(aVoid -> {
-                }, throwable -> Log.d("mihaHramov", throwable.getMessage()), () -> {});
+                .subscribe();
         subscription.unsubscribe();
     }
 
@@ -82,12 +80,8 @@ public class PresenterMainActivity extends MvpPresenter<IMainActivity> implement
 
     @Override
     public void isPortrait(Boolean isPortrait) {
-        Boolean showKeyOnTheRight = !settings.getKeyboardMode();
-        if ((!isPortrait && showKeyOnTheRight) || isPortrait) {
-            getViewState().showTheKeyboardOnTheRightSide();
-        } else {
-            getViewState().showTheKeyboardOnTheLeftSide();
-        }
+        Boolean showKeyOnTheRight = (!isPortrait && !settings.getKeyboardMode()) || isPortrait;
+        getViewState().showTheKeyboardOnTheLeftSide(!showKeyOnTheRight);
         if (subscription == null || subscription.isUnsubscribed()) {
             subscription = Observable.interval(0, 1, TimeUnit.SECONDS)
                     .subscribeOn(newScheduler)

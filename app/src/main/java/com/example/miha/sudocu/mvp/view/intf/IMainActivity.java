@@ -7,7 +7,6 @@ public interface IMainActivity extends MvpView {
     void gameOver();
     void changeTitleToolbar(String str);
     void changeSubTitleToolbar(String str);
-    void showTheKeyboardOnTheLeftSide();
-    void showTheKeyboardOnTheRightSide();
+    void showTheKeyboardOnTheLeftSide(Boolean flag);
     void updateGameUI();
 }
