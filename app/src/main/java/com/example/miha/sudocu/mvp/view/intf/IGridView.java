@@ -35,4 +35,6 @@ public interface IGridView extends MvpView {
     void disableButtonHistoryForward(Boolean enabled);
 
     void disableButtonHistoryBack(Boolean Enabled);
+
+    void gameOver();
 }

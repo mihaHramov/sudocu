@@ -16,7 +16,7 @@ import com.example.miha.sudocu.R;
 import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.PresenterMainActivity;
 import com.example.miha.sudocu.mvp.view.events.OnAfterGameChangeEvent;
-import com.example.miha.sudocu.mvp.view.events.OnAnswerChangeEvent;
+import com.example.miha.sudocu.mvp.view.events.OnGameOverEvent;
 import com.example.miha.sudocu.mvp.view.intf.IGetGame;
 import com.example.miha.sudocu.service.MyMediaPlayerService;
 import com.example.miha.sudocu.mvp.view.intf.IMainActivity;
@@ -161,7 +161,7 @@ public class MainActivity extends BaseMvpActivity implements IMainActivity, IGet
     }
 
     @Subscribe
-    public void OnAnswerChangeEvent(OnAnswerChangeEvent event) {
+    public void OnAnswerChangeEvent(OnGameOverEvent event) {
         presenter.isGameOver();
     }
 

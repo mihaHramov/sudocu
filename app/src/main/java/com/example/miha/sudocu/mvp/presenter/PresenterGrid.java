@@ -169,6 +169,11 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         getViewState().setTextToAnswer(new Answer(answer, null, lastChoseInputId));
         getViewState().setFocus(lastChoseInputId, error.contains(lastChoseInputId));
         this.showCounterOfAnswer();
+        if(model.isGameOver()){
+            clearError();
+            getViewState().removeFocus(model.getLastChoiseField());
+            getViewState().gameOver();
+        }
     }
 
     private void showError(ArrayList<Integer> errors) {

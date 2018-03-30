@@ -19,6 +19,7 @@ import com.example.miha.sudocu.mvp.data.model.Answer;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterGrid;
 import com.example.miha.sudocu.mvp.presenter.PresenterGrid;
 import com.example.miha.sudocu.mvp.view.events.OnAfterGameChangeEvent;
+import com.example.miha.sudocu.mvp.view.events.OnGameOverEvent;
 import com.example.miha.sudocu.mvp.view.intf.IGetGame;
 import com.example.miha.sudocu.mvp.view.intf.IGridView;
 import com.squareup.otto.Subscribe;
@@ -37,15 +38,14 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     private Map<Integer, Integer> textBackgroundResource = new Hashtable<>();
     private Map<Integer, TableLayout> tableLayouts = new Hashtable<>();
     private int arrIntIdGrid[] = new int[]{R.id.top_left, R.id.top_center, R.id.top_right, R.id.middle_left, R.id.middle_center, R.id.middle_right, R.id.bottom_left, R.id.bottom_center, R.id.bottom_right};
-
-
-    //keyboard
     private Map<FrameLayout, String> map = new HashMap<>();
 
     @BindView(R.id.history_forward)
     Button historyForwardButton;
     @BindView(R.id.history_back)
     Button historyBackButton;
+    @BindView(R.id.delete_answer)
+    Button deleteButton;
 
 
     @InjectPresenter
@@ -75,6 +75,16 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         }
     }
 
+    @Override
+    public void gameOver() {
+        for (Map.Entry<FrameLayout, String> val : map.entrySet()) {
+            val.getKey().setEnabled(false);
+        }
+        deleteButton.setEnabled(false);
+        historyBackButton.setEnabled(false);
+        historyForwardButton.setEnabled(false);
+        bus.post(new OnGameOverEvent());
+    }
 
     @Override
     public void clearCountOfAnswer() {
@@ -82,21 +92,6 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
             ((TextView) entry.getKey().getChildAt(1)).setText("");
             ((TextView) entry.getKey().getChildAt(0)).setText(entry.getValue());
         }
-    }
-
-    @OnClick(R.id.delete_answer)
-    void clickOnButtonDeleteAnswer() {
-        presenterGrid.deleteAnswer();
-    }
-
-    @OnClick(R.id.history_back)
-    void clickOnButtonHistory() {
-        presenterGrid.historyBack();
-    }
-
-    @OnClick(R.id.history_forward)
-    void clickOnButtonHistoryForward() {
-        presenterGrid.historyForward();
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
@@ -114,6 +109,9 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         map.put((FrameLayout) v.findViewById(R.id.button7), "7");
         map.put((FrameLayout) v.findViewById(R.id.button8), "8");
         map.put((FrameLayout) v.findViewById(R.id.button9), "9");
+        deleteButton.setOnClickListener(view->presenterGrid.deleteAnswer());
+        historyForwardButton.setOnClickListener(view->presenterGrid.historyForward());
+        historyBackButton.setOnClickListener(view->presenterGrid.historyBack());
     }
 
     @Override
@@ -200,7 +198,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     public void showError(ArrayList<Answer> list) {
         if (list == null) return;
         for (Answer answer : list) {
-            Integer resDrawable = answer.isAnswer()?R.drawable.show_error_answer:R.drawable.show_error_field;
+            Integer resDrawable = answer.isAnswer() ? R.drawable.show_error_answer : R.drawable.show_error_field;
             textViewsGrid[answer.getId()].setBackgroundResource(resDrawable);
             textViewsGrid[answer.getId()].setTextColor(getResources().getColor(R.color.colorAccent));
         }
