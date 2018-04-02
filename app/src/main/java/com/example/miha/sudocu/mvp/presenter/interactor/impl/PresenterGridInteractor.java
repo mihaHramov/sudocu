@@ -6,6 +6,7 @@ import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.interactor.intf.IPresenterGridInteractor;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import rx.functions.Action1;
 
@@ -16,14 +17,14 @@ public class PresenterGridInteractor implements IPresenterGridInteractor {
     @Override
     public void sameAnswerMode(Integer id, ArrayList<Integer> error, Action1<ArrayList<Integer>> action1) {
         ArrayList<Integer> sameAnswer = settings.getShowSameAnswerMode() && !model.getAnswer(id).trim().isEmpty() ? model.getTheSameAnswers(id) : new ArrayList<>();
-        sameAnswer.removeAll(error);
+        sameAnswer.removeAll(error != null ? error : new ArrayList<Integer>());
         action1.call(sameAnswer);
     }
 
     @Override
     public void knowAnswerMode(Integer id, ArrayList<Integer> error, Action1<ArrayList<Integer>> action1) {
         ArrayList<Integer> knowOptions = settings.getKnowAnswerMode() ? model.getKnowOptions(id) : new ArrayList<>();
-        knowOptions.removeAll(error);
+        knowOptions.removeAll(error != null ? error : new ArrayList<Integer>());
         action1.call(knowOptions);
     }
 
@@ -39,5 +40,25 @@ public class PresenterGridInteractor implements IPresenterGridInteractor {
     @Override
     public ArrayList<Integer> getError() {
         return settings.getErrorMode() ? model.getErrors() : new ArrayList<>();
+    }
+
+    @Override
+    public Map<String, Integer> getCountOfAnswer() {
+        return settings.getShowCountNumberOnButtonMode() ? model.getCountOfAnswers() : null;
+    }
+
+    @Override
+    public Integer getChoiceField() {
+        return model.getLastChoiseField();
+    }
+
+    @Override
+    public Boolean isTopOfHistory() {
+        return !model.isFirstAnswerOfHistory();
+    }
+
+    @Override
+    public Boolean isBottomOfHistory() {
+        return !model.isLastAnswerOfHistory();
     }
 }
