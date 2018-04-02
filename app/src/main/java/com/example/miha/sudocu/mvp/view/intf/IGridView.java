@@ -4,6 +4,7 @@ import com.arellomobile.mvp.MvpView;
 import com.example.miha.sudocu.mvp.data.model.Answer;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public interface IGridView extends MvpView {
@@ -12,7 +13,7 @@ public interface IGridView extends MvpView {
 
     void showTheSameAnswers(ArrayList<Integer> listId);
 
-    void showError(ArrayList<Answer> list);
+    void showError(List<Answer> list);
 
     void clearError(ArrayList<Integer> list);
 

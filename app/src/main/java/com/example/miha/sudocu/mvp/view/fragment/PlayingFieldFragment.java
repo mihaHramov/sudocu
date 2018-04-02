@@ -27,6 +27,7 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -195,7 +196,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void showError(ArrayList<Answer> list) {
+    public void showError(List<Answer> list) {
         if (list == null) return;
         for (Answer answer : list) {
             Integer resDrawable = answer.isAnswer() ? R.drawable.show_error_answer : R.drawable.show_error_field;
