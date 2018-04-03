@@ -310,6 +310,8 @@ public class Grid implements Serializable {
 
     public Grid reloadGame() {
         setGameTime(0);
+        history.clearHistrory();
+        setLastChoiseField(null);
         init(mGenerateGame);
         return this;
     }
@@ -335,6 +337,7 @@ public class Grid implements Serializable {
         for (Map.Entry<Integer, String> entry : answers.entrySet()) {
             pole[entry.getKey() / length][entry.getKey() % length] = "";
         }
+        history.clearHistrory();
         setGameTime(0);
         setLastChoiseField(null);
     }

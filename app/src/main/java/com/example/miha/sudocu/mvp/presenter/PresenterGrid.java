@@ -2,39 +2,43 @@ package com.example.miha.sudocu.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.arellomobile.mvp.Pair;
 import com.example.miha.sudocu.mvp.data.model.Answer;
 import com.example.miha.sudocu.mvp.data.model.HistoryAnswer;
 import com.example.miha.sudocu.mvp.presenter.interactor.intf.IPresenterGridInteractor;
+import com.example.miha.sudocu.mvp.view.constant.BackgroundOfField;
 import com.example.miha.sudocu.mvp.view.intf.IGridView;
 import com.example.miha.sudocu.mvp.data.model.Grid;
 import com.example.miha.sudocu.mvp.presenter.IPresenter.IPresenterGrid;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 
 @InjectViewState
 public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenterGrid {
-    private Grid model;
     private IPresenterGridInteractor interactor;
 
     public PresenterGrid(IPresenterGridInteractor interactor) {
         this.interactor = interactor;
     }
 
-    @Override
-    public void clearError() {
-        Integer id = interactor.getChoiceField();
-        getViewState().clearError(interactor.getError());
-        interactor.sameAnswerMode(id, null, integers -> getViewState().clearTheSameAnswer(integers));
-        interactor.knowAnswerMode(id, null, integers -> getViewState().clearKnownOptions(integers));
+    private void clearError(Integer id) {
+        Observable.just(id)
+                .flatMap(integer -> Observable.merge(
+                        Observable.just(interactor.getError()),
+                        Observable.just(interactor.sameAnswerMode(integer, null)),
+                        Observable.just(interactor.knowAnswerMode(integer, null))))
+                .subscribe(integers -> getViewState().clearField(integers));
     }
 
     @Override
     public void updateUI() {
-        getViewState().showGrid(model.getGameGrid());
-        this.showCounterOfAnswer();
-        this.disabledHistoryButton();
+        getViewState().showGrid(interactor.getGameField());
+        getViewState().showCountOfAnswer(interactor.getCountOfAnswer());
+        getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
     }
 
     @Override
@@ -44,160 +48,114 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         if (lastInputId == null) return;
 
         ArrayList<Integer> errors = interactor.getError();
-        showKnowAnswerAndSameAnswer(lastInputId, errors);
-        this.showError(errors);
+        this.showKnowAnswerAndSameAnswerAndError(lastInputId, errors);
         getViewState().setFocus(lastInputId, errors.contains(lastInputId));
     }
 
     public void setModel(Grid grid) {
-        this.model = grid;
         interactor.setModel(grid);
     }
 
-    public void choseInput(int id) {
+    @Override
+    public void choseInput(Integer id) {
         Integer lastInputId = interactor.getChoiceField();
-        //проверка на повторный клик по одному и тому же полю
-        if (lastInputId != null && lastInputId == id) return;
+        if (id.equals(lastInputId)) return;
+
         ArrayList<Integer> error = interactor.getError();
         if (lastInputId != null) {
             getViewState().removeFocus(lastInputId);
-            interactor.knowAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
-            interactor.sameAnswerMode(lastInputId, error, integers -> getViewState().clearTheSameAnswer(integers));
+            getViewState().clearField(interactor.sameAnswerMode(lastInputId, error));
+            getViewState().clearField(interactor.knowAnswerMode(lastInputId, error));
         }
-        this.showKnowAnswerAndSameAnswer(id, error);
-        this.showError(error);
+        this.showKnowAnswerAndSameAnswerAndError(id, error);
         getViewState().setFocus(id, error.contains(id));
-        this.setLastChoise(id);
+        interactor.setChoiceField(id);
     }
 
     public void historyForward() {
-        HistoryAnswer historyAnswer = model.incrementHistory();
         Integer id = interactor.getChoiceField();
+        this.clearError(id);
+
+        HistoryAnswer historyAnswer = interactor.historyNext();
         if (!id.equals(historyAnswer.getAnswerId())) {
-            clearError();
             getViewState().removeFocus(id);
         }
-        this.setLastChoise(historyAnswer.getAnswerId());
-        answerVisoutAddToHistory(historyAnswer.getAnswer(), historyAnswer.getAnswerId());
-        this.disabledHistoryButton();
+
+        this.changeUiAfterAnswerChange(historyAnswer.getAnswer(), historyAnswer.getAnswerId());
+        getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
     }
 
     public void historyBack() {
-        this.clearError();
-        Integer id = interactor.getChoiceField();
-        Integer historyAnswer = model.getLastFromHistory().getAnswerId();
-        if (!id.equals(historyAnswer)) {//если выбрано не поле для ввода
-            this.choseInput(historyAnswer);//перешел на последний ответ
+        this.clearError(interactor.getChoiceField());
+        Integer currentHistoryAnswerID = interactor.getCurrentHistoryAnswer().getAnswerId();
+        if (!currentHistoryAnswerID.equals(interactor.getChoiceField())) {
+            this.choseInput(currentHistoryAnswerID);
             return;
         }
 
-        HistoryAnswer historyDecrementAnswer = model.decrementHistory();
-        String newAnswer = id.equals(historyDecrementAnswer.getAnswerId()) ? historyDecrementAnswer.getAnswer() : "";
-        this.setAnswer(newAnswer, true, id);
-        this.choseInput(historyDecrementAnswer.getAnswerId());//переключил фокус на нужное поле
-        id = historyDecrementAnswer.getAnswerId();
-        this.showKnowAnswerAndSameAnswer(id, interactor.getError());
-        this.showError(interactor.getError());
-        getViewState().setFocus(id, interactor.getError().contains(id));
-        this.disabledHistoryButton();
-    }
+        for (Map.Entry<Integer, String> val : interactor.historyPrev().getAnswers().entrySet()) {
+            getViewState().setTextToAnswer(new Answer(val.getValue(), true, val.getKey()));
+        }
 
-    private void setAnswer(String answer, Boolean flag, Integer id) {
-        Answer newAnswer = new Answer(answer, flag, id);//delete now
-        this.setAnswer(newAnswer.getId(), newAnswer.getNumber());
-        getViewState().setTextToAnswer(newAnswer);
+        Integer id = interactor.getChoiceField();
+        ArrayList<Integer> err = interactor.getError();
+        Boolean isContainsError = err.contains(id);
+
+        this.showKnowAnswerAndSameAnswerAndError(id, err);
+        this.getViewState().setFocus(id, isContainsError);
+        getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
     }
 
     public void answer(String answer) {
         Integer lastChoseInputId = interactor.getChoiceField();
-        if (lastChoiseFieldIsNotAnswer(lastChoseInputId, answer)) return;
-
-        addAnswerToHistory(new HistoryAnswer(lastChoseInputId, answer));
-        answerVisoutAddToHistory(answer, lastChoseInputId);
-    }
-
-    private void addAnswerToHistory(HistoryAnswer answer) {
-        model.addAnswerToHistory(answer);
-    }
-
-    @Override
-    public void deleteAnswer() {
-        Integer idAnswer = interactor.getChoiceField();
-        String emptyAnswer = "";
-        if (lastChoiseFieldIsNotAnswer(idAnswer, emptyAnswer)) return;
-        addAnswerToHistory(new HistoryAnswer(idAnswer, emptyAnswer));
-
-        this.clearError();
-        Answer answerForDelete = new Answer(emptyAnswer, true, idAnswer);
-        setAnswer(idAnswer, emptyAnswer);
-
-        getViewState().setTextToAnswer(answerForDelete);//тут
-        getViewState().setFocus(idAnswer, false);
-        this.disabledHistoryButton();
-        this.showError(interactor.getError());
-        showKnowAnswerAndSameAnswer(idAnswer, interactor.getError());
-    }
-
-    private Boolean lastChoiseFieldIsNotAnswer(Integer lastChoseInputId, String str) {
-        return lastChoseInputId == null || !isAnswer(lastChoseInputId) || getAnswer(lastChoseInputId).equals(str);
-    }
-
-    private void showKnowAnswerAndSameAnswer(Integer id, ArrayList<Integer> error) {
-        interactor.sameAnswerMode(id, error, integers -> getViewState().showTheSameAnswers(integers));
-        interactor.knowAnswerMode(id, error, integers -> getViewState().showKnownOptions(integers));
-    }
-
-    private void disabledHistoryButton() {
-        getViewState().disableButtonHistoryBack(interactor.isTopOfHistory());
-        getViewState().disableButtonHistoryForward(interactor.isBottomOfHistory());
-    }
-
-    private void showCounterOfAnswer() {
-        if (interactor.getCountOfAnswer() != null) {
-            getViewState().showCountOfAnswer(interactor.getCountOfAnswer());
-        } else {
-            getViewState().clearCountOfAnswer();
-        }
-    }
-
-    private void setLastChoise(Integer id) {
-        model.setLastChoiseField(id);
-    }
-
-    private void setAnswer(Integer id, String value) {
-        model.setAnswer(id, value);
-    }
-
-    private void answerVisoutAddToHistory(String answer, Integer lastChoseInputId) {
-        this.clearError();
-        this.setAnswer(lastChoseInputId, answer);//установил новый ответ
-        this.disabledHistoryButton();
-
-        ArrayList<Integer> error = interactor.getError();
-        this.showKnowAnswerAndSameAnswer(lastChoseInputId, error);
-        this.showError(error);
-        getViewState().setTextToAnswer(new Answer(answer, null, lastChoseInputId));
-        getViewState().setFocus(lastChoseInputId, error.contains(lastChoseInputId));
-        this.showCounterOfAnswer();
-        if (model.isGameOver()) {
-            clearError();
+        if ((!interactor.isChoiceFieldNotKnowByDefault(lastChoseInputId) && interactor.isChoiceFieldNotSameAnswer(answer))||lastChoseInputId==null)
+            return;
+        this.clearError(lastChoseInputId);
+        interactor.addNewAnswer(new Answer(answer, true, lastChoseInputId));
+        this.changeUiAfterAnswerChange(answer, lastChoseInputId);
+        getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
+        if (interactor.isGameOver()) {
+            this.clearError(lastChoseInputId);
             getViewState().removeFocus(interactor.getChoiceField());
             getViewState().gameOver();
         }
     }
 
-    private Boolean isAnswer(Integer i) {
-        return model.isAnswer(i);
+    @Override
+    public void deleteAnswer() {
+        Integer id = interactor.getChoiceField();
+        if (!interactor.isChoiceFieldNotKnowByDefault(id)) return;
+        clearError(id);
+        interactor.deleteChoiceAnswer(id);
+        getViewState().setTextToAnswer(new Answer("", true, id));
+        getViewState().setFocus(id, false);
+        ArrayList<Integer> err = interactor.getError();
+        this.showKnowAnswerAndSameAnswerAndError(id, err);
+        getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
     }
 
-    private String getAnswer(Integer i) {
-        return model.getAnswer(i);
-    }
+    private void showKnowAnswerAndSameAnswerAndError(Integer id,ArrayList<Integer> error) {
+        Observable.just(error)
+                .flatMap(list -> getObserverToColorThePlayingField(interactor.sameAnswerMode(id, list), BackgroundOfField.SameAnswer).mergeWith(getObserverToColorThePlayingField(interactor.knowAnswerMode(id, list), BackgroundOfField.KnowAnswer)))
+                .toList()
+                .subscribe(pairs -> getViewState().colorThePlayingField(pairs));
 
-    private void showError(ArrayList<Integer> errors) {
-        Observable.from(errors)
-                .map(integer -> new Answer(getAnswer(integer), isAnswer(integer),integer))
+        Observable.just(error)
+                .flatMap(Observable::from)
+                .map(integer -> new Answer("", interactor.isChoiceFieldNotKnowByDefault(integer), integer))
                 .toList()
                 .subscribe(answers -> getViewState().showError(answers));
+    }
+
+    private Observable<Pair<Integer, Integer>> getObserverToColorThePlayingField(List<Integer> list, final Integer ofFieldEnum) {
+        return Observable.from(list).map(integer -> new Pair<>(integer, ofFieldEnum));
+    }
+
+    private void changeUiAfterAnswerChange(String answer, Integer lastChoseInputId) {
+        ArrayList<Integer> error = interactor.getError();
+        getViewState().setTextToAnswer(new Answer(answer, null, lastChoseInputId));
+        this.showKnowAnswerAndSameAnswerAndError(lastChoseInputId, error);
+        getViewState().setFocus(lastChoseInputId, error.contains(lastChoseInputId));
+        getViewState().showCountOfAnswer(interactor.getCountOfAnswer());
     }
 }

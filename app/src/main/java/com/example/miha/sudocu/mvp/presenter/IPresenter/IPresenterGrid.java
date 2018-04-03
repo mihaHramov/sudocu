@@ -6,11 +6,9 @@ import com.example.miha.sudocu.mvp.data.model.Grid;
 public interface IPresenterGrid {
     void setModel(Grid gr);
 
-    void clearError();
-
     void updateUI();
 
-    void choseInput(int id);
+    void choseInput(Integer id);
 
     void onResume();
 

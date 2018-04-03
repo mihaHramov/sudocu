@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
 
 import javax.annotation.Generated;
 
@@ -58,7 +60,9 @@ public class HistoryOfAnswers implements Serializable {
     public void addAnswerToHistory(HistoryAnswer answer) {
         history_id++;
         if (history.size() == 0) {
-            history.add(new HistoryAnswer(answer.getAnswerId(), ""));
+            Map<Integer,String> temp =  new Hashtable<>();
+            temp.put(answer.getAnswerId(),"");
+            history.add(new HistoryAnswer(answer.getAnswerId(), "",temp));
         }
         history.subList(history_id, history.size()).clear();//добавил нвый ответ в голову  и убрал все после него
         history.add(answer);
@@ -71,5 +75,11 @@ public class HistoryOfAnswers implements Serializable {
     }
     public Integer getCountOfAnswers(){
         return countOfAnswer;
+    }
+
+    public void clearHistrory() {
+        history.clear();
+        history_id = 0;
+        countOfAnswer = 0;
     }
 }

@@ -11,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.arellomobile.mvp.Pair;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.miha.sudocu.App;
@@ -24,7 +25,6 @@ import com.example.miha.sudocu.mvp.view.intf.IGetGame;
 import com.example.miha.sudocu.mvp.view.intf.IGridView;
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -67,10 +67,10 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void showCountOfAnswer(Map<String, Integer> count) {
+    public void showCountOfAnswer(Map<String, String> count) {
         for (Map.Entry<FrameLayout, String> entry : map.entrySet()) {
             TextView subTextView = (TextView) entry.getKey().getChildAt(1);
-            String sCount = count.get(entry.getValue()).toString();
+            String sCount = count.get(entry.getValue());
             subTextView.setText(sCount);
             ((TextView) entry.getKey().getChildAt(0)).setText(entry.getValue());
         }
@@ -85,14 +85,6 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         historyBackButton.setEnabled(false);
         historyForwardButton.setEnabled(false);
         bus.post(new OnGameOverEvent());
-    }
-
-    @Override
-    public void clearCountOfAnswer() {
-        for (Map.Entry<FrameLayout, String> entry : map.entrySet()) {
-            ((TextView) entry.getKey().getChildAt(1)).setText("");
-            ((TextView) entry.getKey().getChildAt(0)).setText(entry.getValue());
-        }
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
@@ -116,15 +108,10 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void disableButtonHistoryForward(Boolean enabled) {
-        historyForwardButton.setEnabled(enabled);
+    public void disableButtonHistoryButton(Boolean back, Boolean forward) {
+        historyForwardButton.setEnabled(forward);
+        historyBackButton.setEnabled(back);
     }
-
-    @Override
-    public void disableButtonHistoryBack(Boolean enabled) {
-        historyBackButton.setEnabled(enabled);
-    }
-
 
     @Nullable
     @Override
@@ -145,23 +132,10 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void clearError(ArrayList<Integer> list) {
-        if (list == null) return;
-        for (Integer i : list) {
-            textViewsGrid[i].setBackgroundResource(textBackgroundResource.get(i));
-            textViewsGrid[i].setTextColor(getResources().getColor(R.color.black));
-        }
-    }
-
-    @Override
-    public void showTheSameAnswers(ArrayList<Integer> list) {
-        list(list, R.drawable.show_same_answer);
-    }
-
-    @Override
-    public void clearTheSameAnswer(ArrayList<Integer> theSameAnswers) {
+    public void clearField(List<Integer> theSameAnswers) {
         for (Integer id : theSameAnswers) {
             textViewsGrid[id].setBackgroundResource(textBackgroundResource.get(id));
+            textViewsGrid[id].setTextColor(getResources().getColor(R.color.black));
         }
     }
 
@@ -184,15 +158,10 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @Override
-    public void clearKnownOptions(ArrayList<Integer> list) {
-        for (Integer iterator : list) {
-            textViewsGrid[iterator].setBackgroundResource(textBackgroundResource.get(iterator));
+    public void colorThePlayingField(List<Pair<Integer, Integer>> pairs) {
+        for (Pair<Integer,Integer> pair : pairs){
+            textViewsGrid[pair.first].setBackgroundResource(pair.second);
         }
-    }
-
-    @Override
-    public void showKnownOptions(ArrayList<Integer> list) {
-        list(list, R.drawable.show_all_know_answer);
     }
 
     @Override
@@ -202,12 +171,6 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
             Integer resDrawable = answer.isAnswer() ? R.drawable.show_error_answer : R.drawable.show_error_field;
             textViewsGrid[answer.getId()].setBackgroundResource(resDrawable);
             textViewsGrid[answer.getId()].setTextColor(getResources().getColor(R.color.colorAccent));
-        }
-    }
-
-    private void list(ArrayList<Integer> list, int res) {
-        for (Integer id : list) {
-            textViewsGrid[id].setBackgroundResource(res);
         }
     }
 
@@ -241,6 +204,6 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
 
     @Subscribe
     public void replayGame(OnAfterGameChangeEvent event) {
-        presenterGrid.updateUI();
+        presenterGrid.onResume();
     }
 }

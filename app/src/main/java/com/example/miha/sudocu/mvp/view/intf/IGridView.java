@@ -1,9 +1,9 @@
 package com.example.miha.sudocu.mvp.view.intf;
 
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.Pair;
 import com.example.miha.sudocu.mvp.data.model.Answer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,17 +11,9 @@ public interface IGridView extends MvpView {
 
     void showGrid(Answer[][] ar);
 
-    void showTheSameAnswers(ArrayList<Integer> listId);
-
     void showError(List<Answer> list);
 
-    void clearError(ArrayList<Integer> list);
-
-    void showKnownOptions(ArrayList<Integer> list);
-
-    void clearTheSameAnswer(ArrayList<Integer> theSameAnswers);
-
-    void clearKnownOptions(ArrayList<Integer> list);
+    void clearField(List<Integer> theSameAnswers);
 
     void setFocus(Integer id, Boolean isError);
 
@@ -29,13 +21,11 @@ public interface IGridView extends MvpView {
 
     void setTextToAnswer(Answer answer);
 
-    void showCountOfAnswer(Map<String, Integer> count);
+    void showCountOfAnswer(Map<String, String> count);
 
-    void clearCountOfAnswer();
-
-    void disableButtonHistoryForward(Boolean enabled);
-
-    void disableButtonHistoryBack(Boolean Enabled);
+    void disableButtonHistoryButton(Boolean back,Boolean forward);
 
     void gameOver();
+
+    void colorThePlayingField(List<Pair<Integer,Integer>> pairs);
 }
