@@ -88,7 +88,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     }
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
-    void clickOnButton(View v) {
+    void clickOnButton(FrameLayout v) {
         presenterGrid.answer(map.get(v));
     }
 
@@ -102,9 +102,9 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         map.put((FrameLayout) v.findViewById(R.id.button7), "7");
         map.put((FrameLayout) v.findViewById(R.id.button8), "8");
         map.put((FrameLayout) v.findViewById(R.id.button9), "9");
-        deleteButton.setOnClickListener(view->presenterGrid.deleteAnswer());
-        historyForwardButton.setOnClickListener(view->presenterGrid.historyForward());
-        historyBackButton.setOnClickListener(view->presenterGrid.historyBack());
+        deleteButton.setOnClickListener(view -> presenterGrid.deleteAnswer());
+        historyForwardButton.setOnClickListener(view -> presenterGrid.historyForward());
+        historyBackButton.setOnClickListener(view -> presenterGrid.historyBack());
     }
 
     @Override
@@ -150,7 +150,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
     @Override
     public void setFocus(Integer id, Boolean isError) {
         if (isError) {
-            textViewsGrid[id].setBackgroundResource(R.drawable.focus_error);
+            textViewsGrid[id].setBackgroundResource(R.drawable.focus_error_not_know);
             textViewsGrid[id].setTextColor(getResources().getColor(R.color.colorAccent));
         } else {
             textViewsGrid[id].setBackgroundResource(R.drawable.focus);
@@ -159,7 +159,7 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
 
     @Override
     public void colorThePlayingField(List<Pair<Integer, Integer>> pairs) {
-        for (Pair<Integer,Integer> pair : pairs){
+        for (Pair<Integer, Integer> pair : pairs) {
             textViewsGrid[pair.first].setBackgroundResource(pair.second);
         }
     }
