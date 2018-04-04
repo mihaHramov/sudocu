@@ -166,11 +166,9 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     }
 
     private void setFocus(Integer id, ArrayList<Integer> error) {
-        Integer result;
+        Integer result = BackgroundOfField.Focus;
         if (error != null && error.contains(id)) {
             result = interactor.isChoiceFieldNotKnowByDefault(id) ? BackgroundOfField.ErrorAnswerFocus : BackgroundOfField.ErrorKnowAnswerFocus;
-        } else {
-            result = BackgroundOfField.Focus;
         }
         getViewState().setFocus(new Pair<>(id, result));
     }
