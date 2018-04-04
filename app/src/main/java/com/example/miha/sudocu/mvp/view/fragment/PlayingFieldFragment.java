@@ -145,16 +145,12 @@ public class PlayingFieldFragment extends BaseMvpFragment implements IGridView {
         if (id == null) return;
         int background = textBackgroundResource.get(id);
         textViewsGrid[id].setBackgroundResource(background);
+        textViewsGrid[id].setTextColor(getResources().getColor(R.color.black));
     }
 
     @Override
-    public void setFocus(Integer id, Boolean isError) {
-        if (isError) {
-            textViewsGrid[id].setBackgroundResource(R.drawable.focus_error_not_know);
-            textViewsGrid[id].setTextColor(getResources().getColor(R.color.colorAccent));
-        } else {
-            textViewsGrid[id].setBackgroundResource(R.drawable.focus);
-        }
+    public void setFocus(Pair<Integer,Integer> pair){
+        textViewsGrid[pair.first].setBackgroundResource(pair.second);
     }
 
     @Override

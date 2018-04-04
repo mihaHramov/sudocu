@@ -15,7 +15,7 @@ public interface IGridView extends MvpView {
 
     void clearField(List<Integer> theSameAnswers);
 
-    void setFocus(Integer id, Boolean isError);
+    void setFocus(Pair<Integer,Integer> pair);
 
     void removeFocus(Integer id);
 

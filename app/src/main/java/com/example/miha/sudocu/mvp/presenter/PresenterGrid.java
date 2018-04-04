@@ -44,12 +44,12 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
     @Override
     public void onResume() {
         this.updateUI();
-        Integer lastInputId = interactor.getChoiceField();
-        if (lastInputId == null) return;
+        Integer id = interactor.getChoiceField();
+        if (id == null) return;
 
-        ArrayList<Integer> errors = interactor.getError();
-        this.showKnowAnswerAndSameAnswerAndError(lastInputId, errors);
-        getViewState().setFocus(lastInputId, errors.contains(lastInputId));
+        ArrayList<Integer> error = interactor.getError();
+        this.showKnowAnswerAndSameAnswerAndError(id, error);
+        this.setFocus(id, error);
     }
 
     public void setModel(Grid grid) {
@@ -68,7 +68,7 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
             getViewState().clearField(interactor.knowAnswerMode(lastInputId, error));
         }
         this.showKnowAnswerAndSameAnswerAndError(id, error);
-        getViewState().setFocus(id, error.contains(id));
+        this.setFocus(id, error);
         interactor.setChoiceField(id);
     }
 
@@ -102,13 +102,19 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         Boolean isContainsError = err.contains(id);
 
         this.showKnowAnswerAndSameAnswerAndError(id, err);
-        this.getViewState().setFocus(id, isContainsError);
+        Integer result;
+        if (isContainsError) {
+            result = interactor.isChoiceFieldNotKnowByDefault(id) ? BackgroundOfField.ErrorAnswerFocus : BackgroundOfField.ErrorKnowAnswerFocus;
+        } else {
+            result = BackgroundOfField.Focus;
+        }
+        getViewState().setFocus(new Pair<>(id, result));
         getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
     }
 
     public void answer(String answer) {
         Integer lastChoseInputId = interactor.getChoiceField();
-        if ((!interactor.isChoiceFieldNotKnowByDefault(lastChoseInputId) && interactor.isChoiceFieldNotSameAnswer(answer))||lastChoseInputId==null)
+        if ((!interactor.isChoiceFieldNotKnowByDefault(lastChoseInputId) && interactor.isChoiceFieldNotSameAnswer(answer)) || lastChoseInputId == null)
             return;
         this.clearError(lastChoseInputId);
         interactor.addNewAnswer(new Answer(answer, true, lastChoseInputId));
@@ -128,13 +134,13 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         clearError(id);
         interactor.deleteChoiceAnswer(id);
         getViewState().setTextToAnswer(new Answer("", true, id));
-        getViewState().setFocus(id, false);
+        this.setFocus(id, null);
         ArrayList<Integer> err = interactor.getError();
         this.showKnowAnswerAndSameAnswerAndError(id, err);
         getViewState().disableButtonHistoryButton(interactor.isTopOfHistory(), interactor.isBottomOfHistory());
     }
 
-    private void showKnowAnswerAndSameAnswerAndError(Integer id,ArrayList<Integer> error) {
+    private void showKnowAnswerAndSameAnswerAndError(Integer id, ArrayList<Integer> error) {
         Observable.just(error)
                 .flatMap(list -> getObserverToColorThePlayingField(interactor.sameAnswerMode(id, list), BackgroundOfField.SameAnswer).mergeWith(getObserverToColorThePlayingField(interactor.knowAnswerMode(id, list), BackgroundOfField.KnowAnswer)))
                 .toList()
@@ -151,11 +157,21 @@ public class PresenterGrid extends MvpPresenter<IGridView> implements IPresenter
         return Observable.from(list).map(integer -> new Pair<>(integer, ofFieldEnum));
     }
 
-    private void changeUiAfterAnswerChange(String answer, Integer lastChoseInputId) {
+    private void changeUiAfterAnswerChange(String answer, Integer id) {
         ArrayList<Integer> error = interactor.getError();
-        getViewState().setTextToAnswer(new Answer(answer, null, lastChoseInputId));
-        this.showKnowAnswerAndSameAnswerAndError(lastChoseInputId, error);
-        getViewState().setFocus(lastChoseInputId, error.contains(lastChoseInputId));
+        getViewState().setTextToAnswer(new Answer(answer, null, id));
+        this.showKnowAnswerAndSameAnswerAndError(id, error);
+        this.setFocus(id, error);
         getViewState().showCountOfAnswer(interactor.getCountOfAnswer());
+    }
+
+    private void setFocus(Integer id, ArrayList<Integer> error) {
+        Integer result;
+        if (error != null && error.contains(id)) {
+            result = interactor.isChoiceFieldNotKnowByDefault(id) ? BackgroundOfField.ErrorAnswerFocus : BackgroundOfField.ErrorKnowAnswerFocus;
+        } else {
+            result = BackgroundOfField.Focus;
+        }
+        getViewState().setFocus(new Pair<>(id, result));
     }
 }
