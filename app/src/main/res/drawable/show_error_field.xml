@@ -5,8 +5,8 @@
         android:color="@color/poleInputBorder" />
     <gradient
         android:type="radial"
-        android:gradientRadius="40"
-        android:startColor="#00FF00"
+        android:gradientRadius="50"
+        android:startColor="@color/colorWhite"
         android:endColor="@android:color/holo_red_dark">
     </gradient>
 
